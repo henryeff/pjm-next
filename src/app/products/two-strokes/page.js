@@ -3,6 +3,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import twoStrokesData from '@/data/two-strokes.json';
 
+export const metadata = {
+    title: '2 Strokes - Mesin Tempel 2 Tak',
+    description: 'Jual Mesin Tempel Yamaha 2 Tak (2-Strokes). Tangguh, mudah perawatan, dan terpercaya. Yamaha Enduro series available.',
+};
+
 export default function TwoStrokesPage() {
     return (
         <div className={styles.container}>

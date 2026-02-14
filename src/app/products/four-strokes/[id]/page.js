@@ -9,6 +9,25 @@ export async function generateStaticParams() {
     }));
 }
 
+export async function generateMetadata({ params }) {
+    const { id } = await params;
+    const product = fourStokesData.find((p) => p.id === id);
+
+    if (!product) {
+        return {
+            title: 'Product Not Found',
+        };
+    }
+
+    return {
+        title: `${product.name} - Yamaha 4 Stroke`,
+        description: `Spesifikasi Yamaha ${product.name}. Mesin Tempel 4 Tak. ${product.tipeMesin}. Beli di Perkasa Jaya Marine Padang.`,
+        openGraph: {
+            images: [product.image],
+        },
+    };
+}
+
 export default async function Page({ params }) {
     const { id } = await params;
     const product = fourStokesData.find((p) => p.id === id);

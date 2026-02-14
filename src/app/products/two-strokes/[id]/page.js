@@ -9,6 +9,25 @@ export async function generateStaticParams() {
     }));
 }
 
+export async function generateMetadata({ params }) {
+    const { id } = await params;
+    const product = twoStokesData.find((p) => p.id === id);
+
+    if (!product) {
+        return {
+            title: 'Product Not Found',
+        };
+    }
+
+    return {
+        title: `${product.name} - Yamaha 2 Stroke`,
+        description: `Spesifikasi Yamaha ${product.name}. Mesin Tempel 2 Tak (Enduro). ${product.tipeMesin}. Tangguh dan Handal. Beli di Perkasa Jaya Marine Padang.`,
+        openGraph: {
+            images: [product.image],
+        },
+    };
+}
+
 export default async function Page({ params }) {
     const { id } = await params;
     const product = twoStokesData.find((p) => p.id === id);

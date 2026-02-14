@@ -3,6 +3,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import fourStokesData from '@/data/four-strokes.json';
 
+export const metadata = {
+    title: '4 Strokes - Mesin Tempel 4 Tak',
+    description: 'Jual Mesin Tempel Yamaha 4 Tak (4-Strokes). Irit bahan bakar, ramah lingkungan, dan bertenaga. Yamaha 4-Stroke Outboards dealer.',
+};
+
 export default function FourStrokesPage() {
     return (
         <div className={styles.container}>
