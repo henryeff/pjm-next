@@ -1,0 +1,203 @@
+/* CSS Modules for Yamalube Page */
+.container {
+    min-height: 100vh;
+}
+
+/* Hero Section */
+.heroSection {
+    position: relative;
+    height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: var(--primary);
+    overflow: hidden;
+}
+
+.sliderContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+
+.activeSlide {
+    opacity: 1;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 39, 76, 0.6);
+    /* Navy/Blue overlay */
+    z-index: 2;
+}
+
+.heroContent {
+    position: relative;
+    z-index: 3;
+    padding: 0 24px;
+}
+
+.pageTitle {
+    font-size: 3.5rem;
+    color: var(--white);
+    margin-bottom: 24px;
+    font-weight: 800;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.pageSubtitle {
+    font-size: 1.5rem;
+    color: var(--white);
+    font-weight: 400;
+    opacity: 0.9;
+}
+
+/* Content Section */
+.content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 80px 24px;
+}
+
+.introText {
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--text-main);
+    line-height: 1.8;
+    margin-bottom: 60px;
+}
+
+.videoWrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg);
+    margin-bottom: 80px;
+}
+
+.iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Product Sections */
+.productSection,
+.productSectionReverse {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+    margin-bottom: 80px;
+    padding: 40px;
+    background-color: var(--surface);
+    border-radius: 8px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    transition: var(--transition);
+}
+
+.productSectionReverse {
+    flex-direction: row-reverse;
+}
+
+.productSection:hover,
+.productSectionReverse:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-light);
+}
+
+.productInfo {
+    flex: 1;
+}
+
+.productTitle {
+    font-size: 1.8rem;
+    color: var(--primary);
+    margin-bottom: 24px;
+    border-bottom: 2px solid var(--secondary);
+    padding-bottom: 12px;
+    display: inline-block;
+}
+
+.featureList {
+    list-style: none;
+    padding: 0;
+}
+
+.featureList li {
+    position: relative;
+    padding-left: 32px;
+    margin-bottom: 16px;
+    color: var(--text-main);
+    line-height: 1.6;
+}
+
+.featureList li::before {
+    content: '★';
+    position: absolute;
+    left: 0;
+    top: 2px;
+    color: var(--secondary);
+    font-size: 1.1rem;
+}
+
+.productImageWrapper {
+    flex: 0 0 320px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--white);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+@media (max-width: 768px) {
+    .heroSection {
+        height: 50vh;
+    }
+
+    .pageTitle {
+        font-size: 2.5rem;
+    }
+
+    .productSection,
+    .productSectionReverse {
+        flex-direction: column;
+        text-align: center;
+        gap: 40px;
+    }
+
+    .featureList li {
+        text-align: left;
+    }
+
+    .productImageWrapper {
+        flex: auto;
+        width: 100%;
+        max-width: 320px;
+    }
+}

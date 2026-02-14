@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PJM Next.js App
+
+This is the new Next.js version of the Perkasa Jaya Marine website.
 
 ## Getting Started
 
-First, run the development server:
+1.  Open the terminal in this directory.
+2.  Run the development server:
+    ```bash
+    npm run dev
+    ```
+3.  Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## How to Update Content
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### update/add News or Products
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+The content for News and Products is stored in JSON files for easy updates without touching the code.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+-   **News**: Edit `src/data/news.json`. Each item is an object like this:
+    ```json
+    {
+      "id": "new-id",
+      "header": "New Title",
+      "image": "/images/News/image.jpg",
+      "details": "Details here...",
+      "date": "Date here"
+    }
+    ```
+-   **Products**: Edit `src/data/two-strokes.json` or `src/data/four-strokes.json`.
 
-## Learn More
+### Images
 
-To learn more about Next.js, take a look at the following resources:
+Place new images in the `public/images` folder. You can create subfolders if needed.
+Reference them in JSON as `/images/filename.jpg`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+-   `src/app`: Contains the pages and layout.
+-   `src/components`: Reusable components (Navbar, Footer, etc.).
+-   `src/data`: JSON data files.
+-   `src/app/globals.css`: Global styles and theme variables.

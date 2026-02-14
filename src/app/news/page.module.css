@@ -1,0 +1,235 @@
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 60px 20px;
+}
+
+.pageTitle {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 60px;
+    color: var(--primary);
+}
+
+.newsList {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.newsItem {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 40px;
+    background-color: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
+    cursor: pointer;
+    /* Indicates clickability */
+}
+
+.newsItem:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--secondary);
+}
+
+.imageContainer {
+    position: relative;
+    height: 100%;
+    min-height: 250px;
+}
+
+.image {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.content {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.date {
+    color: var(--secondary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.header {
+    font-size: 1.6rem;
+    color: var(--primary);
+    margin-bottom: 16px;
+    line-height: 1.3;
+}
+
+.summary {
+    color: var(--text-muted);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.readMore {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+    transition: all 0.2s ease;
+}
+
+.newsItem:hover .readMore {
+    color: var(--secondary);
+    gap: 12px;
+}
+
+/* Modal Styles */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 30, 61, 0.85);
+    /* Dark Navy tint */
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.3s ease;
+}
+
+.modalContent {
+    background-color: var(--white);
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    border-radius: 16px;
+    overflow-y: auto;
+    position: relative;
+    padding: 50px;
+    box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.closeButton {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 2.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: color 0.2s;
+    line-height: 1;
+    z-index: 10;
+}
+
+.closeButton:hover {
+    color: var(--secondary);
+}
+
+.modalHeader {
+    margin-bottom: 30px;
+    padding-right: 40px;
+    /* Space for close button */
+}
+
+.modalTitle {
+    font-size: 2.2rem;
+    color: var(--primary);
+    line-height: 1.2;
+    margin-top: 10px;
+}
+
+.modalImageWrapper {
+    width: 100%;
+    height: 450px;
+    position: relative;
+    margin-bottom: 40px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.modalImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.modalBody {
+    color: var(--text-main);
+    font-size: 1.15rem;
+    line-height: 1.9;
+}
+
+.paragraph {
+    margin-bottom: 24px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .newsItem {
+        grid-template-columns: 1fr;
+    }
+
+    .imageContainer {
+        height: 250px;
+    }
+
+    .modalContent {
+        padding: 24px;
+        max-height: 95vh;
+    }
+
+    .modalImageWrapper {
+        height: 250px;
+        margin-bottom: 24px;
+    }
+
+    .modalTitle {
+        font-size: 1.5rem;
+    }
+
+    .closeButton {
+        top: 15px;
+        right: 15px;
+    }
+}
