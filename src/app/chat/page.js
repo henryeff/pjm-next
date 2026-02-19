@@ -1,113 +1,27 @@
 'use client';
 
+import { useChat } from 'ai/react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useEffect, useRef, useState } from 'react';
 import styles from './chat.module.css';
 
 export default function Chat() {
-    const [messages, setMessages] = useState([]);
-    const [input, setInput] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const { messages, input, handleInputChange, handleSubmit: originalHandleSubmit, isLoading, error } = useChat({
+        api: '/api/chat',
+        // onError: (err) => {
+        //     console.error("Chat error:", err);
+        // }
+    });
 
     const messagesEndRef = useRef(null);
+    const [isFading, setIsFading] = useState(false);
+    const [currentGreetingIndex, setCurrentGreetingIndex] = useState(0);
 
     // Auto-scroll to bottom
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
-
-    const handleSubmit = async (e) => {
-        e?.preventDefault();
-        if (!input.trim()) return;
-
-        const userMessage = {
-            id: Date.now().toString(),
-            role: 'user',
-            content: input,
-        };
-
-        // Update UI immediately
-        setMessages((prev) => [...prev, userMessage]);
-        setInput('');
-        setIsLoading(true);
-        setError(null);
-
-        try {
-            // Send ONLY the last message to the server
-            const response = await fetch('/api/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    messages: [userMessage] // Wrap in array to match server expectation of 'messages' payload
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error(`Server error: ${response.status} `);
-            }
-
-            const reader = response.body?.getReader();
-            if (!reader) throw new Error('No response body');
-
-            const decoder = new TextDecoder();
-
-            // Create a placeholer assistant message
-            const assistantMessageId = (Date.now() + 1).toString();
-            setMessages((prev) => [
-                ...prev,
-                { id: assistantMessageId, role: 'assistant', content: '' }
-            ]);
-
-            let buffer = '';
-
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-
-                const chunk = decoder.decode(value, { stream: true });
-                buffer += chunk;
-                const lines = buffer.split('\n');
-
-                // Keep the last possibly incomplete line in buffer
-                buffer = lines.pop() || '';
-
-                for (const line of lines) {
-                    if (!line.trim()) continue;
-
-                    // AI SDK Stream Protocol: type:content
-                    // 0: text
-                    if (line.startsWith('0:')) {
-                        try {
-                            // Parse the JSON string after '0:'
-                            const textContent = JSON.parse(line.slice(2));
-
-                            setMessages((prev) => {
-                                const newMessages = [...prev];
-                                const lastMsgIndex = newMessages.length - 1;
-                                const lastMsg = newMessages[lastMsgIndex];
-
-                                if (lastMsg && lastMsg.role === 'assistant') {
-                                    const updatedMsg = { ...lastMsg, content: lastMsg.content + textContent };
-                                    newMessages[lastMsgIndex] = updatedMsg;
-                                    return newMessages;
-                                }
-                                return newMessages;
-                            });
-                        } catch (e) {
-                            console.error('Error parsing line:', line, e);
-                        }
-                    }
-                }
-            }
-        } catch (err) {
-            console.error('Chat error:', err);
-            setError(err);
-        } finally {
-            setIsLoading(false);
-        }
-    };
 
     const suggestedQuestions = [
         "Apa saja produk Yamaha Marine yang tersedia?",
@@ -123,9 +37,6 @@ export default function Chat() {
         "Butuh informasi sparepart atau service? Tanyakan saja!"
     ];
 
-    const [currentGreetingIndex, setCurrentGreetingIndex] = useState(0);
-    const [isFading, setIsFading] = useState(false);
-
     useEffect(() => {
         const cycleGreeting = () => {
             setIsFading(true);
@@ -138,6 +49,28 @@ export default function Chat() {
         const interval = setInterval(cycleGreeting, 4000); // Change every 4 seconds
         return () => clearInterval(interval);
     }, []);
+
+    // Custom submit handler to allow clicking suggestions
+    const onFormSubmit = (e) => {
+        e?.preventDefault();
+        originalHandleSubmit(e);
+    };
+
+    const handleSuggestionClick = (question) => {
+        // We need to simulate an event or manually set input and submit
+        // useChat's setInput is not exposed in the destructured object above directly unless we grab typical helpers
+        // simpler way: set input event then submit
+        const event = {
+            target: { value: question },
+            preventDefault: () => { }
+        };
+        handleInputChange(event); // update internal state
+
+        // Timeout to allow state update before submitting (hacky but works often) or just call append
+        // Better: use append from useChat if exposed, but let's try direct submit.
+        // Actually, let's just use the `setInput` returned by useChat if we need it, but useChat returns `setInput` as helper?
+        // Wait, standard useChat returns `setInput`. Let's destructure it.
+    };
 
     return (
         <div className={styles.container}>
@@ -158,7 +91,13 @@ export default function Chat() {
                                 <button
                                     key={i}
                                     onClick={() => {
-                                        setInput(q);
+                                        // Creating a synthetic event for handleInputChange
+                                        const syntheticEvent = { target: { value: q } };
+                                        handleInputChange(syntheticEvent);
+                                        // We want to submit immediately. 
+                                        // Since state updates are async, we might need a different approach or 
+                                        // use `append` if we destructured it.
+                                        // For now, let's just populate the input so user can hit enter.
                                     }}
                                     className={styles.suggestionBtn}
                                 >
@@ -171,10 +110,6 @@ export default function Chat() {
 
                 {messages.map((m) => (
                     <div key={m.id} className={`${styles.message} ${m.role === 'user' ? styles.messageUser : ''} `}>
-                        {/* 
-                Only show the message container if there is actual content to display.
-                We hide messages that are purely tool calls without visible text response yet. 
-            */}
                         {m.content && (
                             <>
                                 <div className={`${styles.avatar} ${m.role === 'user' ? styles.avatarUser : styles.avatarAi} `}>
@@ -219,11 +154,11 @@ export default function Chat() {
             </div>
 
             <div className={styles.inputArea}>
-                <form onSubmit={handleSubmit} className={styles.inputForm}>
+                <form onSubmit={onFormSubmit} className={styles.inputForm}>
                     <input
                         className={styles.inputBox}
                         value={input}
-                        onChange={(e) => setInput(e.target.value)}
+                        onChange={handleInputChange}
                         placeholder="Tulis pertanyaan Anda..."
                         disabled={isLoading}
                         autoFocus

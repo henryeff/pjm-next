@@ -149,9 +149,7 @@ export async function POST(req) {
             },
         });
 
-        // Check if dataStreamResponse is a proper response object and not just a stream
-        // In AI SDK 3.x/4.x/5.x/6.x differences can be tricky.
-        // streamText returns a stream result object.
+        // In AI SDK 3.x+ / 6.x, we should just use toDataStreamResponse()
         const dataStreamResponse = result.toDataStreamResponse();
 
         // Set cookie if needed
