@@ -49,7 +49,9 @@ const Navbar = () => {
                     </div>
                     <Link href="/news" className={styles.link}>{t.news}</Link>
                     <Link href="/about" className={styles.link}>{t.about}</Link>
+                    <Link href="/chat" className={styles.link}>{t.chat}</Link>
                     <Link href="/contact" className={styles.link}>{t.contact}</Link>
+
                     <div className={styles.langSwitcher}>
                         <button
                             onClick={() => language !== 'en' && toggleLanguage()}
@@ -81,6 +83,7 @@ const Navbar = () => {
                     </div>
                     <Link href="/news" className={styles.mobileLink} onClick={closeMenu}>{t.news}</Link>
                     <Link href="/about" className={styles.mobileLink} onClick={closeMenu}>{t.about}</Link>
+                    <Link href="/chat" className={styles.mobileLink} onClick={closeMenu}>{t.chat}</Link>
                     <Link href="/contact" className={styles.mobileLink} onClick={closeMenu}>{t.contact}</Link>
                     <button onClick={() => { toggleLanguage(); closeMenu(); }} className={styles.mobileLangBtn}>
                         Switch to {language === 'en' ? 'Bahasa Indonesia' : 'English'}

@@ -21,8 +21,7 @@ export default function Home() {
           <h1 className={styles.title}>{t.heroTitle}</h1>
           <p className={styles.subtitle}>{t.heroSubtitle}</p>
           <div className={styles.ctaGroup}>
-            <Link href="/products/four-strokes" className={styles.primaryButton}>{t.btn4Stroke}</Link>
-            <Link href="/products/two-strokes" className={styles.secondaryButton}>{t.btn2Stroke}</Link>
+            <Link href="/chat" className={styles.primaryButton}>{t.talkToUs}</Link>
           </div>
         </div>
       </section>

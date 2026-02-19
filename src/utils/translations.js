@@ -9,7 +9,8 @@ export const translations = {
             twoStrokes: "2 Strokes",
             fourStrokes: "4 Strokes",
             yamalube: "Yamalube",
-            parts: "Genuine Parts"
+            parts: "Genuine Parts",
+            chat: "Chat"
         },
         home: {
             heroTitle: "Power Your Journey",
@@ -25,7 +26,8 @@ export const translations = {
             innovationDesc: "Cutting-edge technology for smarter boating.",
             showcaseTitle: "Experience Excellence",
             showcaseDesc: "From the lightweight portability of our 2-strokes to the refined power of our 4-strokes, we have the perfect engine for your needs.",
-            showcaseLink: "Discover Yamalube Protection"
+            showcaseLink: "Discover Yamalube Protection",
+            talkToUs: "Chat with us now!"
         },
         about: {
             title: "About Us",
@@ -98,7 +100,8 @@ export const translations = {
             twoStrokes: "2 Tak",
             fourStrokes: "4 Tak",
             yamalube: "Yamalube",
-            parts: "Suku Cadang Asli"
+            parts: "Suku Cadang Asli",
+            chat: "Chat"
         },
         home: {
             heroTitle: "Tenagai Perjalanan Anda",
@@ -114,7 +117,8 @@ export const translations = {
             innovationDesc: "Teknologi mutakhir untuk pelayaran yang lebih cerdas.",
             showcaseTitle: "Rasakan Keunggulan",
             showcaseDesc: "Dari portabilitas ringan 2-tak kami hingga tenaga halus 4-tak kami, kami memiliki mesin yang sempurna untuk kebutuhan Anda.",
-            showcaseLink: "Temukan Perlindungan Yamalube"
+            showcaseLink: "Temukan Perlindungan Yamalube",
+            talkToUs: "Chat dengan Kami Sekarang!"
         },
         about: {
             title: "Tentang Kami",
