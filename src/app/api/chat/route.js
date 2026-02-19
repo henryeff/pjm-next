@@ -149,7 +149,8 @@ export async function POST(req) {
             },
         });
 
-        // In AI SDK 3.x+ / 6.x, we should just use toDataStreamResponse()
+        // For ai@3.x / @ai-sdk/openai@0.0.x
+        // streamText returns a result that you can call .toDataStreamResponse() on.
         const dataStreamResponse = result.toDataStreamResponse();
 
         // Set cookie if needed
