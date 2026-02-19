@@ -12,6 +12,8 @@ export default function Chat() {
     const [error, setError] = useState(null);
 
     const messagesEndRef = useRef(null);
+    const [isFading, setIsFading] = useState(false);
+    const [currentGreetingIndex, setCurrentGreetingIndex] = useState(0);
 
     // Auto-scroll to bottom
     useEffect(() => {
@@ -123,8 +125,6 @@ export default function Chat() {
         "Butuh informasi sparepart atau service? Tanyakan saja!"
     ];
 
-    const [currentGreetingIndex, setCurrentGreetingIndex] = useState(0);
-    const [isFading, setIsFading] = useState(false);
 
     useEffect(() => {
         const cycleGreeting = () => {
