@@ -83,77 +83,85 @@ export async function POST(req) {
         }
     }
 
-    // 6. Stream Response
-    const result = await streamText({
-        model: openai('gpt-4o-mini'),
-        system: dynamicSystemPrompt,
-        messages: finalMessages,
-        maxSteps: 20,
-        toolChoice: 'auto',
-        tools: {
-            recordUserDetails: tool({
-                description: 'Use this tool to record that a user is interested in being in touch and provided an email address',
-                parameters: z.object({
-                    email: z.string().describe('The email address of this user'),
-                    name: z.string().describe("The user's name, if they provided it").optional(),
-                    notes: z.string().describe("Any additional information about the conversation that's worth recording to give context").optional(),
+    try {
+        // 6. Stream Response
+        const result = await streamText({
+            model: openai('gpt-4o-mini'),
+            system: dynamicSystemPrompt,
+            messages: finalMessages,
+            maxSteps: 20,
+            toolChoice: 'auto',
+            tools: {
+                recordUserDetails: tool({
+                    description: 'Use this tool to record that a user is interested in being in touch and provided an email address',
+                    parameters: z.object({
+                        email: z.string().describe('The email address of this user'),
+                        name: z.string().describe("The user's name, if they provided it").optional(),
+                        notes: z.string().describe("Any additional information about the conversation that's worth recording to give context").optional(),
+                    }),
+                    execute: async ({ email, name, notes }) => {
+                        console.log('Executing recordUserDetails tool', { email, name, notes });
+                        const message = `Name: ${name || 'Not provided'}\nEmail: ${email}\nNotes: ${notes || 'Not provided'}`;
+                        const success = await sendPushoverNotification('New Lead Captured', message);
+                        console.log('Pushover notification result:', success);
+                        return success ? 'Details recorded successfully. Thank the user.' : 'Failed to record details. Apologize to the user.';
+                    },
                 }),
-                execute: async ({ email, name, notes }) => {
-                    console.log('Executing recordUserDetails tool', { email, name, notes });
-                    const message = `Name: ${name || 'Not provided'}\nEmail: ${email}\nNotes: ${notes || 'Not provided'}`;
-                    const success = await sendPushoverNotification('New Lead Captured', message);
-                    console.log('Pushover notification result:', success);
-                    return success ? 'Details recorded successfully. Thank the user.' : 'Failed to record details. Apologize to the user.';
-                },
-            }),
-            recordUnknownQuestion: tool({
-                description: "Always use this tool to record any question that couldn't be answered as you didn't know the answer",
-                parameters: z.object({
-                    question: z.string().describe("The question that couldn't be answered"),
+                recordUnknownQuestion: tool({
+                    description: "Always use this tool to record any question that couldn't be answered as you didn't know the answer",
+                    parameters: z.object({
+                        question: z.string().describe("The question that couldn't be answered"),
+                    }),
+                    execute: async ({ question }) => {
+                        console.log('Executing recordUnknownQuestion tool', { question });
+                        const success = await sendPushoverNotification('Unknown Question', `Question: ${question}`);
+                        console.log('Pushover notification result:', success);
+                        return success ? 'Question recorded. Inform the user you will look into it.' : 'Failed to record question.';
+                    },
                 }),
-                execute: async ({ question }) => {
-                    console.log('Executing recordUnknownQuestion tool', { question });
-                    const success = await sendPushoverNotification('Unknown Question', `Question: ${question}`);
-                    console.log('Pushover notification result:', success);
-                    return success ? 'Question recorded. Inform the user you will look into it.' : 'Failed to record question.';
-                },
-            }),
-        },
-        async onFinish({ response }) {
-            // Append new interactions to the store
-            const currentHistory = getConversation(sessionId);
-            const newAssistantMessages = response.messages;
+            },
+            async onFinish({ response }) {
+                // Append new interactions to the store
+                const currentHistory = getConversation(sessionId);
+                const newAssistantMessages = response.messages;
 
-            const userMessageToSave = {
-                ...newUserMessage,
-                id: randomUUID(),
-                createdAt: new Date(),
-            };
-
-            const assistantMessagesToSave = newAssistantMessages.map(msg => {
-                const messageId = randomUUID();
-                return {
-                    ...msg,
-                    id: messageId,
+                const userMessageToSave = {
+                    ...newUserMessage,
+                    id: randomUUID(),
                     createdAt: new Date(),
                 };
-            });
 
-            const messagesToSave = [
-                ...currentHistory,
-                userMessageToSave,
-                ...assistantMessagesToSave
-            ];
-            saveConversation(sessionId, messagesToSave);
-        },
-    });
+                const assistantMessagesToSave = newAssistantMessages.map(msg => {
+                    const messageId = randomUUID();
+                    return {
+                        ...msg,
+                        id: messageId,
+                        createdAt: new Date(),
+                    };
+                });
 
-    const dataStreamResponse = result.toDataStreamResponse();
+                const messagesToSave = [
+                    ...currentHistory,
+                    userMessageToSave,
+                    ...assistantMessagesToSave
+                ];
+                saveConversation(sessionId, messagesToSave);
+            },
+        });
 
-    // Set cookie if needed
-    if (!cookieStore.get('chat_session')) {
-        dataStreamResponse.headers.set('Set-Cookie', `chat_session=${sessionId}; Path=/; HttpOnly; SameSite=Strict`);
+        const dataStreamResponse = result.toDataStreamResponse();
+
+        // Set cookie if needed
+        if (!cookieStore.get('chat_session')) {
+            dataStreamResponse.headers.set('Set-Cookie', `chat_session=${sessionId}; Path=/; HttpOnly; SameSite=Strict`);
+        }
+
+        return dataStreamResponse;
+    } catch (error) {
+        console.error('API Route Error:', error);
+        return new Response(JSON.stringify({ error: error.message }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
     }
-
-    return dataStreamResponse;
 }
