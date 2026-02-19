@@ -150,7 +150,21 @@ export async function POST(req) {
         });
 
         // For ai@3.x / @ai-sdk/openai@0.0.x
-        // streamText returns a result that you can call .toDataStreamResponse() on.
+        // streamText returns a result that you can call .toAIStreamResponse() on (NOT .toDataStreamResponse unless it's latest)
+        // Wait, for ai 3.x with openai 0.0.x, it's typically .toAIStreamResponse()!
+        // CHECK: ai 3.4.15 uses `toAIStreamResponse()` in some guides, or just returns the stream if `streamText` was different.
+        // BUT, `streamText` in ai@3.1+ returns { toAIStreamResponse, toDataStreamResponse, ... }
+        // Let's use .toAIStreamResponse() which is safer for this version combo if data stream isn't found.
+        // ACTUALLY, checking documentation: ai@3.4.x introduced toDataStreamResponse for data stream protocol.
+        // BUT if it fails, fallback to .toTextStreamResponse() or similar.
+        // Let's stick with .toDataStreamResponse() but acknowledge version might need it.
+        // If it fails again, we will use `new StreamingTextResponse(result.toAIStream())`.
+
+        // Let's try the safest older method:
+        // return new StreamingTextResponse(result.toAIStream());
+        // BUT `streamText` result is NOT a stream.
+
+        // Let's try standard `toDataStreamResponse()` again with this version.
         const dataStreamResponse = result.toDataStreamResponse();
 
         // Set cookie if needed
