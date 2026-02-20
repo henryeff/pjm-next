@@ -1,37 +1,177 @@
 [
-    {
-        "id": "1",
-        "header": "GARMIN GPS available now at Perkasa Jaya Marine",
-        "image": "/images/News/garmin.jpg",
-        "details": "Garmin Echomap Plus 65CV.\nGarmin Striker Plus 4\n\nAvailable at Perkasa Jaya Marine",
-        "date": "6 January 2020"
-    },
-    {
-        "id": "2",
-        "header": "Bantuan Pemprov Sumatera Barat berupa 234 unit mesin tempel 15PK Yamaha",
-        "image": "/images/News/bantuansumbar.jpg",
-        "details": "Nelayan yang tergabung dalam kelompok nelayan di Sumatera Barat mendapatkan bantuan oleh Pemprov Sumatera Barat be­rupa 234 unit mesin tempel 15 PK Yamaha. Mesin tempel 15 PK Yamaha yang dikenal tangguh dan berkualitas dipilih oleh Pemprov Sumatera Barat berdasarkan aspirasi masyarakat nelayan Sumatera Barat, mesin bantuan ini diharapkan dapat membantu nelayan mencakup area jelajah yang lebih jauh dan hasil pancing yang lebih besar. \n\nPemprov Sumatera Barat melakukan pengadaan mesin tempel 15 PK Yamaha melalui sistem e-katalog sektoral Kementerian Kelautan dan Perikanan (KKP). Sejak tahun lalu pengadaan menggunakan e-katalog ini telah digunakan di beberapa daerah lain, diharapkan provinsi / wilayah lainnya akan menyusul dan mengikuti menggunakan e-katalog agar pengadaan lebih cepat, tepat guna dan transparan.\n\nPerkasa Jaya Marine Padang turut mendukung kegiatan Pemprov Sumatera Barat dalam distribusi dan layanan purna jual.\n\nAcara penyerahan ban­tuan di ha­la­man Kantor Dinas Ke­lautan dan Perikanan (DKP) Provinsi Sumbar, Minggu (12/9) turut dihadiri oleh Gubernur Sumatera ­Barat, Mahyeldi An­sha­rullah. Lokasi penerimaan bantuan akan tersebar pada 4 Kabupaten / Kota yaitu Padang, Pesisir Selatan, Padang Pariaman dan Agam, dengan total 21 titik.\n\nBaik Pemprov Sumatera Barat, KBA dan Perkasa Jaya Marine berharap bantuan tersebut bisa dimanfaat­kan sebaik-baiknya oleh nelayan, agar nela­yan bisa mendapatkan peng­­­hasilan yang lebih baik dan lebih sejahtera.",
-        "date": "13 September 2021"
-    },
-    {
-        "id": "3",
-        "header": "Yamaha Outboard for Fisherman",
-        "image": "/images/News/fisherman.jpg",
-        "details": "Fishermen in Padang call it Mesin Tempel, an engine which propels their boat through out the open sea. \nThe Mesin Tempel is attached on the rear of their wooden boat, They are using a manual handle engine. \nThe reason is for easy and fast maneuver. \nThey choose Mesin Tempel Yamaha as their primary engine. “Mesin Tempel Yamaha has unbeatable quality and very reliable in any kind of situation. Also, i feel safer through out the journey”, said one of the fishermen.\n\n YAMAHA OUTBOARD FOR EVERYONE",
-        "date": "12 December 2023"
-    },
-    {
-        "id": "4",
-        "header": "YAMALUBE vs Motorcycle Oil",
-        "image": "/images/News/yamalube.jpg",
-        "details": "How does a Marine oil differ with motorcycle oil??\nThis is the question that many outboard users have been asking for! Some have the ideas that all oils are the same. \nHowever, they are WRONG! \n\nHere are some differences: \nOutboard is a water cooled engine. \nIt has different engine temperature and runs at higher RPM. \nIt carry much more heavier load than motorcycle. \nIt needs a perfect combustion. Hence, only a special marine oil can be used for outboard motor.\n\nMarine oil has been formulated, tested and certifed by NMMA for marine purposes. \nUnlike outboard engine, motorcycle is an air cooled engine and runs at lower RPM and carry small loads. Improper type of oil may shorten the outboard engine life. \n\nGet a proper marine oil for your outboard. It is a long term investment for your engine.",
-        "date": "12 December 2023"
-    },
-    {
-        "id": "5",
-        "header": "F250H Generasi Baru",
-        "image": "/images/News/F250H.jpg",
-        "details": "Pada perkenalan produk baru ini, mesin Yamaha F250H merupakan pengembangan dari mesin F250G. \nMesin F250G tersebut telah teruji ketangguhannya dan banyak digunakan di perairan Indonesia. \nPoin penting dari F250H merupakan komersial model, yang artinya dapat diajak kerja keras. \nMenggunakan mesin 4 langkah dan dapat menggunakan premium atau bahan bakar dengan Ron 88. \nDalam segi perawatan, mesin tempel Yamaha biaya perawatannnya lebih murah dibandingkan merk yang lainnya. \nPada 2017 market share Yamaha mencapai 84 persen. “Jadi dari 100 unit mesin tempel yang beredar, 84 persennya adalah penggunaan merek Yamaha, sisanya baru kompetitor,Untuk tahun ini market share akan tetap dipertahankan, bahkan diharapkan dapat terus meningkat. \nMengenai penjualan mesin ukuran besar seperti Yamaha F250H di Bali bisa mencapai puluhan unit per bulan. \nYamaha F250H memiliki gear atau bagian kaki lebih kuat dibanding mesin sebelumnya F250G. \nKemudian pada gigi-giginya lebih tebal dan lebih tahan 2 kali lipat dibanding sebelumnya. \nSelain itu torsi mesin lebih besar sehingga akselerasi lebih baik. \nUntuk efisiensi, spare parts F250H dapat disubtitusi dengan mesin sebelumnya F250G. “Tujuannya agar hemat, cuma ada beberapa bagian kelistrikan saja yang berbeda. Sisanya sama dan bisa disubstitusi,” Sedangkan bahan bakar mesin disarankan menggunakan Pertalite dibanding Premium. \nIni supaya mesin lebih terawat dan tahan lama. “Tapi meskipun memakai Premium masih bisa kok,” Dalam pengenalan produk Yamaha yang terbaru tersebut hadir pula BFI Finance. \nPihak BFI Finance memberikan informasi terkait pembiayaan mesin tempel. \nBFI menawarkan pembelian mesin tempel secara angsuran atau kredit. \nAngsuran melalui BFI, agunan atau jaminan hanya mesin yang diangsur saja, tidak memerlukan aset lainnya.",
-        "date": "12 December 2023"
-    }
+  {
+    "id": "1",
+    "title": "GARMIN GPS available now at Perkasa Jaya Marine",
+    "image": "/images/News/garmin.jpg",
+    "excerpt": "Garmin Echomap Plus 65CV dan Garmin Striker Plus 4 kini tersedia di Perkasa Jaya Marine.",
+    "content": "Garmin Echomap Plus 65CV.\nGarmin Striker Plus 4\n\nAvailable at Perkasa Jaya Marine",
+    "date": "6 January 2020"
+  },
+  {
+    "id": "2",
+    "title": "Bantuan Pemprov Sumatera Barat berupa 234 unit mesin tempel 15PK Yamaha",
+    "image": "/images/News/bantuansumbar.jpg",
+    "excerpt": "Nelayan yang tergabung dalam kelompok nelayan di Sumatera Barat mendapatkan bantuan oleh Pemprov Sumatera Barat berupa 234 unit mesin tempel 15 PK Yamaha.",
+    "content": "Nelayan yang tergabung dalam kelompok nelayan di Sumatera Barat mendapatkan bantuan oleh Pemprov Sumatera Barat be­rupa 234 unit mesin tempel 15 PK Yamaha. Mesin tempel 15 PK Yamaha yang dikenal tangguh dan berkualitas dipilih oleh Pemprov Sumatera Barat berdasarkan aspirasi masyarakat nelayan Sumatera Barat, mesin bantuan ini diharapkan dapat membantu nelayan mencakup area jelajah yang lebih jauh dan hasil pancing yang lebih besar. \n\nPemprov Sumatera Barat melakukan pengadaan mesin tempel 15 PK Yamaha melalui sistem e-katalog sektoral Kementerian Kelautan dan Perikanan (KKP). Sejak tahun lalu pengadaan menggunakan e-katalog ini telah digunakan di beberapa daerah lain, diharapkan provinsi / wilayah lainnya akan menyusul dan mengikuti menggunakan e-katalog agar pengadaan lebih cepat, tepat guna dan transparan.\n\nPerkasa Jaya Marine Padang turut mendukung kegiatan Pemprov Sumatera Barat dalam distribusi dan layanan purna jual.\n\nAcara penyerahan ban­tuan di ha­la­man Kantor Dinas Ke­lautan dan Perikanan (DKP) Provinsi Sumbar, Minggu (12/9) turut dihadiri oleh Gubernur Sumatera ­Barat, Mahyeldi An­sha­rullah. Lokasi penerimaan bantuan akan tersebar pada 4 Kabupaten / Kota yaitu Padang, Pesisir Selatan, Padang Pariaman dan Agam, dengan total 21 titik.\n\nBaik Pemprov Sumatera Barat, KBA dan Perkasa Jaya Marine berharap bantuan tersebut bisa dimanfaat­kan sebaik-baiknya oleh nelayan, agar nela­yan bisa mendapatkan peng­­­hasilan yang lebih baik dan lebih sejahtera.",
+    "date": "13 September 2021"
+  },
+  {
+    "id": "3",
+    "title": "Yamaha Outboard for Fisherman",
+    "image": "/images/News/fisherman.jpg",
+    "excerpt": "Fishermen in Padang call it Mesin Tempel, an engine which propels their boat through out the open sea.",
+    "content": "Fishermen in Padang call it Mesin Tempel, an engine which propels their boat through out the open sea. \nThe Mesin Tempel is attached on the rear of their wooden boat, They are using a manual handle engine. \nThe reason is for easy and fast maneuver. \nThey choose Mesin Tempel Yamaha as their primary engine. \"Mesin Tempel Yamaha has unbeatable quality and very reliable in any kind of situation. Also, i feel safer through out the journey\", said one of the fishermen.\n\n YAMAHA OUTBOARD FOR EVERYONE",
+    "date": "12 December 2023"
+  },
+  {
+    "id": "4",
+    "title": "YAMALUBE vs Motorcycle Oil",
+    "image": "/images/News/yamalube.jpg",
+    "excerpt": "How does a Marine oil differ with motorcycle oil? Here are some important differences every outboard user should know.",
+    "content": "How does a Marine oil differ with motorcycle oil??\nThis is the question that many outboard users have been asking for! Some have the ideas that all oils are the same. \nHowever, they are WRONG! \n\nHere are some differences: \nOutboard is a water cooled engine. \nIt has different engine temperature and runs at higher RPM. \nIt carry much more heavier load than motorcycle. \nIt needs a perfect combustion. Hence, only a special marine oil can be used for outboard motor.\n\nMarine oil has been formulated, tested and certifed by NMMA for marine purposes. \nUnlike outboard engine, motorcycle is an air cooled engine and runs at lower RPM and carry small loads. Improper type of oil may shorten the outboard engine life. \n\nGet a proper marine oil for your outboard. It is a long term investment for your engine.",
+    "date": "12 December 2023"
+  },
+  {
+    "id": "5",
+    "title": "F250H Generasi Baru",
+    "image": "/images/News/F250H.jpg",
+    "excerpt": "Mesin Yamaha F250H merupakan pengembangan dari mesin F250G yang telah teruji ketangguhannya di perairan Indonesia.",
+    "content": "Pada perkenalan produk baru ini, mesin Yamaha F250H merupakan pengembangan dari mesin F250G. \nMesin F250G tersebut telah teruji ketangguhannya dan banyak digunakan di perairan Indonesia. \nPoin penting dari F250H merupakan komersial model, yang artinya dapat diajak kerja keras. \nMenggunakan mesin 4 langkah dan dapat menggunakan premium atau bahan bakar dengan Ron 88. \nDalam segi perawatan, mesin tempel Yamaha biaya perawatannnya lebih murah dibandingkan merk yang lainnya. \nPada 2017 market share Yamaha mencapai 84 persen. \"Jadi dari 100 unit mesin tempel yang beredar, 84 persennya adalah penggunaan merek Yamaha, sisanya baru kompetitor,Untuk tahun ini market share akan tetap dipertahankan, bahkan diharapkan dapat terus meningkat. \nMengenai penjualan mesin ukuran besar seperti Yamaha F250H di Bali bisa mencapai puluhan unit per bulan. \nYamaha F250H memiliki gear atau bagian kaki lebih kuat dibanding mesin sebelumnya F250G. \nKemudian pada gigi-giginya lebih tebal dan lebih tahan 2 kali lipat dibanding sebelumnya. \nSelain itu torsi mesin lebih besar sehingga akselerasi lebih baik. \nUntuk efisiensi, spare parts F250H dapat disubtitusi dengan mesin sebelumnya F250G. \"Tujuannya agar hemat, cuma ada beberapa bagian kelistrikan saja yang berbeda. Sisanya sama dan bisa disubstitusi,\" Sedangkan bahan bakar mesin disarankan menggunakan Pertalite dibanding Premium. \nIni supaya mesin lebih terawat dan tahan lama. \"Tapi meskipun memakai Premium masih bisa kok,\" Dalam pengenalan produk Yamaha yang terbaru tersebut hadir pula BFI Finance. \nPihak BFI Finance memberikan informasi terkait pembiayaan mesin tempel. \nBFI menawarkan pembelian mesin tempel secara angsuran atau kredit. \nAngsuran melalui BFI, agunan atau jaminan hanya mesin yang diangsur saja, tidak memerlukan aset lainnya.",
+    "date": "12 December 2023"
+  },
+  {
+    "id": "mesin-tempel-yamaha-2026-02-19",
+    "title": "Mesin Tempel Yamaha: Panduan Lengkap, Perawatan, dan Spare Part",
+    "date": "2026-02-19",
+    "author": "Perkasa Jaya Marine",
+    "slug": "mesin-tempel-yamaha-panduan-perawatan-spare-part",
+    "excerpt": "Panduan praktis memilih, merawat, dan mendapatkan spare part asli untuk mesin tempel Yamaha — termasuk rekomendasi oli Yamalube dan tips hemat perawatan.",
+    "meta_title": "Mesin Tempel Yamaha — Panduan Perawatan & Spare Part | Perkasa Jaya Marine",
+    "meta_description": "Panduan lengkap mesin tempel Yamaha: cara memilih, perawatan rutin, rekomendasi oli Yamalube, dan tips mendapatkan spare part asli. Baca sekarang di Perkasa Jaya Marine.",
+    "tags": [
+      "Yamaha",
+      "mesin tempel",
+      "outboard",
+      "perawatan",
+      "yamalube",
+      "spare part"
+    ],
+    "image": "/images/news/mesin-tempel-yamaha.jpg",
+    "imageAlt": "Mesin tempel Yamaha terpasang di perahu",
+    "content": "Mesin tempel Yamaha terkenal di Indonesia karena keandalan dan ketersediaan suku cadang. Artikel ini membahas cara memilih mesin, jadwal perawatan, oli yang direkomendasikan (Yamalube), dan bagaimana memastikan Anda mendapatkan spare part asli.\n\n<strong>Memilih mesin</strong>: Sesuaikan daya (HP) dengan ukuran perahu dan beban. Untuk perahu kecil 2–3 orang pilih 2–15 HP; untuk beban berat pertimbangkan 25 HP ke atas. Konsultasi teknis penting untuk memastikan transom cocok.\n\n<strong>Perawatan rutin</strong>: Ganti oli mesin dan oli gir sesuai manual, periksa sistem pendingin, bersihkan bahan bakar, dan bilas dengan air tawar setelah pemakaian di laut. Gunakan Yamalube untuk perlindungan maksimal.\n\n<strong>Spare part asli</strong>: Gunakan Yamaha Genuine Parts untuk menjaga performa dan garansi. Suku cadang imitasi bisa menyebabkan kerusakan dan membatalkan garansi."
+  },
+  {
+    "id": "cara-memilih-mesin-tempel-2026-02-19",
+    "title": "Cara Memilih Mesin Tempel Yamaha untuk Perahu Kecil",
+    "date": "2026-02-19",
+    "author": "Perkasa Jaya Marine",
+    "slug": "cara-memilih-mesin-tempel-yamaha",
+    "excerpt": "Langkah praktis memilih mesin tempel Yamaha sesuai ukuran perahu, jumlah penumpang, dan penggunaan (nelayan vs rekreasi).",
+    "meta_title": "Cara Memilih Mesin Tempel Yamaha untuk Perahu Kecil — Tips Praktis",
+    "meta_description": "Pelajari cara cepat memilih mesin tempel Yamaha yang tepat untuk perahu kecil: perhitungan beban, pilihan 2-tak vs 4-tak, dan pengecekan transom. Hubungi Perkasa Jaya Marine untuk rekomendasi.",
+    "tags": [
+      "cara memilih",
+      "mesin tempel",
+      "Yamaha",
+      "perahu"
+    ],
+    "image": "/images/news/cara-memilih-mesin.jpg",
+    "imageAlt": "Beberapa model mesin tempel Yamaha berdampingan",
+    "content": "Memilih mesin tempel yang tepat menghemat bahan bakar dan memperpanjang umur perahu. Fokus pada: beban operasional, tipe mesin (2-tak vs 4-tak), mounting/transom, dan efisiensi bahan bakar.\n\n<ul><li><strong>Hitung beban:</strong> jumlah penumpang + barang + bahan bakar.</li><li><strong>Tipe mesin:</strong> 2-tak lebih ringan; 4-tak lebih irit dan halus.</li><li><strong>Periksa transom:</strong> pastikan kekuatan transom cocok dengan torsi mesin.</li></ul>\n\nHubungi teknisi Perkasa Jaya Marine untuk rekomendasi model dan pemasangan."
+  },
+  {
+    "id": "2tak-vs-4tak-yamaha-2026-02-19",
+    "title": "Perbedaan 2-Tak dan 4-Tak pada Mesin Tempel Yamaha",
+    "date": "2026-02-19",
+    "author": "Perkasa Jaya Marine",
+    "slug": "perbedaan-2tak-4tak-mesin-tempel-yamaha",
+    "excerpt": "Kelebihan dan kekurangan mesin 2-tak dan 4-tak untuk membantu menentukan pilihan sesuai kebutuhan operasi perahu.",
+    "meta_title": "2-Tak vs 4-Tak Yamaha — Mana yang Tepat untuk Mesin Tempel Anda?",
+    "meta_description": "Bandingkan karakter mesin 2-tak dan 4-tak Yamaha: performa, efisiensi bahan bakar, emisi, dan rekomendasi penggunaan. Panduan singkat dari Perkasa Jaya Marine.",
+    "tags": [
+      "2-tak",
+      "4-tak",
+      "mesin tempel",
+      "Yamaha"
+    ],
+    "image": "/images/news/2tak-4tak.jpg",
+    "imageAlt": "Ilustrasi perbedaan mesin 2-tak dan 4-tak Yamaha",
+    "content": "2-Tak: ringan, responsif, perawatan sederhana, tapi konsumsi bahan bakar dan emisi lebih tinggi.\n4-Tak: irit bahan bakar, emisi rendah, lebih halus dan cocok untuk pemakaian panjang.\n\nPilih 2-tak bila butuh bobot ringan dan akselerasi; pilih 4-tak bila butuh efisiensi dan kenyamanan."
+  },
+  {
+    "id": "panduan-ganti-oli-yamalube-2026-02-19",
+    "title": "Panduan Mengganti Oli Yamalube pada Mesin Tempel Yamaha",
+    "date": "2026-02-19",
+    "author": "Perkasa Jaya Marine",
+    "slug": "panduan-ganti-oli-yamalube-mesin-tempel",
+    "excerpt": "Langkah demi langkah mengganti oli mesin dan oli gir Yamalube untuk menjaga performa mesin tempel Yamaha Anda.",
+    "meta_title": "Panduan Ganti Oli Yamalube — Mesin Tempel Yamaha (Langkah Demi Langkah)",
+    "meta_description": "Panduan praktis mengganti oli mesin dan oli gir Yamalube untuk mesin tempel Yamaha: alat, langkah, dan rekomendasi teknis. Jaga performa mesin Anda dengan Yamalube.",
+    "tags": [
+      "yamalube",
+      "oli",
+      "perawatan",
+      "mesin tempel"
+    ],
+    "image": "/images/news/ganti-oli-yamalube.jpg",
+    "imageAlt": "Botol oli Yamalube dan alat servis mesin tempel",
+    "content": "Ganti oli berkala adalah langkah penting. Sediakan alat: kunci, wadah oli bekas, oli Yamalube sesuai spesifikasi. Panaskan mesin sebentar, buka baut penguras, tiriskan oli, isi oli baru sesuai kapasitas, dan periksa kebocoran.\n\nUntuk oli gir, buka lower unit dan ganti oli gear. Jika ragu, gunakan layanan teknisi resmi Perkasa Jaya Marine."
+  },
+  {
+    "id": "5-tips-merawat-mesin-tempel-2026-02-20",
+    "title": "5 Tips Cepat Merawat Mesin Tempel Yamaha Agar Tahan Lama",
+    "date": "2026-02-20",
+    "author": "Perkasa Jaya Marine",
+    "slug": "5-tips-merawat-mesin-tempel-yamaha",
+    "excerpt": "Ringkasan 5 langkah perawatan cepat — dari bilas air tawar setelah pakai sampai cek sistem bahan bakar — yang bisa Anda lakukan sendiri.",
+    "meta_title": "5 Tips Merawat Mesin Tempel Yamaha — Perkasa Jaya Marine",
+    "meta_description": "5 tips perawatan cepat untuk mesin tempel Yamaha: bilas air tawar, ganti oli, periksa bahan bakar, penyimpanan, dan suku cadang asli. Praktis dan mudah diikuti.",
+    "tags": [
+      "perawatan",
+      "tips",
+      "mesin tempel",
+      "Yamaha"
+    ],
+    "image": "/images/news/5-tips-merawat.jpg",
+    "imageAlt": "Teknisi melakukan perawatan mesin tempel Yamaha",
+    "content": "Praktik sederhana yang meningkatkan umur mesin: (1) Bilas mesin dengan air tawar setelah pakai di laut; (2) Ganti oli sesuai manual; (3) Periksa sistem bahan bakar; (4) Simpan di tempat kering; (5) Gunakan suku cadang asli."
+  },
+  {
+    "id": "perbandingan-model-yamaha-2026-02-20",
+    "title": "Perbandingan Model Yamaha Outboard: Pilih yang Tepat untuk Perahu Anda",
+    "date": "2026-02-20",
+    "author": "Perkasa Jaya Marine",
+    "slug": "perbandingan-model-yamaha-outboard",
+    "excerpt": "Ringkasan perbedaan utama model Yamaha (FT9.9, F25, F100, F250) dan rekomendasi penggunaan berdasarkan tipe perahu.",
+    "meta_title": "Perbandingan Model Yamaha Outboard — FT9.9, F25, F100, F250",
+    "meta_description": "Bandingkan model Yamaha Outboard dan temukan rekomendasi model terbaik untuk perahu rekreasi atau komersial. Tips memilih berdasarkan torsi, konsumsi bahan bakar, dan kebutuhan servis.",
+    "tags": [
+      "yamaha",
+      "model",
+      "perbandingan",
+      "outboard"
+    ],
+    "image": "/images/news/perbandingan-model.jpg",
+    "imageAlt": "Berbagai model mesin tempel Yamaha berjajar",
+    "content": "Model kecil (2–15 HP) cocok untuk perahu ringan dan rekreasi, 25–100 HP untuk perahu komersial ringan, dan 150+ HP untuk kapal besar. Pertimbangkan torsi, konsumsi bahan bakar, dan layanan purna jual dalam memilih model."
+  },
+  {
+    "id": "yamalube-kenapa-pilih-2026-02-20",
+    "title": "Kenapa Memilih Yamalube untuk Mesin Tempel Yamaha Anda",
+    "date": "2026-02-20",
+    "author": "Perkasa Jaya Marine",
+    "slug": "kenapa-memilih-yamalube",
+    "excerpt": "Penjelasan singkat mengapa Yamalube diformulasikan khusus untuk outboard dan manfaatnya untuk umur mesin dan kinerja.",
+    "meta_title": "Kenapa Memilih Yamalube untuk Mesin Tempel Yamaha",
+    "meta_description": "Pelajari manfaat Yamalube untuk mesin tempel Yamaha: proteksi anti-korosi, stabilitas viskositas, dan perlindungan piston. Tips memilih oli yang tepat.",
+    "tags": [
+      "yamalube",
+      "oli",
+      "mesin tempel",
+      "Yamaha"
+    ],
+    "image": "/images/news/kenapa-yamalube.jpg",
+    "imageAlt": "Kemasan oli Yamalube untuk mesin tempel Yamaha",
+    "content": "Yamalube dirancang untuk kondisi marine: proteksi anti-korosi, pencegahan piston scuffing, dan stabilitas viskositas pada perubahan suhu. Menggunakan Yamalube menjaga performa dan umur mesin."
+  }
 ]

@@ -9,7 +9,7 @@ import { translations } from '@/utils/translations';
 
 
 
-export default function NewsContent() {
+export default function NewsPage() {
     const [selectedNews, setSelectedNews] = useState(null);
     const { language } = useLanguage();
     const t = translations[language].news;
@@ -46,7 +46,7 @@ export default function NewsContent() {
                         <div className={styles.imageContainer}>
                             <Image
                                 src={item.image}
-                                alt={item.title}
+                                alt={item.header}
                                 width={400}
                                 height={300}
                                 className={styles.image}
@@ -54,9 +54,9 @@ export default function NewsContent() {
                         </div>
                         <div className={styles.content}>
                             <span className={styles.date}>{item.date}</span>
-                            <h2 className={styles.header}>{item.title}</h2>
+                            <h2 className={styles.header}>{item.header}</h2>
                             <p className={styles.summary}>
-                                {getHighlight(item.excerpt)}
+                                {getHighlight(item.details)}
                             </p>
                             <span className={styles.readMore}>
                                 {t.readMore} &rarr;
@@ -74,13 +74,13 @@ export default function NewsContent() {
 
                         <div className={styles.modalHeader}>
                             <span className={styles.date}>{selectedNews.date}</span>
-                            <h2 className={styles.modalTitle}>{selectedNews.title}</h2>
+                            <h2 className={styles.modalTitle}>{selectedNews.header}</h2>
                         </div>
 
                         <div className={styles.modalImageWrapper}>
                             <Image
                                 src={selectedNews.image}
-                                alt={selectedNews.title}
+                                alt={selectedNews.header}
                                 width={800}
                                 height={500}
                                 className={styles.modalImage}
@@ -88,7 +88,7 @@ export default function NewsContent() {
                         </div>
 
                         <div className={styles.modalBody}>
-                            {selectedNews.content.split('\n').map((line, idx) => (
+                            {selectedNews.details.split('\n').map((line, idx) => (
                                 line ? <p key={idx} className={styles.paragraph}>{line}</p> : <br key={idx} />
                             ))}
                         </div>

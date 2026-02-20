@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { sendPushoverNotification } from '@/lib/pushover';
 import { getConversation, saveConversation } from '@/lib/store';
 import { randomUUID } from 'crypto';
+import { getDynamicSystemPrompt } from '@/data/systemPrompt';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -33,7 +34,7 @@ export async function POST(req) {
     // Load server history
     const serverHistory = getConversation(sessionId);
 
-    const dynamicSystemPrompt = ""; // User will fill this in
+    const dynamicSystemPrompt = getDynamicSystemPrompt();
 
     // 4. Parse request body
     const { messages } = await req.json();

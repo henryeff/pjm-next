@@ -4,12 +4,11 @@ import Footer from '@/components/layout/Footer';
 import "./globals.css";
 
 import Providers from '@/components/Providers';
-import LocalBusiness from '@/components/Seo/LocalBusiness';
 
 export const metadata = {
   metadataBase: new URL('https://perkasajayamarine.com'),
   title: {
-    default: "Perkasa Jaya Marine - Yamaha Marine Dealer Padang (Dealer Resmi)",
+    default: "Perkasa Jaya Marine - Yamaha Marine Dealer Padang (Distributor Resmi)",
     template: "%s | Perkasa Jaya Marine",
   },
   description: "Authorized Yamaha Outboard Dealer in Padang, West Sumatra. Jual Mesin Tempel Yamaha, Suku Cadang Asli, dan Yamalube. Service Center & Spareparts Terlengkap.",
@@ -62,14 +61,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        {/* Preconnect for Google Fonts */}
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-
-        {/* Preload LCP hero image */}
-        <link rel="preload" as="image" href="https://perkasajayamarine.com/_next/image?url=%2Fimages%2Fhome3.png&w=750&q=75" fetchPriority="high" />
-
-        {/* Google Analytics - load afterInteractive for quicker capture */}
+        {/* Google Analytics */}
         <Script
           strategy="afterInteractive"
           src="https://www.googletagmanager.com/gtag/js?id=G-1LQ6YR0ST1"
@@ -80,15 +72,12 @@ export default function RootLayout({ children }) {
         >
           {`
             window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);} 
+            function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
 
             gtag('config', 'G-1LQ6YR0ST1');
           `}
         </Script>
-
-        {/* LocalBusiness JSON-LD component */}
-        <LocalBusiness />
       </head>
       <body>
         <Providers>
