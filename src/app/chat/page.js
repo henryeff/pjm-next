@@ -20,14 +20,13 @@ export default function Chat() {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
-    const handleSubmit = async (e) => {
-        e?.preventDefault();
-        if (!input.trim()) return;
+    const sendMessage = async (text) => {
+        if (!text.trim()) return;
 
         const userMessage = {
             id: Date.now().toString(),
             role: 'user',
-            content: input,
+            content: text,
         };
 
         // Update UI immediately
@@ -55,7 +54,7 @@ export default function Chat() {
 
             const decoder = new TextDecoder();
 
-            // Create a placeholer assistant message
+            // Create a placeholder assistant message
             const assistantMessageId = (Date.now() + 1).toString();
             setMessages((prev) => [
                 ...prev,
@@ -111,18 +110,24 @@ export default function Chat() {
         }
     };
 
+    const handleSubmit = (e) => {
+        e?.preventDefault();
+        sendMessage(input);
+    };
+
     const suggestedQuestions = [
-        "Apa saja produk Yamaha Marine yang tersedia?",
-        "Dimana lokasi bengkel resmi yamaha marine?",
-        "Apakah ada promo pembelian mesin tempel?",
+        "Informasi produk Yamaha Outboard Motor?",
+        "Informasi produk Yamaha Genuine Part?",
+        "Informasi produk Yamaha Yamalube?",
+        "Informasi produk Garmin?",
+        "Dimana lokasi bengkel resmi Yamaha Marine Padang?",
         "Bagaimana cara menghubungi kami?",
-        "Bagaimana cara order?"
     ];
 
     const greetings = [
-        "Halo! Saya asisten virtual Perkasa Jaya Marine.",
+        "Halo! Saya Pevita (Perkasa Jaya Marine Virtual Assistant)",
         "Selamat datang! Ada yang bisa saya bantu tentang produk Yamaha Marine?",
-        "Butuh informasi sparepart atau service? Tanyakan saja!"
+        "Tuliskan informasi yang anda butuhkan: Outboard Motor, Yamaha Geniune Part, Yamalube, Service, Garmin"
     ];
 
 
@@ -157,9 +162,7 @@ export default function Chat() {
                             {suggestedQuestions.map((q, i) => (
                                 <button
                                     key={i}
-                                    onClick={() => {
-                                        setInput(q);
-                                    }}
+                                    onClick={() => sendMessage(q)}
                                     className={styles.suggestionBtn}
                                 >
                                     {q}
