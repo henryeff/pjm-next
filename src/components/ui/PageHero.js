@@ -16,6 +16,8 @@ import styles from './PageHero.module.css';
  * children: the actions slot (buttons).
  *
  * image / imageAlt / imagePosition / imagePositionMobile: the background photo (LCP, priority).
+ * imagePositionTablet: optional object-position for 768-1023px (portrait tablets), when neither the
+ *   desktop nor the phone position frames the subject clear of the text there. Defaults to imagePosition.
  *   Phones (≤767px): a photo hero becomes a "photo band" — the photo sits across the top, fades into the
  *   navy, and the text starts below it, so type is never laid over the photo on phones. No scrim there.
  * bandHeight: phone band height (CSS length or px number). Default min(72vw, 320px).
@@ -37,6 +39,7 @@ export default function PageHero({
     imageAlt = '',
     imagePosition = '50% 50%',
     imagePositionMobile,
+    imagePositionTablet,
     bandHeight,
     scrim = 'default',
     figure,
@@ -60,7 +63,11 @@ export default function PageHero({
 
     let heroStyle;
     if (image) {
-        heroStyle = { '--pos': imagePosition, '--pos-m': imagePositionMobile || imagePosition };
+        heroStyle = {
+            '--pos': imagePosition,
+            '--pos-t': imagePositionTablet || imagePosition,
+            '--pos-m': imagePositionMobile || imagePosition,
+        };
         if (bandHeight !== undefined && bandHeight !== null && bandHeight !== '') {
             heroStyle['--band-h'] = typeof bandHeight === 'number' ? bandHeight + 'px' : bandHeight;
         }

@@ -18,7 +18,7 @@ import { Chat } from '@/components/ui/Icons';
 const COPY = {
     en: {
         heroEyebrow: 'Parts & accessories',
-        heroAlt: 'Genuine Spare Parts',
+        heroAlt: 'Close-up of machined aluminium with water droplets',
         askPart: 'Ask about a part',
         contactStore: 'Contact a store',
         chatQuery: "I'm looking for a Yamaha genuine part for my outboard.",
@@ -37,7 +37,7 @@ const COPY = {
     },
     id: {
         heroEyebrow: 'Suku cadang & aksesori',
-        heroAlt: 'Suku Cadang Asli',
+        heroAlt: 'Detail aluminium hasil mesin bubut dengan butiran air',
         askPart: 'Tanya suku cadang',
         contactStore: 'Hubungi toko',
         chatQuery: 'Saya mencari suku cadang asli Yamaha untuk mesin tempel saya.',
@@ -63,13 +63,13 @@ export default function PartsPage() {
 
     return (
         <>
-            {/* Phones: the shared photo band puts the propeller above the copy. Desktop: the strong scrim keeps
-                the headline off the bright propeller. */}
+            {/* Phones: the shared photo band puts the machined detail above the copy. Desktop: the strong scrim keeps
+                the headline on the dark side of the metal. */}
             <PageHero
-                image="/images/parts1.jpg"
+                image="/images/parts-hero-machined.jpg"
                 imageAlt={c.heroAlt}
                 imagePosition="50% 50%"
-                imagePositionMobile="20% 50%"
+                imagePositionMobile="85% 50%"
                 bandHeight="min(74vw, 320px)"
                 scrim="strong"
                 size="default"

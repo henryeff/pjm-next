@@ -19,7 +19,7 @@ import VideoFacade from '@/components/yamalube/VideoFacade';
 // Page-only labels (translations.js carries the hero, intro and product copy for this page).
 const COPY = {
     en: {
-        heroAlt: 'Yamalube oils and Yamaha genuine parts in front of a Yamaha four-stroke outboard',
+        heroAlt: 'Golden oil pouring onto brushed steel',
         askYamalube: 'Ask about Yamalube',
         findStore: 'Find a store',
         chatQuery: 'Which Yamalube oil is right for my outboard?',
@@ -49,7 +49,7 @@ const COPY = {
         ctaTitle: 'Which Yamalube is right for your engine?',
     },
     id: {
-        heroAlt: 'Oli Yamalube dan suku cadang asli Yamaha di depan mesin tempel Yamaha empat tak',
+        heroAlt: 'Oli keemasan mengalir di atas baja',
         askYamalube: 'Tanya tentang Yamalube',
         findStore: 'Cari toko',
         chatQuery: 'Oli Yamalube mana yang cocok untuk mesin tempel saya?',
@@ -235,10 +235,11 @@ export default function YamalubePage() {
     return (
         <>
             <PageHero
-                image="/images/yamalube.jpg"
+                image="/images/yamalube-hero-oil.jpg"
                 imageAlt={c.heroAlt}
-                imagePosition="82% 50%"
-                imagePositionMobile="62% 50%"
+                imagePosition="50% 50%"
+                imagePositionTablet="80% 50%"
+                imagePositionMobile="85% 50%"
                 bandHeight="min(70vw, 300px)"
                 scrim="strong"
                 size="tall"

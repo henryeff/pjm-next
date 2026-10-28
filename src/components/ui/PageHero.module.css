@@ -60,6 +60,20 @@
     }
 }
 
+/* Tablets and small laptops: the text column covers more of the photo, so the strong scrim reaches
+   further right, and photos can take their own tablet position (imagePositionTablet). */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .img {
+        object-position: var(--pos-t, var(--pos, 50% 50%));
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+    .scrimStrong .scrim {
+        background: linear-gradient(90deg, rgba(0, 20, 42, 0.95) 0%, rgba(0, 20, 42, 0.88) 45%, rgba(0, 20, 42, 0.62) 72%, rgba(0, 20, 42, 0.15) 100%);
+    }
+}
+
 @media (max-width: 767px) {
     .img {
         object-position: var(--pos-m, var(--pos, 50% 50%));
