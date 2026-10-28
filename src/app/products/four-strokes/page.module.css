@@ -1,89 +1,141 @@
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 60px 20px;
+    padding: var(--space-2xl) var(--space-md) var(--space-xl);
+}
+
+.pageHeader {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: var(--space-2xl);
+}
+
+.kicker {
+    display: block;
+    width: 56px;
+    height: 4px;
+    border-radius: var(--radius-sm);
+    background: var(--gradient-accent);
+    margin-bottom: var(--space-sm);
 }
 
 .pageTitle {
-    font-size: 3rem;
+    font-size: clamp(2.25rem, 1.6rem + 2.4vw, 3.25rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
     text-align: center;
-    margin-bottom: 24px;
+    margin-bottom: var(--space-sm);
     color: var(--primary);
 }
 
 .intro {
     text-align: center;
-    max-width: 800px;
-    margin: 0 auto 60px;
+    max-width: 760px;
+    margin: 0 auto;
     color: var(--text-muted);
     font-size: 1.15rem;
-    line-height: 1.6;
+    line-height: 1.7;
 }
 
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 30px;
+    gap: var(--space-lg);
 }
 
 .card {
-    background-color: var(--white);
-    border-radius: 10px;
+    background-color: var(--surface);
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    transition: var(--transition);
     box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
     border: 1px solid var(--border);
+    transition: transform var(--duration-base) var(--ease-out),
+        box-shadow var(--duration-base) var(--ease-out),
+        border-color var(--duration-base) var(--ease-out);
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-glow), var(--shadow-lg);
     border-color: var(--secondary);
 }
 
 .imageWrapper {
-    background-color: #ffffff;
-    padding: 30px;
+    position: relative;
+    background-color: var(--surface-alt);
+    padding: var(--space-lg);
     display: flex;
     justify-content: center;
     align-items: center;
     height: 280px;
     border-bottom: 1px solid var(--border);
+    overflow: hidden;
+}
+
+.imageWrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gradient-accent);
+    opacity: 0.04;
+    pointer-events: none;
 }
 
 .image {
+    position: relative;
+    z-index: 1;
     object-fit: contain;
     max-width: 100%;
     max-height: 100%;
+    transition: transform var(--duration-slow) var(--ease-out);
+}
+
+.card:hover .image {
+    transform: scale(1.05);
 }
 
 .content {
-    padding: 24px;
+    padding: var(--space-md);
     flex-grow: 1;
     display: flex;
     flex-direction: column;
 }
 
 .productName {
-    font-size: 1.35rem;
+    font-size: 1.3rem;
     color: var(--primary);
-    margin-bottom: 12px;
+    margin-bottom: var(--space-sm);
     font-weight: 700;
+    letter-spacing: -0.01em;
 }
 
 .specs {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
     font-size: 0.95rem;
     color: var(--text-muted);
-    margin-bottom: 24px;
+    margin-bottom: var(--space-md);
     flex-grow: 1;
+}
+
+.specIcon {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    color: var(--accent);
 }
 
 .detailsBtn {
     width: 100%;
-    display: block;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
     padding: 12px;
     background-color: transparent;
     border: 2px solid var(--secondary);
@@ -96,8 +148,56 @@
     letter-spacing: 0.5px;
 }
 
+.btnIcon {
+    width: 16px;
+    height: 16px;
+    transition: transform var(--duration-base) var(--ease-out);
+}
+
 .detailsBtn:hover {
     background-color: var(--secondary);
     color: var(--white);
-    box-shadow: 0 4px 10px rgba(230, 0, 18, 0.2);
+    box-shadow: 0 4px 10px rgba(var(--secondary-rgb), 0.25);
+}
+
+.detailsBtn:hover .btnIcon {
+    transform: translateX(3px);
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: var(--space-xl) var(--space-sm) var(--space-lg);
+    }
+
+    .pageHeader {
+        margin-bottom: var(--space-xl);
+    }
+
+    .pageTitle {
+        font-size: 2.1rem;
+    }
+
+    .intro {
+        font-size: 1.05rem;
+    }
+
+    .grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: var(--space-md);
+    }
+
+    .imageWrapper {
+        height: 220px;
+        padding: var(--space-md);
+    }
+}
+
+@media (max-width: 480px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .card:hover {
+        transform: none;
+    }
 }
