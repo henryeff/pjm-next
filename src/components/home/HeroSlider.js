@@ -8,13 +8,15 @@ import useReducedMotionSafe from '@/components/motion/useReducedMotionSafe';
 import { Pause, Play } from '@/components/ui/Icons';
 import styles from './HeroSlider.module.css';
 
-// pos = desktop object-position (engines sit right of the text); posMobile = ≤767px (engines centred).
+// pos = desktop object-position (subject sits right of the text); posMobile = ≤767px (subject centred).
 export const SLIDES = [
     { src: '/images/home2.jpg', pos: '0% 55%', posMobile: '42% 50%' },
-    { src: '/images/home3.png', pos: '0% 50%', posMobile: '47% 50%' },
+    // Slide 2's canvas was extended with plain water on the left so even the longer Indonesian
+    // headline clears the boat on 1280–1366px laptops.
+    { src: '/images/home-hero-wake.jpg', pos: '40% 50%', posMobile: '77% 50%' },
 ];
 
-// The 2.26:1 photos are cover-cropped: on phones and portrait tablets the rendered width is ~1.5× the
+// Slide 1 is 2.26:1 and slide 2 about 2.1:1; both are cover-cropped: on phones and portrait tablets the rendered width is ~1.5× the
 // hero height (see HeroSlider.module.css), so "100vw" would fetch a far too small, blurry file.
 const IMAGE_SIZES = '(max-width: 767px) 150vh, (orientation: portrait) 150vh, 100vw';
 

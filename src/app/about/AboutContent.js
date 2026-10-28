@@ -57,11 +57,11 @@ export default function AboutPage() {
 
     return (
         <>
-            {/* Phones: photo band (both cowls in frame) with the copy on solid navy below it. */}
+            {/* Phones: photo band (headland and boats in frame) with the copy on solid navy below it. */}
             <PageHero
-                image="/images/home1.jpg"
-                imagePosition="50% 40%"
-                imagePositionMobile="62% 40%"
+                image="/images/about-coast.jpg"
+                imagePosition="50% 45%"
+                imagePositionMobile="85% 45%"
                 size="default"
                 eyebrow={t.title}
                 title="Perkasa Jaya Marine"

@@ -60,10 +60,10 @@ export default function ShowcaseBand({ titleId = 'home-showcase-title' }) {
             <div className={styles.media}>
                 <motion.div className={styles.bg} style={{ y: reduce ? 0 : parallaxY }}>
                     <Image
-                        src="/images/home1.jpg"
-                        alt="Yamaha Outboard Showcase"
+                        src="/images/showcase-perahu.jpg"
+                        alt={language === 'id' ? 'Perahu kayu melaju di laut lepas pantai Padang' : 'Wooden fishing boat running off the Padang coast'}
                         fill
-                        sizes="(min-width: 1024px) 58vw, 100vw"
+                        sizes="(min-width: 1024px) 80vw, (min-width: 640px) 100vw, 135vw"
                         className={styles.img}
                     />
                 </motion.div>

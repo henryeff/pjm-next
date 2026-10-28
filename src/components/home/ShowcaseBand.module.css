@@ -67,10 +67,10 @@
     will-change: transform;
 }
 
-/* The two XTO cowls meet at the photo's centre, so 50% keeps both in every crop. */
+/* The boat sits right of centre; 62% 35% keeps the bow clear of the navy seam and gives the stern spray room in every crop. */
 .img {
     object-fit: cover;
-    object-position: 50% 35%;
+    object-position: 62% 35%;
 }
 
 /* Below 1024px: the photo fades into the navy copy over its lower part. */
