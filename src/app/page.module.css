@@ -1,231 +1,340 @@
+/* =========================================================================
+   Home — 1 Hero
+   ========================================================================= */
+
 .hero {
-  height: 85vh;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: var(--white);
-  overflow: hidden;
-  background-color: var(--black);
+    position: relative;
+    isolation: isolate;
+    height: 100vh;
+    height: 100svh;
+    min-height: 640px;
+    max-height: 980px;
+    /* Slides under the transparent navbar. */
+    margin-top: calc(-1 * var(--nav-h));
+    overflow: clip;
+    color: #fff;
+    background: var(--primary-900);
+}
+
+.scrimLeft,
+.scrimBottom {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.scrimLeft {
+    background: var(--scrim-left);
+}
+
+.scrimBottom {
+    background: linear-gradient(0deg, rgba(0, 20, 42, 0.85) 0%, rgba(0, 20, 42, 0) 45%);
+}
+
+.heroInner {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-top: calc(var(--nav-h) + 24px);
+    /* Clears the bottom rail (32px offset + 60px rail) with room to spare. */
+    padding-bottom: clamp(120px, 15vh, 148px);
 }
 
 .heroContent {
-  position: relative;
-  z-index: 10;
-  max-width: 900px;
-  padding: 0 24px;
+    max-width: 980px;
 }
 
-.title {
-  font-size: 4.5rem;
-  font-weight: 800;
-  margin-bottom: 24px;
-  color: var(--white);
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+.hero .heroTitle {
+    margin: 20px 0 0;
+    font-size: clamp(2.75rem, 1.5rem + 5.6vw, 6.75rem);
+    line-height: 0.96;
+    letter-spacing: -0.035em;
+    color: #fff;
 }
 
-.subtitle {
-  font-size: 1.25rem;
-  margin-bottom: 48px;
-  color: rgba(255, 255, 255, 0.9);
-  max-width: 640px;
-  margin-left: auto;
-  margin-right: auto;
-  font-weight: 400;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+/* LineReveal masks each line (overflow: hidden). At this tight leading the mask would trim the
+   g / j / y tails, so the inner line gets 0.06em more room below the baseline and the wrapper
+   gives it back with a negative margin: the ink and the line spacing stay exactly where they were. */
+.hero .heroTitle > span {
+    margin-bottom: -0.06em;
 }
 
-.ctaGroup {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
+.hero .heroTitle > span > span {
+    padding-bottom: 0.06em;
 }
 
-.primaryButton {
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  color: var(--white);
-  padding: 18px 36px;
-  font-weight: 600;
-  border-radius: 50px;
-  transition: var(--transition);
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  font-size: 1rem;
+.heroLead {
+    margin-top: 20px;
+    max-width: 46ch;
+    font-size: var(--fs-lead);
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.85);
 }
 
-.primaryButton:hover {
-  background-color: var(--white);
-  color: var(--primary);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  border-color: var(--white);
+.heroCtas {
+    margin-top: 36px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
 }
 
-.secondaryButton {
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  color: var(--white);
-  padding: 18px 36px;
-  font-weight: 600;
-  border-radius: 50px;
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  transition: var(--transition);
-  font-size: 1rem;
+.heroChat {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding-inline: 8px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #fff;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 4px;
 }
 
-.secondaryButton:hover {
-  background-color: var(--white);
-  color: var(--primary);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+.heroChat svg {
+    flex: none;
 }
 
-/* Featured Section */
-.featured {
-  padding: 120px 0;
-  background-color: var(--primary);
-  /* Changed to Dark Navy */
-  color: var(--white);
+@media (hover: hover) {
+    .heroChat:hover {
+        text-decoration: underline;
+    }
 }
 
-.sectionTitle {
-  font-size: 2.5rem;
-  text-align: center;
-  margin-bottom: 60px;
-  color: var(--white);
-  /* Changed to white */
-  position: relative;
-  letter-spacing: -0.02em;
+/* ---- Bottom rail: a hairline across the container with the scroll cue on the left.
+   The slide controls (HeroSlider, bottom: 32px, 44px tall) sit at its right end. ---- */
+.heroRail {
+    position: absolute;
+    z-index: 2;
+    bottom: 32px;
+    left: max(var(--gutter), calc((100% - 1280px) / 2 + var(--gutter)));
+    right: max(var(--gutter), calc((100% - 1280px) / 2 + var(--gutter)));
+    height: 60px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    pointer-events: none;
 }
 
-.sectionTitle::after {
-  content: '';
-  display: block;
-  width: 60px;
-  height: 4px;
-  background-color: var(--secondary);
-  margin: 16px auto 0;
+.hero .heroRail .scrollLabel {
+    color: rgba(255, 255, 255, 0.7);
 }
 
-.featuresDict {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 40px;
-  padding: 0 24px;
-  max-width: 1280px;
-  margin: 0 auto;
+.scrollTrack {
+    position: relative;
+    flex: none;
+    width: 56px;
+    height: 1px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.25);
 }
 
-.featureCard {
-  background-color: rgba(255, 255, 255, 0.05);
-  /* Semi-transparent white */
-  padding: 48px 32px;
-  border-radius: var(--radius-lg);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  transition: var(--transition);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  text-align: center;
+.scrollFill {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    transform-origin: left center;
+    animation: railSweep 2.2s var(--ease-out) infinite;
 }
 
-.featureCard:hover {
-  transform: translateY(-8px);
-  background-color: rgba(255, 255, 255, 0.1);
-  border-color: var(--secondary);
+/* Draws in from the left, then retracts to the right. */
+@keyframes railSweep {
+    0% {
+        transform: scaleX(0);
+        transform-origin: left center;
+    }
+
+    55% {
+        transform: scaleX(1);
+        transform-origin: left center;
+    }
+
+    56% {
+        transform: scaleX(1);
+        transform-origin: right center;
+    }
+
+    100% {
+        transform: scaleX(0);
+        transform-origin: right center;
+    }
 }
 
-.featureCard h3 {
-  color: var(--white);
-  /* Changed to white */
-  font-size: 1.5rem;
-  margin-bottom: 16px;
+@media (prefers-reduced-motion: reduce) {
+    .scrollFill {
+        animation: none;
+        transform: none;
+    }
 }
 
-.featureCard p {
-  color: rgba(255, 255, 255, 0.7);
-  /* Changed to light grey */
-  font-size: 1.05rem;
+/* Phones and portrait tablets: the photo sits in the upper part (HeroSlider), so the scrim works bottom-up. */
+@media (max-width: 767px), (max-width: 1100px) and (orientation: portrait) {
+    .scrimLeft {
+        display: none;
+    }
+
+    .scrimBottom {
+        background: var(--scrim-bottom);
+    }
 }
 
-/* Showcase Section */
-.showcase {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: 600px;
-  background-color: var(--white);
+@media (max-width: 767px) {
+    /* Leaves room for the slide controls strip below the CTAs (it has its own top hairline). */
+    .heroInner {
+        padding-bottom: 104px;
+    }
+
+    .heroRail {
+        display: none;
+    }
+
+    /* The two buttons share a row at equal widths, or stack at equal widths (no uneven 641–767px row);
+       the chat link sits centred on its own line below them. flex-basis beats .btn-block-sm's width. */
+    .heroCtas > :global(.btn) {
+        flex: 1 1 220px;
+    }
+
+    .heroChat {
+        flex: 1 1 100%;
+        justify-content: center;
+    }
 }
 
-.showcaseContent {
-  padding: 80px 60px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+/* =========================================================================
+   4 Genuine parts & Yamalube — 2-up RangeTiles
+   ========================================================================= */
+
+.more {
+    list-style: none;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
 }
 
-.showcaseTitle {
-  font-size: 3rem;
-  color: var(--primary);
-  margin-bottom: 24px;
-  letter-spacing: -0.03em;
+.moreItem {
+    min-width: 0;
 }
 
-.showcaseText {
-  font-size: 1.15rem;
-  color: var(--text-muted);
-  margin-bottom: 40px;
-  max-width: 500px;
-  line-height: 1.8;
+@media (min-width: 768px) {
+    .more {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
-.showcaseLink {
-  color: var(--primary);
-  font-weight: 600;
-  font-size: 1.1rem;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-bottom: 2px solid var(--secondary);
-  width: fit-content;
-  padding-bottom: 4px;
+@media (min-width: 1024px) {
+    .more {
+        gap: 24px;
+    }
 }
 
-.showcaseLink:hover {
-  color: var(--secondary);
-  gap: 16px;
+/* =========================================================================
+   5 Why Yamaha — full-width numbered rail
+   ========================================================================= */
+
+/* Two classes so the tighter rhythm beats the global .section padding. */
+.why:global(.section) {
+    padding-block: calc(var(--section-y) * 0.75);
 }
 
-.showcaseImage {
-  position: relative;
-  width: 100%;
-  height: 100%;
+.whyList {
+    list-style: none;
 }
 
-@media (max-width: 900px) {
-  .showcase {
-    grid-template-columns: 1fr;
-  }
-
-  .showcaseImage {
-    height: 400px;
-  }
-
-  .title {
-    font-size: 3rem;
-  }
+/* Phones and tablets: stacked rows, numeral in a 64px column. */
+.whyItem {
+    position: relative;
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    align-items: baseline;
+    padding: 24px 0;
 }
 
-@media (max-width: 768px) {
-  .ctaGroup {
-    flex-direction: column;
-    width: 100%;
-    max-width: 320px;
-    margin: 0 auto;
-  }
+.whyRule {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--hairline);
+    transform-origin: left center;
+}
 
-  .primaryButton,
-  .secondaryButton {
-    width: 100%;
-  }
+.whyNum {
+    display: block;
+    font-size: 2.25rem;
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--secondary);
+}
+
+.whyItem .whyTitle {
+    margin: 0 0 8px;
+    font-size: var(--fs-h3);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--primary);
+}
+
+.whyText {
+    max-width: 48ch;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+}
+
+/* ≥900px: three columns, each under its own hairline, numeral above the title. */
+@media (min-width: 900px) {
+    .whyList {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        column-gap: 48px;
+    }
+
+    .whyItem {
+        display: block;
+        padding: 28px 0 0;
+    }
+
+    .whyNum {
+        margin-bottom: 20px;
+        font-size: clamp(3rem, 4vw, 4.5rem);
+    }
+
+    .whyItem .whyTitle {
+        font-size: 1.375rem;
+    }
+
+    .whyText {
+        max-width: 34ch;
+    }
+}
+
+@media (max-width: 640px) {
+    /* Top-aligned (not baseline) on phones: the tall numeral would otherwise push the text down ~12px. */
+    .whyItem {
+        align-items: start;
+        padding: 20px 0;
+    }
+
+    .whyNum {
+        margin-top: -1px;
+    }
+
+    .whyItem .whyTitle {
+        margin-bottom: 4px;
+        font-size: 1.25rem;
+    }
+
+    .whyText {
+        font-size: 1rem;
+        line-height: 1.55;
+    }
 }

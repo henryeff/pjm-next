@@ -1,156 +1,216 @@
-.container {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 60px 24px;
+/* =========================================================================
+   Contact — hero actions, stores (StoreCards), message form.
+   Navy is the base, white the surface, red only for actions.
+   ========================================================================= */
+
+/* ---- Hero actions ---- */
+
+.heroActions,
+.callGroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
-.title {
-    font-size: 2.5rem;
-    text-align: center;
-    margin-bottom: 16px;
-    color: var(--primary);
+/* The three actions need ~845px (EN) / ~940px (ID); PageHero's text column is 760px. Let the row
+   run on to the container edge so they sit on one line on desktop, and wrap (call pair together)
+   below that. */
+.heroActions {
+    flex: none;
+    width: max-content;
+    max-width: calc(min(100vw, 1280px) - 2 * var(--gutter));
 }
 
-.intro {
-    text-align: center;
-    margin-bottom: 80px;
-    color: var(--text-muted);
-    font-size: 1.1rem;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
+/* ≥1024px: always one row. All three stay btn-lg (56px); between 1024 and 1279 the side padding
+   eases 32 → 28px so the Indonesian labels keep ~25px of headroom even with a classic scrollbar. */
+@media (min-width: 1024px) {
+    .heroActions,
+    .callGroup {
+        flex-wrap: nowrap;
+    }
 }
 
-.storesGrid {
+@media (min-width: 1024px) and (max-width: 1279px) {
+    .heroBtn:global(.btn-lg) {
+        padding-inline: 28px;
+    }
+}
+
+@media (max-width: 640px) {
+    /* Phones: all three stack full width. */
+    .heroActions,
+    .callGroup {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        width: 100%;
+        max-width: none;
+    }
+
+    .heroActions {
+        flex: 1 1 100%;
+    }
+
+    .callGroup {
+        flex: none;
+    }
+
+    /* Long Indonesian labels ("Telepon Perkasa Jaya Marine") may wrap on narrow phones
+       instead of pushing the page sideways. Two classes so this beats the global .btn nowrap. */
+    .heroBtn:global(.btn) {
+        white-space: normal;
+        text-align: center;
+        line-height: 1.25;
+        padding-inline: 20px;
+    }
+}
+
+/* ---- Stores section ---- */
+
+/* The compact hero already ends in its own padding, so the full --section-y (~115px at 1440) left a
+   dead band before the store cards. Same value News uses after its compact hero: 72px desktop,
+   40px phones, which pulls the header and the top of the first card further into the 1440×900 view.
+   Bottom padding stays the default. Two classes so it beats the global .section padding. */
+.storesSection:global(.section) {
+    padding-top: clamp(40px, 5vw, 72px);
+}
+
+/* ---- Message form section ---- */
+
+.formGrid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 40px;
-    margin-bottom: 100px;
+    align-items: start;
 }
 
-.storeCard {
-    background-color: var(--surface);
-    border-radius: 8px;
-    padding: 40px;
-    box-shadow: var(--shadow-md);
-    border-top: 4px solid var(--secondary);
-    /* Brand accent */
+@media (min-width: 1024px) {
+    .formGrid {
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+        gap: 48px;
+    }
 }
 
-.storeName {
-    color: var(--primary);
-    font-size: 1.5rem;
-    margin-bottom: 24px;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 16px;
+.formAside {
+    min-width: 0;
 }
 
-.detailItem {
+/* Two classes so it wins over SectionHeader's own bottom margin. */
+.formAside .formHeader {
     margin-bottom: 24px;
 }
 
-.detailItem h3 {
-    color: var(--text-main);
+.mailLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    max-width: 100%;
     font-size: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 8px;
-    font-weight: 700;
-}
-
-.detailItem p,
-.detailItem a {
-    color: var(--text-muted);
-}
-
-.detailItem a:hover {
-    color: var(--secondary);
-    text-decoration: underline;
-}
-
-.mapContainer {
-    margin-top: 24px;
-    border-radius: 4px;
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-}
-
-/* Form Section */
-.formSection {
-    max-width: 700px;
-    margin: 0 auto;
-}
-
-.formTitle {
-    text-align: center;
+    font-weight: 600;
     color: var(--primary);
-    font-size: 2rem;
-    margin-bottom: 40px;
+    overflow-wrap: anywhere;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 4px;
+    transition: text-decoration-color 0.2s;
+}
+
+.mailLink svg {
+    flex: none;
+}
+
+@media (hover: hover) {
+    .mailLink:hover {
+        text-decoration-color: currentColor;
+    }
+}
+
+/* ---- Form card ---- */
+
+.formCard {
+    min-width: 0;
+    background: #fff;
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: clamp(24px, 4vw, 40px);
 }
 
 .form {
-    background-color: var(--surface);
-    padding: 48px;
-    border-radius: 8px;
-    box-shadow: var(--shadow-lg);
-    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
-.formGroup {
-    margin-bottom: 24px;
+.row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px 16px;
 }
 
-.formGroup label {
-    display: block;
+@media (min-width: 640px) {
+    .row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.label {
     margin-bottom: 8px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: 0.01em;
     color: var(--primary);
-    font-weight: 500;
-    font-size: 0.95rem;
 }
 
 .input,
 .textarea {
+    display: block;
     width: 100%;
-    padding: 12px;
-    background-color: #f8f9fa;
-    border: 1px solid var(--border);
-    border-radius: 4px;
+    /* 16px keeps iOS Safari from zooming into the field. */
+    font-size: 16px;
     color: var(--text-main);
-    font-family: inherit;
-    transition: var(--transition);
+    background: var(--surface-alt);
+    border: 1px solid var(--hairline);
+    border-radius: 8px;
+    transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 
+.input {
+    height: 52px;
+    padding: 0 16px;
+}
+
+.textarea {
+    min-height: 160px;
+    padding: 14px 16px;
+    line-height: 1.55;
+    resize: vertical;
+}
+
+@media (hover: hover) {
+    .input:hover,
+    .textarea:hover {
+        border-color: rgba(var(--primary-rgb), 0.24);
+    }
+}
+
+/* Navy focus ring — red stays reserved for actions. */
 .input:focus,
 .textarea:focus {
+    background: #fff;
     outline: none;
-    border-color: var(--secondary);
-    background-color: var(--white);
-    box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+    border-color: transparent;
+    box-shadow: 0 0 0 2px var(--primary);
 }
 
-.submitBtn {
-    background-color: var(--primary);
-    width: 100%;
-    padding: 16px;
-    color: var(--white);
-    border: none;
-    border-radius: 4px;
-    font-weight: 600;
-    transition: var(--transition);
-    margin-top: 16px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.submitBtn:hover {
-    background-color: #001f3f;
-    /* Darker Navy */
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-}
-
-@media (max-width: 900px) {
-    .storesGrid {
-        grid-template-columns: 1fr;
-    }
+.submitRow {
+    display: flex;
+    padding-top: 4px;
 }

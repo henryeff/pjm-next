@@ -1,0 +1,110 @@
+/* One 16:9 box for both states (poster button → iframe), so nothing shifts on play. */
+.frame {
+    position: relative;
+    width: 100%;
+    max-width: 960px;
+    margin-inline: auto;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--primary);
+    isolation: isolate;
+}
+
+.button,
+.iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.iframe {
+    border: 0;
+    display: block;
+}
+
+.button {
+    display: block;
+    padding: 0;
+    border: 0;
+    border-radius: inherit;
+    background: var(--primary);
+    color: #fff;
+    cursor: pointer;
+    overflow: hidden;
+    text-align: left;
+}
+
+/* The frame clips its children and the poster/overlay layers would paint over the button's own
+   outline, so the focus ring is drawn inside the box on a pseudo-element above them. */
+.button:focus-visible {
+    outline: none;
+}
+
+.button:focus-visible::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    border-radius: inherit;
+    outline: 3px solid #fff;
+    outline-offset: -6px;
+    pointer-events: none;
+}
+
+.button:focus-visible .playIcon {
+    transform: scale(1.06);
+}
+
+.poster {
+    object-fit: cover;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: rgba(0, 20, 42, 0.45);
+    transition: background-color var(--duration-base) var(--ease-out);
+}
+
+.playIcon {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 80px;
+    height: 80px;
+    margin: -40px 0 0 -40px;
+    border-radius: 50%;
+    background: var(--secondary);
+    color: #fff;
+    box-shadow: 0 12px 32px rgba(0, 20, 42, 0.35);
+    transition: transform var(--duration-base) var(--ease-out), background-color var(--duration-fast);
+}
+
+.label {
+    position: absolute;
+    left: clamp(16px, 3vw, 28px);
+    bottom: clamp(14px, 2.6vw, 24px);
+    z-index: 2;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+    color: #fff;
+}
+
+@media (hover: hover) {
+    .button:hover .playIcon {
+        transform: scale(1.06);
+        background: var(--secondary-hover);
+    }
+
+    .button:hover .overlay {
+        background: rgba(0, 20, 42, 0.35);
+    }
+}

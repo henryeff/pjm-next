@@ -1,0 +1,70 @@
+'use client';
+
+/*
+ * MOTION LANGUAGE — Perkasa Jaya Marine ("Deep water, precise engineering")
+ * ---------------------------------------------------------------------------
+ * - One easing everywhere: EASE_OUT [0.16, 1, 0.3, 1] (CSS: var(--ease-out)).
+ * - Sections rise 24px and fade in over 0.7s, once (never replay on scroll back).
+ * - Grids stagger their children at 0.08s (StaggerGroup / StaggerItem).
+ * - Red kicker rules draw in: scaleX 0 → 1 over 0.6s (KickerLine / Eyebrow).
+ * - Editorial images reveal with a clip-path wipe plus a gentle 1.08 → 1 settle (ImageReveal).
+ * - Hover: cards lift 4px, images scale to 1.04 over 0.7s, arrows nudge 4px — only inside
+ *   @media (hover: hover).
+ * - Only the home hero loops (slides), and it always has a pause control.
+ * - The home hero's bottom-rail scroll cue is the only other loop: pure CSS, and off for reduced motion.
+ * - Numbered rails (Why Yamaha, How to get the right part): each hairline draws scaleX 0 → 1 over 0.8s,
+ *   staggered 0.1s.
+ * - ContourLines (the bathymetric signature on navy surfaces without a photo) are static — never animated.
+ * - The h1 / LCP text never starts at opacity 0 (it may slide, never fade from nothing).
+ * - LCP images use a transform-only entrance (scale 0.97 → 1), never opacity.
+ * - Above-the-fold content uses `immediate` (animate on mount) instead of waiting for in-view.
+ * - In-view trigger: top edge past 88% of the viewport (amount some, bottom margin -12%).
+ * - MotionConfig reducedMotion="user" (Providers.js) turns transform animations off for visitors
+ *   who ask for reduced motion; non-transform effects (clip-path) opt out explicitly.
+ */
+
+import { motion } from 'framer-motion';
+
+// Shared easing for a refined, physical feel across the site.
+export const EASE_OUT = [0.16, 1, 0.3, 1];
+
+// Shared motion constants so every area moves the same way.
+export const MOTION = { y: 24, duration: 0.7, stagger: 0.08, hoverLift: -4 };
+
+/**
+ * Fades and slides an element into view as it scrolls into the viewport.
+ * Animates once by default so it never replays while scrolling up/down.
+ * Pass `immediate` for above-the-fold content: it animates on mount instead of in view.
+ * The default trigger fires as soon as the block's top edge passes 88% of the viewport height,
+ * however tall the block is (a fractional `amount` could never be met by a block taller than the screen).
+ */
+export default function Reveal({
+    children,
+    className,
+    delay = 0,
+    y = MOTION.y,
+    duration = MOTION.duration,
+    once = true,
+    amount = 'some',
+    margin = '0px 0px -12% 0px',
+    as = 'div',
+    immediate = false,
+    ...rest
+}) {
+    const MotionTag = motion[as] || motion.div;
+    const trigger = immediate
+        ? { animate: { opacity: 1, y: 0 } }
+        : { whileInView: { opacity: 1, y: 0 }, viewport: { once, amount, margin } };
+
+    return (
+        <MotionTag
+            className={className}
+            initial={{ opacity: 0, y }}
+            {...trigger}
+            transition={{ duration, delay, ease: EASE_OUT }}
+            {...rest}
+        >
+            {children}
+        </MotionTag>
+    );
+}

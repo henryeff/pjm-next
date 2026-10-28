@@ -1,203 +1,327 @@
-/* CSS Modules for Yamalube Page */
-.container {
-    min-height: 100vh;
+/* Yamalube — "Deep water, precise engineering"
+ * Static hero (PageHero: photo band on phones, strong scrim on desktop) → editorial intro + range photo
+ * → product jump bar (< 1024px) + product cards with packaging tables → click-to-load video → CTA band.
+ * Red is a signal only: kicker rules, check marks, play button. */
+
+/* =========================================================================
+   Intro
+   ========================================================================= */
+
+.introGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
 }
 
-/* Hero Section */
-.heroSection {
-    position: relative;
-    height: 60vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    background-color: var(--primary);
-    overflow: hidden;
+@media (min-width: 1024px) {
+    .introGrid {
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+        gap: 64px;
+        align-items: start;
+    }
+
+    .intro .introHeader {
+        margin-bottom: 0;
+    }
 }
 
-.sliderContainer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
+.introBody {
+    min-width: 0;
 }
 
-.slide {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: opacity 1.5s ease-in-out;
-}
-
-.activeSlide {
-    opacity: 1;
-}
-
-.overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 39, 76, 0.6);
-    /* Navy/Blue overlay */
-    z-index: 2;
-}
-
-.heroContent {
-    position: relative;
-    z-index: 3;
-    padding: 0 24px;
-}
-
-.pageTitle {
-    font-size: 3.5rem;
-    color: var(--white);
-    margin-bottom: 24px;
-    font-weight: 800;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-.pageSubtitle {
-    font-size: 1.5rem;
-    color: var(--white);
-    font-weight: 400;
-    opacity: 0.9;
-}
-
-/* Content Section */
-.content {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 80px 24px;
+.introBody .introLead {
+    color: var(--primary);
+    font-weight: 500;
 }
 
 .introText {
-    text-align: center;
-    font-size: 1.1rem;
-    color: var(--text-main);
+    max-width: var(--measure);
+    margin-top: 20px;
+    font-size: 1.0625rem;
     line-height: 1.8;
-    margin-bottom: 60px;
+    color: var(--text-muted);
+    text-align: left;
 }
 
-.videoWrapper {
-    position: relative;
-    padding-bottom: 56.25%;
-    height: 0;
-    overflow: hidden;
-    border-radius: 8px;
-    box-shadow: var(--shadow-lg);
-    margin-bottom: 80px;
+/* Product range photo (already on white, so it sits straight on the page) */
+.range {
+    max-width: 1080px;
+    margin: clamp(56px, 7vw, 104px) auto 0;
 }
 
-.iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
+.rangeMedia {
     width: 100%;
-    height: 100%;
 }
 
-/* Product Sections */
-.productSection,
-.productSectionReverse {
+.rangeImg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.range .rangeCaption {
     display: flex;
-    align-items: center;
-    gap: 60px;
-    margin-bottom: 80px;
-    padding: 40px;
-    background-color: var(--surface);
-    border-radius: 8px;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border);
-    transition: var(--transition);
-}
-
-.productSectionReverse {
-    flex-direction: row-reverse;
-}
-
-.productSection:hover,
-.productSectionReverse:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--primary-light);
-}
-
-.productInfo {
-    flex: 1;
-}
-
-.productTitle {
-    font-size: 1.8rem;
-    color: var(--primary);
-    margin-bottom: 24px;
-    border-bottom: 2px solid var(--secondary);
-    padding-bottom: 12px;
-    display: inline-block;
-}
-
-.featureList {
-    list-style: none;
-    padding: 0;
-}
-
-.featureList li {
-    position: relative;
-    padding-left: 32px;
-    margin-bottom: 16px;
-    color: var(--text-main);
-    line-height: 1.6;
-}
-
-.featureList li::before {
-    content: '★';
-    position: absolute;
-    left: 0;
-    top: 2px;
-    color: var(--secondary);
-    font-size: 1.1rem;
-}
-
-.productImageWrapper {
-    flex: 0 0 320px;
-    padding: 20px;
-    display: flex;
-    align-items: center;
     justify-content: center;
-    background-color: var(--white);
-    border-radius: 8px;
-    border: 1px solid var(--border);
+    margin-top: 20px;
+    color: var(--text-muted);
+    text-align: center;
+    letter-spacing: 0.14em;
 }
 
-@media (max-width: 768px) {
-    .heroSection {
-        height: 50vh;
+/* =========================================================================
+   Products
+   ========================================================================= */
+
+.productGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+}
+
+@media (min-width: 1024px) {
+    .productGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* -------------------------------------------------------------------------
+   Jump bar — < 1024px only. The four cards stack ~4,000px tall on phones, so a row of
+   product chips jumps straight to one. Sticky under the navbar below 768px.
+   ------------------------------------------------------------------------- */
+
+.jump {
+    /* Positioned so each chip's offsetLeft is measured from this row (the scroll-spy keeps the
+       active chip in view by scrolling the row); phones override this with sticky, also positioned. */
+    position: relative;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    /* Room for the 2px + 3px focus ring inside the scroll box; the negative margin keeps the chips
+       aligned with the container edge and the visible gap to the cards at 24px. */
+    padding: 6px;
+    margin: -6px -6px 18px;
+}
+
+.jumpLink {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: 999px;
+    border: 1px solid var(--hairline);
+    background: var(--surface);
+    color: var(--primary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-decoration: none;
+    transition:
+        border-color var(--duration-fast) var(--ease-out),
+        background-color var(--duration-fast) var(--ease-out),
+        color var(--duration-fast) var(--ease-out);
+}
+
+@media (hover: hover) {
+    .jumpLink:hover {
+        border-color: rgba(0, 30, 61, 0.35);
+    }
+}
+
+/* Scroll-spy: the chip of the card currently mid-viewport (set in YamalubeContent.js).
+   After the hover rule (same specificity) so hovering the active chip keeps its navy border. */
+.jumpLink[aria-current='true'] {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+@media (pointer: coarse) {
+    .jumpLink {
+        min-height: 44px;
+    }
+}
+
+@media (max-width: 767px) {
+    .jump {
+        position: sticky;
+        /* Flush under the navbar: by the time the bar sticks the page is scrolled, and the
+           scrolled navbar is 12px shorter than --nav-h (80 → 68px, see Navbar.module.css). */
+        top: calc(var(--nav-h) - 12px);
+        z-index: 5;
+        margin: 0 calc(-1 * var(--gutter)) 24px;
+        padding: 10px var(--gutter);
+        background: var(--surface-alt);
+        border-bottom: 1px solid var(--hairline);
     }
 
-    .pageTitle {
-        font-size: 2.5rem;
+    /* Right-edge fade so a chip running off-screen reads as "scrolls" (the ID labels can end flush
+       with the edge). Sticky inside the scroller; at the scroll end it covers only empty space. */
+    .jump::after {
+        content: '';
+        position: sticky;
+        right: 0;
+        flex: none;
+        width: 24px;
+        margin-left: -8px;
+        background: linear-gradient(90deg, rgba(243, 245, 248, 0), var(--surface-alt));
+        pointer-events: none;
+    }
+}
+
+@media (min-width: 1024px) {
+    .jump {
+        display: none;
+    }
+}
+
+.card {
+    min-width: 0;
+    /* Jump-bar anchor target. html already has scroll-padding-top: var(--nav-h) (globals.css), and the two
+       add up, so this is only the gap below the navbar here; phones add the sticky bar (below). */
+    scroll-margin-top: 24px;
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: clamp(24px, 3vw, 40px);
+}
+
+@media (max-width: 767px) {
+    /* + the stuck jump bar (61px; 65px with 44px chips): the card lands ~20px below it, title in view.
+       Effective offset = --nav-h (html scroll-padding) + 72px. */
+    .card {
+        scroll-margin-top: 72px;
+    }
+}
+
+/* Two columns: each card spans four rows of .productGrid and adopts them as a subgrid, so a pair's
+   eyebrow, title, bullet list and packaging table start on the same lines (the 2-Stroke/4-Stroke and
+   GL-4/GL-5 tables line up even though their bullet lists differ in length). The card's four direct
+   children are exactly: Eyebrow span, h3, ul, table. row-gap 0 lets the parent's 24px gutters fold
+   into the tracks; the children's own margins (title 14/16px, table 24px) keep the rhythm.
+   Children (the table included) align to the top of their row: .bullets is itself a grid and would
+   otherwise stretch, spreading the shorter list's items apart. */
+@media (min-width: 1024px) {
+    .card {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        grid-row: span 4;
+        grid-template-rows: subgrid;
+        row-gap: 0;
+        align-content: start;
     }
 
-    .productSection,
-    .productSectionReverse {
-        flex-direction: column;
-        text-align: center;
-        gap: 40px;
+    .card > * {
+        align-self: start;
+    }
+}
+
+.card .cardTitle {
+    margin: 14px 0 16px;
+    font-size: var(--fs-h3);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--primary);
+}
+
+.bullets {
+    list-style: none;
+    display: grid;
+    gap: 10px;
+}
+
+.bullets li {
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr);
+    gap: 10px;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--text-muted);
+}
+
+/* Optically centred on the first line (1rem × 1.65 ≈ 26px tall). */
+.check {
+    margin-top: 4px;
+    color: var(--secondary);
+}
+
+/* Packaging table */
+.table {
+    width: 100%;
+    margin-top: 24px;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+}
+
+.table th {
+    padding: 10px 12px;
+    border-bottom: 2px solid var(--primary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: left;
+    vertical-align: bottom;
+    color: var(--primary);
+}
+
+.table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--hairline);
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-main);
+}
+
+.table tbody tr:nth-child(even) td {
+    background: var(--surface-alt);
+}
+
+.table .partNo {
+    white-space: nowrap;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+/* Phones: tighter cell padding so all three columns fit the card without scrolling. */
+@media (max-width: 480px) {
+    .table th,
+    .table td {
+        padding-inline: 8px;
+    }
+}
+
+/* Very narrow phones (≤ 360px): slimmer card padding and type so the table still fits. */
+@media (max-width: 360px) {
+    .card {
+        padding: 24px 16px;
     }
 
-    .featureList li {
-        text-align: left;
+    .table th {
+        padding-inline: 6px;
+        font-size: 0.6875rem;
+        letter-spacing: 0.04em;
     }
 
-    .productImageWrapper {
-        flex: auto;
-        width: 100%;
-        max-width: 320px;
+    .table td {
+        padding-inline: 6px;
+        font-size: 0.8125rem;
     }
+}
+
+/* =========================================================================
+   Video poster — crop yamalube2.jpg to its top-right so the caption baked into
+   the photo's lower-left never shows.
+   ========================================================================= */
+
+.videoPoster {
+    object-position: 100% 0%;
+    transform: scale(1.4);
+    transform-origin: 100% 0%;
 }

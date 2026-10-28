@@ -1,10 +1,14 @@
 import Navbar from '@/components/layout/Navbar';
 import Script from 'next/script';
+import { Montserrat } from 'next/font/google';
 import Footer from '@/components/layout/Footer';
 import "./globals.css";
 
 import Providers from '@/components/Providers';
 import LocalBusiness from '@/components/Seo/LocalBusiness';
+
+// Variable Montserrat (no weight list = full 100–900 axis), so 300 and 800 are real cuts.
+const montserrat = Montserrat({ subsets: ['latin'], display: 'swap', variable: '--font-sans' });
 
 export const metadata = {
   metadataBase: new URL('https://perkasajayamarine.com'),
@@ -60,15 +64,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={montserrat.variable}>
       <head>
-        {/* Preconnect for Google Fonts */}
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-
-        {/* Preload LCP hero image */}
-        <link rel="preload" as="image" href="https://perkasajayamarine.com/_next/image?url=%2Fimages%2Fhome3.png&w=750&q=75" fetchPriority="high" />
-
         {/* Google Analytics - load afterInteractive for quicker capture */}
         <Script
           strategy="afterInteractive"
@@ -92,8 +89,9 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <Providers>
+          <a href="#main" className="skip-link">Skip to content</a>
           <Navbar />
-          <main style={{ minHeight: '100vh' }}>
+          <main id="main" style={{ minHeight: 'calc(100svh - var(--nav-h))' }}>
             {children}
           </main>
           <Footer />

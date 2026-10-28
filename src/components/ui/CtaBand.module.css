@@ -1,0 +1,87 @@
+/* Contour lines (ContourLines) sit at z-index 0 behind the content. */
+.band {
+    position: relative;
+    overflow: clip;
+    isolation: isolate;
+    background:
+        radial-gradient(70% 120% at 15% 0%, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 60%),
+        var(--primary);
+    border-top: 1px solid var(--hairline-dark);
+}
+
+.grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+    align-items: end;
+}
+
+.text {
+    min-width: 0;
+}
+
+@media (min-width: 1024px) {
+    .grid {
+        grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    }
+
+    .side {
+        justify-self: end;
+    }
+}
+
+.band .title {
+    max-width: 20ch;
+    margin: 16px 0 0;
+    color: #fff;
+}
+
+.lead {
+    margin-top: 16px;
+}
+
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.tels {
+    list-style: none;
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 24px;
+}
+
+.tels a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.75);
+    font-variant-numeric: tabular-nums;
+}
+
+.tels svg {
+    flex: none;
+}
+
+@media (hover: hover) {
+    .tels a:hover {
+        color: #fff;
+        text-decoration: underline;
+        text-underline-offset: 4px;
+    }
+}
+
+@media (max-width: 640px) {
+    .tels {
+        flex-direction: column;
+        gap: 0;
+    }
+}

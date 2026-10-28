@@ -1,0 +1,135 @@
+/* =========================================================================
+   Showcase — editorial split: solid navy copy column + full-height photo.
+   Phones/tablets (<1024px): photo first, fading into the navy copy below it.
+   ≥1024px: copy left (its text on the site container's left edge), photo right.
+   ========================================================================= */
+
+.band {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    overflow: clip;
+    color: #fff;
+    background: var(--primary-900);
+    /* 100cqw in .copy = the band's width (the copy column lines up with the site container). */
+    container-type: inline-size;
+}
+
+/* ---- Copy column ---- */
+.copy {
+    position: relative;
+    isolation: isolate;
+    min-width: 0;
+    padding: 8px var(--gutter) 56px;
+    background: var(--primary-900);
+}
+
+/* Above the (static) ContourLines, which sit at z-index 0. */
+.copyInner {
+    position: relative;
+    z-index: 1;
+}
+
+.band .title {
+    margin: 16px 0 0;
+    font-size: clamp(2.5rem, 4vw, 4rem);
+    color: #fff;
+}
+
+.text {
+    margin-top: 16px;
+    max-width: 44ch;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 28px;
+    margin-top: 32px;
+}
+
+/* ---- Photo column ---- */
+.media {
+    position: relative;
+    order: -1;
+    height: min(64vw, 360px);
+    overflow: clip;
+}
+
+/* 48px taller than the column at both ends, so the ±40px parallax never shows an edge. */
+.bg {
+    position: absolute;
+    inset: -48px 0;
+    will-change: transform;
+}
+
+/* The boat sits right of centre; 62% 35% keeps the bow clear of the navy seam and gives the stern spray room in every crop. */
+.img {
+    object-fit: cover;
+    object-position: 62% 35%;
+}
+
+/* Below 1024px: the photo fades into the navy copy over its lower part. */
+.media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(0, 20, 42, 0) 55%, var(--primary-900) 100%);
+}
+
+@media (max-width: 640px) {
+    .actions {
+        justify-content: center;
+    }
+
+    .primaryAction {
+        width: 100%;
+    }
+}
+
+@media (min-width: 1024px) {
+    /* min-height (not height): the grid row grows instead of clipping if a long translation ever needs it. */
+    .band {
+        grid-template-columns: minmax(420px, 44%) minmax(0, 1fr);
+        min-height: clamp(520px, 72vh, 720px);
+    }
+
+    .copy {
+        grid-column: 1;
+        grid-row: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding-block: 64px;
+        padding-right: clamp(40px, 4vw, 64px);
+        padding-left: max(var(--gutter), calc((100cqw - 1280px) / 2 + var(--gutter)));
+    }
+
+    .media {
+        grid-column: 2;
+        grid-row: 1;
+        order: 0;
+        height: auto;
+    }
+
+    /* Seam: the navy column bleeds 160px into the photo, so the split reads as one surface. */
+    .media::before {
+        content: '';
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 160px;
+        z-index: 1;
+        pointer-events: none;
+        background: linear-gradient(90deg, var(--primary-900), rgba(0, 20, 42, 0));
+    }
+
+    .media::after {
+        display: none;
+    }
+}

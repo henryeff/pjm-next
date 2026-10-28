@@ -1,21 +1,41 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+/*
+ * Perkasa Jaya Marine — "Deep water, precise engineering"
+ * Navy is the canvas, white is the editorial surface, red (#e60012) is a signal only:
+ * primary buttons, eyebrows, active states and thin rules. No pink tints, no large red fills.
+ * Small red TEXT on light surfaces uses --secondary-text (#c4000f, AA-safe); --secondary stays for
+ * fills, rules, icons, arrows and buttons.
+ *
+ * Font: Montserrat (variable, 100–900) is loaded by next/font in app/layout.js and exposed as --font-sans.
+ */
 
 :root {
-  /* Refined Premium Palette */
+  /* ---- Brand palette ---- */
   --primary: #001e3d;
   /* Darker Navy */
+  --primary-rgb: 0, 30, 61;
+  --primary-light: #0a2d52;
+  --primary-dark: #000f20;
+  --primary-900: #00142a;
   --secondary: #e60012;
-  /* Brand Red */
-  --accent: #007bff;
-  /* Subtle blue accent */
+  /* Brand Red — signal only */
+  --secondary-rgb: 230, 0, 18;
+  --secondary-hover: #c4000f;
+  --secondary-text: #c4000f;
+  /* Red TEXT under 24px on light surfaces (6.2:1 on white, 5.7:1 on --surface-alt). --secondary stays for fills, rules, icons, arrows and buttons. */
+  --accent: var(--primary-light);
+  /* Retired #007bff; kept as an alias so older rules still resolve */
 
   --background: #ffffff;
   --surface: #ffffff;
-  --surface-alt: #f8f9fa;
+  --surface-alt: #f3f5f8;
+  --surface-steel: #e9edf2;
 
   --text-main: #1a1a1a;
-  --text-muted: #666666;
+  --text-muted: #5b6675;
+  --text-on-dark: rgba(255, 255, 255, 0.78);
   --border: #eaecf0;
+  --hairline: rgba(0, 30, 61, 0.10);
+  --hairline-dark: rgba(255, 255, 255, 0.14);
 
   --white: #ffffff;
   --black: #000000;
@@ -24,10 +44,55 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-glow: 0 8px 30px rgba(var(--primary-rgb), 0.12);
 
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
+  --radius-xl: 20px;
+
+  /* ---- Type scale ---- */
+  --fs-display: clamp(2.75rem, 1.2rem + 5.2vw, 5.75rem);
+  --fs-h1: clamp(2.25rem, 1.4rem + 3vw, 4rem);
+  --fs-h2: clamp(2rem, 1.3rem + 2.4vw, 3.25rem);
+  --fs-h3: 1.375rem;
+  --fs-lead: clamp(1.125rem, 1rem + 0.4vw, 1.25rem);
+  --fs-body: 1.0625rem;
+  --fs-small: 0.875rem;
+  --fs-eyebrow: 0.75rem;
+  --measure: 68ch;
+
+  /* ---- Layout ---- */
+  --section-y: clamp(64px, 8vw, 128px);
+  --gutter: clamp(16px, 4vw, 32px);
+  --nav-h: 80px;
+
+  /* ---- Surfaces ---- */
+  --stage-light: radial-gradient(120% 90% at 50% 38%, #ffffff 0%, #eef1f5 55%, #e2e7ee 100%);
+  --stage-dark: radial-gradient(120% 90% at 50% 38%, #12406f 0%, #0a2d52 38%, #001e3d 72%, #00142a 100%);
+  --scrim-left: linear-gradient(90deg, rgba(0, 20, 42, 0.92) 0%, rgba(0, 20, 42, 0.55) 50%, rgba(0, 20, 42, 0.12) 100%);
+  /* For bright photos (PageHero scrim="strong"): stays deep under the whole text column. */
+  --scrim-left-strong: linear-gradient(90deg, rgba(0, 20, 42, 0.95) 0%, rgba(0, 20, 42, 0.86) 38%, rgba(0, 20, 42, 0.45) 62%, rgba(0, 20, 42, 0.10) 100%);
+  --scrim-bottom: linear-gradient(0deg, rgba(0, 20, 42, 0.92) 0%, rgba(0, 20, 42, 0.5) 40%, rgba(0, 20, 42, 0) 75%);
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  --gradient-overlay: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(2, 12, 27, 0.75) 100%);
+  --gradient-accent: linear-gradient(90deg, var(--secondary) 0%, #ff4d5e 100%);
+
+  /* ---- Motion (mirrors MOTION / EASE_OUT in components/motion/Reveal.js) ---- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 0.2s;
+  --duration-base: 0.4s;
+  --duration-slow: 0.7s;
+
+  /* Spacing scale */
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 24px;
+  --space-lg: 40px;
+  --space-xl: 64px;
+  --space-2xl: 96px;
 }
 
 * {
@@ -36,15 +101,27 @@
   padding: 0;
 }
 
+html {
+  /* Anchor jumps land below the sticky navbar. */
+  scroll-padding-top: var(--nav-h);
+}
+
 html,
 body {
   max-width: 100vw;
-  overflow-x: hidden;
-  font-family: 'Montserrat', sans-serif;
+  /* clip (not hidden): hidden turns body into a scroll container, which breaks position: sticky. */
+  overflow-x: clip;
+  font-family: var(--font-sans), 'Montserrat', system-ui, sans-serif;
   background-color: var(--background);
   color: var(--text-main);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-size: var(--fs-body);
+  line-height: 1.65;
 }
 
 h1,
@@ -60,6 +137,16 @@ h6 {
   letter-spacing: -0.02em;
 }
 
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -73,10 +160,18 @@ button {
   background: none;
 }
 
+input,
+textarea,
+select,
+button {
+  font: inherit;
+  color: inherit;
+}
+
 .container {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding-inline: var(--gutter);
 }
 
 /* Scrollbar */
@@ -95,4 +190,356 @@ button {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* Selection & focus */
+::selection {
+  background-color: var(--secondary);
+  color: var(--white);
+}
+
+:focus-visible {
+  outline: 2px solid var(--secondary);
+  outline-offset: 3px;
+}
+
+/* Zero-specificity radius: rounds the ring on bare links/text, but never overrides a component's own radius
+   (buttons, pills and cards keep their shape when focused). */
+:where(:focus-visible) {
+  border-radius: var(--radius-sm);
+}
+
+.on-dark :focus-visible {
+  outline-color: #fff;
+}
+
+/* =========================================================================
+   Sections & dark context
+   ========================================================================= */
+
+.section {
+  padding-block: var(--section-y);
+}
+
+.section-alt {
+  background: var(--surface-alt);
+}
+
+.section-dark {
+  background: var(--primary);
+}
+
+.section-deep {
+  background: var(--primary-900);
+}
+
+.on-dark {
+  color: #fff;
+}
+
+.on-dark h1,
+.on-dark h2,
+.on-dark h3,
+.on-dark h4 {
+  color: #fff;
+}
+
+/* Text turns soft white; the ::before rule stays red. */
+.on-dark .eyebrow {
+  color: var(--text-on-dark);
+}
+
+.on-dark .lead {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.on-dark .btn-link {
+  color: #fff;
+}
+
+/* =========================================================================
+   Type
+   ========================================================================= */
+
+.display {
+  font-size: var(--fs-display);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+}
+
+.h1 {
+  font-size: var(--fs-h1);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.h2 {
+  font-size: var(--fs-h2);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.lead {
+  font-size: var(--fs-lead);
+  line-height: 1.6;
+  color: var(--text-muted);
+  max-width: 60ch;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Eyebrow: small caps label led by a short red rule. Use <Eyebrow> for the animated rule. */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: var(--fs-eyebrow);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  color: var(--secondary-text);
+}
+
+/* The rule keeps the brand red; only the text uses the AA-safe token. */
+.eyebrow::before {
+  content: '';
+  width: 24px;
+  height: 2px;
+  background: var(--secondary);
+  flex: none;
+}
+
+.eyebrow-plain::before {
+  display: none;
+}
+
+/* =========================================================================
+   Buttons — 6px radius. Pills (999px) are reserved for chips, segmented
+   controls and the language switch.
+   ========================================================================= */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: 6px;
+  border: 1.5px solid transparent;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform 0.25s var(--ease-out);
+}
+
+.btn svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  transition: transform 0.25s var(--ease-out);
+}
+
+.btn-primary {
+  background: var(--secondary);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* For light surfaces */
+.btn-outline {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* For dark or photo surfaces */
+.btn-ghost {
+  border-color: rgba(255, 255, 255, 0.7);
+  color: #fff;
+}
+
+.btn-link {
+  min-height: auto;
+  padding: 4px 0;
+  border: 0;
+  border-radius: 0;
+  color: var(--primary);
+  gap: 8px;
+}
+
+.btn-link .btn-arrow {
+  color: var(--secondary);
+}
+
+.btn-sm {
+  min-height: 40px;
+  padding: 0 16px;
+  font-size: 0.875rem;
+}
+
+.btn-lg {
+  min-height: 56px;
+  padding: 0 32px;
+  font-size: 1rem;
+}
+
+.btn-link.btn-sm,
+.btn-link.btn-lg {
+  min-height: auto;
+  padding: 4px 0;
+}
+
+@media (max-width: 640px) {
+  .btn-block-sm {
+    width: 100%;
+  }
+}
+
+.btn[disabled],
+.btn[aria-disabled='true'] {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* POLICY: every hover effect on the site — and every hover lift or scale in particular — lives inside
+   @media (hover: hover), so touch devices never get stuck hover states or jumpy taps. */
+@media (hover: hover) {
+  .btn:hover .btn-arrow {
+    transform: translateX(4px);
+  }
+
+  .btn-primary:hover,
+  .btn-secondary:hover {
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:hover {
+    background: var(--secondary-hover);
+  }
+
+  .btn-secondary:hover {
+    background: var(--primary-light);
+  }
+
+  .btn-outline:hover {
+    background: var(--primary);
+    color: #fff;
+  }
+
+  .btn-ghost:hover {
+    background: #fff;
+    color: var(--primary);
+    border-color: #fff;
+  }
+
+  .btn-link:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 4px;
+  }
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+/* =========================================================================
+   Product stages
+   ========================================================================= */
+
+.stage-light {
+  background: var(--stage-light);
+}
+
+.stage-dark {
+  background: var(--stage-dark);
+}
+
+.floor-shadow {
+  position: relative;
+  isolation: isolate;
+}
+
+.floor-shadow::after {
+  content: '';
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 7%;
+  height: 7%;
+  background: radial-gradient(closest-side, rgba(0, 20, 42, 0.30), rgba(0, 20, 42, 0));
+  z-index: -1;
+  pointer-events: none;
+}
+
+.stage-dark.floor-shadow::after {
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
+}
+
+/* =========================================================================
+   Misc utilities
+   ========================================================================= */
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -100px;
+  z-index: 2000;
+  background: #fff;
+  color: var(--primary);
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(0, 20, 42, 0.25);
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

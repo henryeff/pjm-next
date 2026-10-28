@@ -1,0 +1,216 @@
+.hero {
+    position: relative;
+    overflow: clip;
+    color: #fff;
+    background:
+        radial-gradient(60% 90% at 85% 0%, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 70%),
+        linear-gradient(160deg, var(--primary) 0%, var(--primary-900) 100%);
+    isolation: isolate;
+}
+
+/* ---- Sizes ---- */
+.compact {
+    padding: calc(var(--section-y) * 0.7) 0 calc(var(--section-y) * 0.6);
+}
+
+.default {
+    min-height: clamp(360px, 48vh, 540px);
+}
+
+.tall {
+    min-height: clamp(520px, 72vh, 760px);
+}
+
+.default,
+.tall {
+    display: flex;
+    align-items: flex-end;
+    padding-top: calc(var(--section-y) * 0.9);
+    padding-bottom: calc(var(--section-y) * 0.75);
+}
+
+/* ---- Photo variant ---- */
+.media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.img {
+    object-fit: cover;
+    object-position: var(--pos, 50% 50%);
+}
+
+.scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: var(--scrim-bottom);
+    pointer-events: none;
+}
+
+@media (min-width: 768px) {
+    .scrim {
+        background: var(--scrim-left);
+    }
+
+    /* scrim="strong": for bright photos — stays deep under the whole text column. */
+    .scrimStrong .scrim {
+        background: var(--scrim-left-strong);
+    }
+}
+
+/* Tablets and small laptops: the text column covers more of the photo, so the strong scrim reaches
+   further right, and photos can take their own tablet position (imagePositionTablet). */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .img {
+        object-position: var(--pos-t, var(--pos, 50% 50%));
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+    .scrimStrong .scrim {
+        background: linear-gradient(90deg, rgba(0, 20, 42, 0.95) 0%, rgba(0, 20, 42, 0.88) 45%, rgba(0, 20, 42, 0.62) 72%, rgba(0, 20, 42, 0.15) 100%);
+    }
+}
+
+@media (max-width: 767px) {
+    .img {
+        object-position: var(--pos-m, var(--pos, 50% 50%));
+    }
+
+    /* Phone photo band (default for every photo hero): the photo runs across the top and fades into
+       the navy; the text starts just below it, so type never sits on the photo. --band-h can be set
+       per hero with the bandHeight prop. Two classes so this beats the size padding above. */
+    .hero.hasImage {
+        --band-h: min(72vw, 320px);
+        min-height: 0;
+        display: block;
+        padding-top: calc(var(--band-h) - 40px);
+        padding-bottom: 48px;
+    }
+
+    .hasImage .media {
+        inset: 0 0 auto 0;
+        height: var(--band-h);
+        -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%);
+        mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%);
+    }
+
+    .hasImage .scrim {
+        display: none;
+    }
+}
+
+/* ---- Figure slot (product listing heroes): right-hand media, ≥1024px only ---- */
+.figure {
+    display: none;
+}
+
+@media (min-width: 1024px) {
+    .figure {
+        display: block;
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        bottom: 0;
+        right: max(var(--gutter), calc((100% - 1280px) / 2 + var(--gutter)));
+        width: min(44%, 560px);
+        pointer-events: none;
+    }
+
+    .hasFigure .content {
+        max-width: min(640px, 54%);
+    }
+
+    .hasFigure.compact {
+        min-height: 440px;
+        display: flex;
+        align-items: center;
+    }
+}
+
+/* ---- Content ---- */
+.inner {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+}
+
+.content {
+    max-width: 760px;
+}
+
+.breadcrumbs {
+    margin-bottom: 20px;
+}
+
+.breadcrumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+    list-style: none;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.breadcrumbs li {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.breadcrumbs li + li::before {
+    content: '/';
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.breadcrumbs a {
+    color: inherit;
+}
+
+.breadcrumbs [aria-current='page'] {
+    color: rgba(255, 255, 255, 0.92);
+}
+
+@media (hover: hover) {
+    .breadcrumbs a:hover {
+        color: #fff;
+        text-decoration: underline;
+        text-underline-offset: 4px;
+    }
+}
+
+.hero .title {
+    color: #fff;
+    margin: 16px 0 0;
+}
+
+.breadcrumbs + .title {
+    margin-top: 0;
+}
+
+.lead {
+    font-size: var(--fs-lead);
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.82);
+    max-width: 56ch;
+    margin-top: 20px;
+}
+
+.actions {
+    margin-top: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+@media (max-width: 640px) {
+    /* Buttons share the row on phones and go full width when they wrap. */
+    .actions > :global(.btn):not(:global(.btn-link)) {
+        flex: 1 1 auto;
+    }
+}

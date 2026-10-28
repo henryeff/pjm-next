@@ -1,201 +1,315 @@
+/* ==========================================================================
+   Bar
+   ========================================================================== */
+
 .navbar {
     position: sticky;
     top: 0;
-    width: 100%;
-    height: 80px;
-    background-color: var(--primary);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     z-index: 1000;
+    width: 100%;
+    height: var(--nav-h);
     display: flex;
     align-items: center;
+    background-color: var(--primary);
+    border-bottom: 1px solid var(--hairline-dark);
+    transition:
+        height var(--duration-base) var(--ease-out),
+        margin-bottom var(--duration-base) var(--ease-out),
+        background-color var(--duration-base) var(--ease-out),
+        box-shadow var(--duration-base) var(--ease-out),
+        border-color var(--duration-base) var(--ease-out);
+}
+
+/* Soft top scrim — only visible while the bar is transparent over the home hero. */
+.navbar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 15, 32, 0.55), rgba(0, 15, 32, 0));
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity var(--duration-base) var(--ease-out);
+}
+
+/* Scrolled: the bar shrinks 80 → 68px. The 12px goes to margin-bottom so the page below never shifts.
+   Solid navy: page content never ghosts through the bar. */
+.scrolled {
+    height: 68px;
+    margin-bottom: 12px;
+    background-color: var(--primary);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* Home only, before scrolling: the hero slides under the bar (hero uses margin-top: calc(-1 * var(--nav-h))). */
+.navbar[data-transparent='true'] {
+    background-color: transparent;
+    box-shadow: none;
+    border-bottom-color: transparent;
+}
+
+.navbar[data-transparent='true']::before {
+    opacity: 1;
 }
 
 .container {
     max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 24px;
     width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    padding-inline: var(--gutter);
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+    gap: 24px;
 }
+
+/* ==========================================================================
+   Logo
+   ========================================================================== */
 
 .logo {
     display: flex;
     align-items: center;
     gap: 12px;
+    flex: none;
+    color: #fff;
     text-decoration: none;
-    z-index: 1001;
-    /* Ensure logo stays above mobile menu */
+    transition: opacity 0.2s;
+}
+
+/* White plate so the navy arrow in the mark reads on the navy bar. */
+.logoPlate {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
 }
 
 .logoImg {
-    width: auto;
-    height: 48px;
+    width: 34px;
+    height: 34px;
     object-fit: contain;
-    /* Removed filter to show original logo colors */
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-    /* Add subtle shadow for depth */
 }
 
 .brandName {
-    font-size: 1.4rem;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    background: linear-gradient(to right, #ffffff, #e0e0e0);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    position: relative;
-    transition: all 0.3s ease;
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    color: #fff;
+    white-space: nowrap;
 }
 
-.logo:hover .brandName {
-    background: linear-gradient(to right, #ffffff, #64ffda);
-    /* White to secondary/teal hint on hover */
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    transform: scale(1.02);
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+@media (hover: hover) {
+    .logo:hover {
+        opacity: 0.85;
+    }
+}
+
+/* ==========================================================================
+   Desktop (≥1024px)
+   ========================================================================== */
+
+.desktop {
+    display: none;
 }
 
 .links {
     display: flex;
-    gap: 32px;
     align-items: center;
+    gap: 28px;
+    list-style: none;
 }
 
 .link {
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 0.95rem;
-    font-weight: 600;
     position: relative;
-    cursor: pointer;
-    padding: 8px 0;
-    transition: color 0.2s ease;
-}
-
-.link:hover {
-    color: var(--white);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 0;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    color: rgba(255, 255, 255, 0.82);
+    transition: color 0.2s;
 }
 
 .link::after {
     content: '';
     position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: 0;
     left: 0;
+    right: 0;
+    bottom: 2px;
+    height: 2px;
     background-color: var(--secondary);
-    transition: width 0.3s ease;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.3s var(--ease-out);
 }
 
-.link:hover::after {
-    width: 100%;
+.linkActive {
+    color: #fff;
 }
 
-/* Dropdown */
-.dropdown {
-    position: relative;
-    height: 100%;
+.linkActive::after {
+    transform: scaleX(1);
+}
+
+@media (hover: hover) {
+    .link:hover {
+        color: #fff;
+    }
+
+    .link:hover::after {
+        transform: scaleX(1);
+    }
+}
+
+.actions {
     display: flex;
     align-items: center;
+    gap: 16px;
 }
 
-.dropdownContent {
-    display: none;
+/* ---- Products disclosure ---- */
+
+.dropdown {
+    position: relative;
+}
+
+.dropdownBtn {
+    cursor: pointer;
+}
+
+.chevron {
+    flex: none;
+    transition: transform 0.25s var(--ease-out);
+}
+
+.chevronOpen {
+    transform: rotate(180deg);
+}
+
+/* Positioned wrapper; framer adds translateX(-50%). The top padding is a hover bridge. */
+.panelPos {
     position: absolute;
     top: 100%;
     left: 50%;
-    transform: translateX(-50%);
-    background-color: var(--white);
-    min-width: 240px;
-    box-shadow: var(--shadow-lg);
-    z-index: 100;
-    border-radius: var(--radius-md);
-    padding: 8px;
-    border: 1px solid var(--border);
-    margin-top: 15px;
+    z-index: 10;
+    padding-top: 14px;
 }
 
-.dropdownContent::after {
-    content: '';
-    position: absolute;
-    top: -15px;
-    left: 0;
-    width: 100%;
-    height: 15px;
-    background: transparent;
-}
-
-.dropdown:hover .dropdownContent {
-    display: block;
-    animation: slideUpFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.dropdownContent::before {
-    content: '';
-    position: absolute;
-    top: -6px;
-    left: 50%;
-    transform: translateX(-50%) rotate(45deg);
-    width: 12px;
-    height: 12px;
-    background-color: var(--white);
-    border-left: 1px solid var(--border);
-    border-top: 1px solid var(--border);
-}
-
-.dropdownItem {
+.panel {
+    display: grid;
+    grid-template-columns: 220px 220px;
+    gap: 8px;
+    padding: 16px;
+    background: #fff;
     color: var(--text-main);
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    font-size: 0.9rem;
-    border-radius: var(--radius-sm);
-    transition: var(--transition);
+    border-radius: 12px;
+    box-shadow: 0 24px 60px -20px rgba(0, 20, 42, 0.45);
 }
 
-.dropdownItem:hover {
-    background-color: var(--surface-alt);
-    color: var(--primary);
+/* Three classes: beats the global `.on-dark .eyebrow` colour. */
+.navbar .panel .panelHeading {
+    margin: 0;
+    padding: 8px 14px 6px;
+    color: var(--text-muted);
 }
 
-@keyframes slideUpFade {
-    from {
-        opacity: 0;
-        transform: translate(-50%, 10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translate(-50%, 0);
-    }
+.panelCol ul {
+    list-style: none;
 }
 
-/* Hamburger Menu Icon */
-.hamburger {
-    display: none;
-    flex-direction: column;
+.panelItem {
+    display: flex;
+    align-items: center;
     justify-content: space-between;
-    width: 30px;
-    height: 21px;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--primary);
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.panelArrow {
+    flex: none;
+    color: var(--secondary);
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 0.2s, transform 0.25s var(--ease-out);
+}
+
+/* Small red text on the white panel: the AA-safe text token. */
+.panelItemActive {
+    color: var(--secondary-text);
+}
+
+.panelItemActive .panelArrow,
+.panelItem:focus-visible .panelArrow {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.panelItem:focus-visible {
+    background: var(--surface-alt);
+}
+
+/* White focus ring from `.on-dark` would vanish on the white panel. */
+.navbar .panel :focus-visible {
+    outline-color: var(--secondary);
+}
+
+@media (hover: hover) {
+    .panelItem:hover {
+        background: var(--surface-alt);
+    }
+
+    .panelItem:hover .panelArrow {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ==========================================================================
+   Mobile trigger (<1024px)
+   ========================================================================== */
+
+.hamburger {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 44px;
+    height: 44px;
+    margin-right: -10px;
+    border-radius: 8px;
+    color: #fff;
     cursor: pointer;
-    z-index: 1001;
 }
 
 .bar {
-    width: 100%;
-    height: 3px;
-    background-color: var(--white);
-    border-radius: 3px;
-    transition: all 0.3s ease;
+    display: block;
+    width: 24px;
+    height: 2px;
+    background-color: currentColor;
+    border-radius: 2px;
+    transition: transform 0.3s var(--ease-out), opacity 0.2s;
 }
 
-/* Hamburger Animation */
 .bar.active:nth-child(1) {
-    transform: translateY(9px) rotate(45deg);
+    transform: translateY(7px) rotate(45deg);
 }
 
 .bar.active:nth-child(2) {
@@ -203,138 +317,195 @@
 }
 
 .bar.active:nth-child(3) {
-    transform: translateY(-9px) rotate(-45deg);
+    transform: translateY(-7px) rotate(-45deg);
 }
 
-/* Mobile Menu Container */
-.mobileMenu {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 80%;
-    height: 100vh;
-    background-color: var(--primary);
-    /* Use brand Navy */
-    padding: 100px 30px;
-    transition: all 0.4s cubic-bezier(0.77, 0.2, 0.05, 1.0);
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-}
-
-.mobileMenu.open {
-    right: 0;
-}
-
-.mobileLink {
-    color: var(--white);
-    font-size: 1.5rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    transition: color 0.3s ease;
-}
-
-.mobileLink:hover {
-    color: var(--secondary);
-    padding-left: 10px;
-    border-color: var(--secondary);
-}
-
-.mobileGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.mobileGroupTitle {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
-
-.mobileSubLink {
-    color: var(--white);
-    font-size: 1.2rem;
-    padding-left: 20px;
-    transition: color 0.3s ease;
-}
-
-.mobileSubLink:hover {
-    color: var(--secondary);
-}
-
-@media (max-width: 900px) {
-    .links {
-        display: none;
+@media (min-width: 1024px) {
+    .desktop {
+        display: flex;
+        align-items: center;
+        gap: 28px;
     }
 
     .hamburger {
-        display: flex;
-    }
-
-    .brandName {
-        font-size: 1.1rem;
-        /* Smaller text on mobile to fit */
+        display: none;
     }
 }
 
-.langSwitcher {
+/* Small laptops: tighter rhythm so the longer Indonesian labels ("Tentang Kami") stay on one line. */
+@media (min-width: 1024px) and (max-width: 1279px) {
+    .desktop,
+    .links {
+        gap: 20px;
+    }
+
+    .actions {
+        gap: 12px;
+    }
+}
+
+@media (max-width: 360px) {
+    .brandName {
+        font-size: 1rem;
+    }
+}
+
+/* ==========================================================================
+   Mobile sheet (rendered outside <nav>)
+   ========================================================================== */
+
+.backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1090;
+    background-color: rgba(0, 10, 22, 0.6);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+.mobileMenu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1100;
+    width: min(100%, 420px);
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    padding: 24px var(--gutter) calc(24px + env(safe-area-inset-bottom));
+    background-color: var(--primary);
+    box-shadow: -20px 0 60px rgba(0, 0, 0, 0.4);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+/* Lines the sheet's logo/close up with the bar's logo/hamburger (both centred at 40px). */
+.sheetTop {
     display: flex;
     align-items: center;
-    gap: 6px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 8px 16px;
-    border-radius: 50px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    margin-left: 10px;
-    backdrop-filter: blur(4px);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 56px;
+    margin: -12px 0 16px;
 }
 
-.langOption {
-    background: none;
-    border: none;
-    color: rgba(255, 255, 255, 0.6);
-    font-weight: 600;
-    font-size: 0.9rem;
+.sheetBrand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.sheetClose {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-right: -10px;
+    border-radius: 8px;
+    color: #fff;
     cursor: pointer;
-    padding: 0 4px;
-    transition: all 0.2s;
-    font-family: inherit;
 }
 
-.langOption:hover {
-    color: var(--white);
+.mobileList {
+    list-style: none;
+    border-top: 1px solid var(--hairline-dark);
 }
 
-.activeLang {
-    color: var(--white);
-    font-weight: 800;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+.mobileList li {
+    border-bottom: 1px solid var(--hairline-dark);
 }
 
-.langDivider {
-    color: rgba(255, 255, 255, 0.2);
-    font-size: 0.9rem;
-    user-select: none;
-}
-
-.mobileLangBtn {
-    background: var(--surface-alt);
-    color: var(--primary);
-    border: none;
-    padding: 12px;
-    width: 100%;
-    margin-top: 20px;
-    border-radius: 4px;
+.mobileLink {
+    display: flex;
+    align-items: center;
+    min-height: 56px;
+    font-size: 1.5rem;
     font-weight: 700;
-    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    color: #fff;
+}
+
+/* Active route: a short red rule leads the label. */
+.mobileLinkActive::before {
+    content: '';
+    flex: none;
+    width: 16px;
+    height: 2px;
+    margin-right: 12px;
+    background: var(--secondary);
+}
+
+.mobileGroup {
+    padding: 24px 0 8px;
+}
+
+.mobileGroupTitle {
+    margin: 0 0 8px;
+}
+
+.mobileGroup ul {
+    list-style: none;
+}
+
+.mobileSubLink {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.mobileSubArrow {
+    flex: none;
+    margin-left: auto;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.mobileChat {
+    width: 100%;
+    margin-top: 24px;
+}
+
+.mobileBottom {
+    margin-top: auto;
+    padding-top: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.mobileTels {
+    list-style: none;
+}
+
+.mobileTels a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+    font-variant-numeric: tabular-nums;
+}
+
+.mobileTels svg {
+    flex: none;
+}
+
+@media (hover: hover) {
+    .mobileSubLink:hover,
+    .mobileTels a:hover {
+        color: #fff;
+    }
+
+    .mobileSubLink:hover .mobileSubArrow {
+        color: var(--secondary);
+    }
 }

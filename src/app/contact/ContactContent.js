@@ -1,122 +1,159 @@
 'use client';
 
+import Link from 'next/link';
 import styles from './page.module.css';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
+import Reveal from '@/components/motion/Reveal';
+import PageHero from '@/components/ui/PageHero';
+import SectionHeader from '@/components/ui/SectionHeader';
+import StoreCards from '@/components/ui/StoreCards';
+import { STORES } from '@/components/ui/stores';
+import { Chat, Phone, Mail, Send } from '@/components/ui/Icons';
 
+const EMAIL = 'harry@pjmcv.com';
 
+// Page-only labels; the rest comes from translations[language].contact.
+const COPY = {
+    en: {
+        chat: 'Chat with Pevita',
+        call: 'Call {name}',
+        storesTitle: 'Our stores',
+        formEyebrow: 'Write to us',
+    },
+    id: {
+        chat: 'Chat dengan Pevita',
+        call: 'Telepon {name}',
+        storesTitle: 'Toko kami',
+        formEyebrow: 'Tulis pesan',
+    },
+};
+
+// Opens the visitor's email client with the message pre-filled (unchanged behaviour).
+function handleSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const name = formData.get('name');
+    const email = formData.get('email');
+    const message = formData.get('message');
+
+    const subject = `New Message from ${name} (${email})`;
+    const body = `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`;
+    const mailtoLink = `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    window.location.href = mailtoLink;
+}
 
 export default function ContactPage() {
     const { language } = useLanguage();
     const t = translations[language].contact;
+    const c = COPY[language] || COPY.en;
+    // The asterisk pointed at the old submit button; as a lead it reads as a stray footnote mark.
+    const mailNote = t.mailNote.replace(/^\*\s*/, '');
+    const heroBtn = 'btn btn-lg btn-block-sm ' + styles.heroBtn;
 
     return (
-        <div className={styles.container}>
-            <h1 className={styles.title}>{t.title}</h1>
-            <div className={styles.intro}>
-                <p>{t.intro}</p>
-            </div>
-
-            <div className={styles.storesGrid}>
-                {/* Store 1 */}
-                <div className={styles.storeCard}>
-                    <h2 className={styles.storeName}>TOKO TUNGGAL JAYA</h2>
-                    <div className={styles.storeDetails}>
-                        <div className={styles.detailItem}>
-                            <h3>{t.address}</h3>
-                            <p>Jalan M. Yamin SH No 144,<br />Padang, West Sumatera<br />Indonesia</p>
-                        </div>
-                        <div className={styles.detailItem}>
-                            <h3>{t.contactInfo}</h3>
-                            <p>Email: <a href="mailto:harry@pjmcv.com">harry@pjmcv.com</a></p>
-                            <p>Phone: +62 751 36628</p>
-                            <p>Fax: +62 751 26179</p>
-                        </div>
-                        <div className={styles.mapContainer}>
-                            <iframe
-                                title="Toko Tunggal Jaya"
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.2682573356733!2d100.35342067552749!3d-0.951420006059945!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2fd4b94a495d8d3d%3A0x2b0f9201758b4d0a!2sTunggal%20jaya%20(Mesin%20Tempel%20Yamaha)!5e0!3m2!1sen!2sus!4v1715839884194!5m2!1sen!2sus"
-                                width="100%"
-                                height="250"
-                                style={{ border: 0 }}
-                                allowFullScreen=""
-                                loading="lazy"
-                                referrerPolicy="no-referrer-when-downgrade"
-                            ></iframe>
-                        </div>
+        <>
+            {/* Compact: one sentence and three actions don't need a tall navy block — it pulls the
+                store cards and maps up toward the fold. No image, so PageHero draws ContourLines. */}
+            <PageHero size="compact" eyebrow={t.contactInfo} title={t.title} lead={t.intro}>
+                {/* The two call buttons wrap as a pair, so a store is never split onto its own row. */}
+                <div className={styles.heroActions}>
+                    <Link href="/chat" className={heroBtn + ' btn-primary'}>
+                        <Chat />
+                        {c.chat}
+                    </Link>
+                    <div className={styles.callGroup}>
+                        {STORES.map((store) => (
+                            <a key={store.id} href={store.tel} className={heroBtn + ' btn-ghost'}>
+                                <Phone />
+                                {c.call.replace('{name}', store.name)}
+                            </a>
+                        ))}
                     </div>
                 </div>
+            </PageHero>
 
-                {/* Store 2 */}
-                <div className={styles.storeCard}>
-                    <h2 className={styles.storeName}>PERKASA JAYA MARINE</h2>
-                    <div className={styles.storeDetails}>
-                        <div className={styles.detailItem}>
-                            <h3>{t.address}</h3>
-                            <p>Jalan Imam Bonjol No. 27D,<br />Padang, West Sumatera<br />Indonesia</p>
-                        </div>
-                        <div className={styles.detailItem}>
-                            <h3>{t.contactInfo}</h3>
-                            <p>Email: <a href="mailto:harry@pjmcv.com">harry@pjmcv.com</a></p>
-                            <p>Phone: +62 751 840010</p>
-                            <p>Fax: +62 751 26179</p>
-                        </div>
-                        <div className={styles.mapContainer}>
-                            <iframe
-                                title="Perkasa Jaya Marine"
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1994.6318303022213!2d100.36156940017027!3d-0.9553872098235918!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2fd4b94565e985ed%3A0xf32c9c76b6fb39c1!2sCV.%20PERKASA%20JAYA%20MARINE!5e0!3m2!1sen!2sus!4v1715840042078!5m2!1sen!2sus"
-                                width="100%"
-                                height="250"
-                                style={{ border: 0 }}
-                                allowFullScreen=""
-                                loading="lazy"
-                                referrerPolicy="no-referrer-when-downgrade"
-                            ></iframe>
-                        </div>
-                    </div>
+            <section className={'section ' + styles.storesSection} aria-labelledby="contact-stores-title">
+                <div className="container">
+                    <SectionHeader id="contact-stores-title" eyebrow={t.address} title={c.storesTitle} />
+                    <StoreCards tone="light" showMap />
                 </div>
-            </div>
+            </section>
 
-            <div className={styles.formSection}>
-                <h2 className={styles.formTitle}>{t.sendMsgTitle}</h2>
-                <form
-                    className={styles.form}
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        const formData = new FormData(e.target);
-                        const name = formData.get('name');
-                        const email = formData.get('email');
-                        const message = formData.get('message');
-
-                        // Construct mailto link
-                        const subject = `New Message from ${name} (${email})`;
-                        const body = `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`;
-                        const mailtoLink = `mailto:harry@pjmcv.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-                        window.location.href = mailtoLink;
-                    }}
-                >
-                    <div className={styles.formGroup}>
-                        <label htmlFor="name">{t.name}</label>
-                        <input type="text" id="name" name="name" className={styles.input} required />
+            <section className="section section-alt" aria-labelledby="contact-form-title">
+                <div className={'container ' + styles.formGrid}>
+                    <div className={styles.formAside}>
+                        <SectionHeader
+                            id="contact-form-title"
+                            className={styles.formHeader}
+                            eyebrow={c.formEyebrow}
+                            title={t.sendMsgTitle}
+                            lead={mailNote}
+                        />
+                        <Reveal delay={0.1}>
+                            <a href={'mailto:' + EMAIL} className={styles.mailLink}>
+                                <Mail size={20} />
+                                {EMAIL}
+                            </a>
+                        </Reveal>
                     </div>
 
-                    <div className={styles.formGroup}>
-                        <label htmlFor="email">{t.email}</label>
-                        <input type="email" id="email" name="email" className={styles.input} required />
-                    </div>
+                    <Reveal delay={0.1} className={styles.formCard}>
+                        <form className={styles.form} onSubmit={handleSubmit}>
+                            <div className={styles.row}>
+                                <div className={styles.field}>
+                                    <label htmlFor="contact-name" className={styles.label}>
+                                        {t.name}
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="contact-name"
+                                        name="name"
+                                        autoComplete="name"
+                                        className={styles.input}
+                                        required
+                                    />
+                                </div>
 
-                    <div className={styles.formGroup}>
-                        <label htmlFor="message">{t.message}</label>
-                        <textarea id="message" name="message" rows="5" className={styles.textarea} required></textarea>
-                    </div>
+                                <div className={styles.field}>
+                                    <label htmlFor="contact-email" className={styles.label}>
+                                        {t.email}
+                                    </label>
+                                    <input
+                                        type="email"
+                                        id="contact-email"
+                                        name="email"
+                                        autoComplete="email"
+                                        className={styles.input}
+                                        required
+                                    />
+                                </div>
+                            </div>
 
-                    <button type="submit" className={styles.submitBtn}>{t.sendBtn}</button>
-                    <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#666', textAlign: 'center' }}>
-                        {t.mailNote}
-                    </p>
-                </form>
-            </div>
-        </div>
+                            <div className={styles.field}>
+                                <label htmlFor="contact-message" className={styles.label}>
+                                    {t.message}
+                                </label>
+                                <textarea
+                                    id="contact-message"
+                                    name="message"
+                                    rows={6}
+                                    className={styles.textarea}
+                                    required
+                                />
+                            </div>
+
+                            <div className={styles.submitRow}>
+                                <button type="submit" className="btn btn-primary btn-lg btn-block-sm">
+                                    {t.sendBtn}
+                                    <Send className="btn-arrow" />
+                                </button>
+                            </div>
+                        </form>
+                    </Reveal>
+                </div>
+            </section>
+        </>
     );
 }

@@ -1,57 +1,174 @@
-.container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 60px 24px;
+/* About — "Deep water, precise engineering"
+   Hero (shared PageHero) → story (white) → what we offer (alt) → quote (deep navy) → stores → CTA band. */
+
+/* =========================================================================
+   Story: sticky summary (cols 1–4) + editorial copy (cols 6–12)
+   ========================================================================= */
+
+.storyGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
 }
 
-.imageWrapper {
+.storyAside {
+    min-width: 0;
+}
+
+.story .storyTitle {
+    /* A notch under .h2 so the title sets in two lines inside the narrow sticky column. */
+    font-size: clamp(2rem, 1.3rem + 1.8vw, 2.75rem);
+    margin: 16px 0 32px;
+}
+
+.pillars {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.pillar {
     display: flex;
-    justify-content: center;
-    margin-bottom: 40px;
-    padding: 20px;
-}
-
-.title {
-    font-size: 3rem;
-    text-align: center;
-    margin-bottom: 40px;
-    color: var(--primary);
-    position: relative;
-    padding-bottom: 15px;
-}
-
-.title::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 4px;
-    background-color: var(--secondary);
-    border-radius: 2px;
-}
-
-.content {
-    color: var(--text-main);
-    font-size: 1.15rem;
-    line-height: 1.9;
-    text-align: justify;
-}
-
-.content p {
-    margin-bottom: 24px;
-}
-
-.highlight {
-    margin-top: 40px;
-    text-align: center;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 0;
+    border-top: 1px solid var(--hairline);
+    font-size: 1rem;
     font-weight: 600;
-    font-size: 1.3rem;
+    line-height: 1.5;
+    color: var(--primary);
+}
+
+.pillar:last-child {
+    border-bottom: 1px solid var(--hairline);
+}
+
+/* Centre the 2px rule on the first line of text (1rem × 1.5 = 24px line). */
+.pillarRule {
+    margin-top: 11px;
+}
+
+.storyBody {
+    min-width: 0;
+}
+
+.paragraph {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: var(--text-main);
+    max-width: var(--measure);
+    text-align: left;
+    margin: 0 0 1.25em;
+}
+
+.paragraph:last-child {
+    margin-bottom: 0;
+}
+
+/* The opening paragraph reads as a lead, so the long story column has an entry point. */
+.storyBody .storyLead {
+    font-size: var(--fs-lead);
+    font-weight: 500;
+    line-height: 1.55;
+    color: var(--primary);
+}
+
+/* The closing mission paragraph carries the red signal rule. */
+.storyBody .mission {
+    border-left: 2px solid var(--secondary);
+    padding-left: 20px;
+}
+
+@media (min-width: 1024px) {
+    .storyGrid {
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        gap: 32px;
+    }
+
+    .storyAside {
+        grid-column: 1 / span 4;
+        align-self: start;
+        position: sticky;
+        top: calc(var(--nav-h) + 32px);
+    }
+
+    .storyBody {
+        grid-column: 6 / span 7;
+    }
+}
+
+/* =========================================================================
+   What we offer: three shared RangeTiles (engine on the light stage, two photos)
+   ========================================================================= */
+
+.offer {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+}
+
+/* StaggerItem owns the entrance transform; RangeTile owns its own hover lift. */
+.offerItem {
+    min-width: 0;
+}
+
+@media (min-width: 768px) {
+    .offer {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .offer {
+        gap: 24px;
+    }
+}
+
+/* =========================================================================
+   Quote band
+   ========================================================================= */
+
+.quoteBand {
+    position: relative;
+    background:
+        radial-gradient(55% 120% at 88% 0%, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 70%),
+        var(--primary-900);
+}
+
+.quoteBand .quoteInner {
+    max-width: calc(960px + 2 * var(--gutter));
+}
+
+.quoteMark {
+    display: block;
+    height: 0.42em;
+    font-size: 6rem;
+    font-weight: 800;
+    line-height: 0.8;
     color: var(--secondary);
-    padding: 30px;
-    background-color: var(--surface-alt);
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-sm);
+    margin-bottom: 20px;
+    user-select: none;
+}
+
+.quote {
+    margin: 0;
+}
+
+.quote p {
+    margin: 0;
+    max-width: 32ch;
+    font-size: clamp(1.5rem, 1rem + 1.6vw, 2.25rem);
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+    color: #fff;
+    text-wrap: balance;
+}
+
+.signoff {
+    margin-top: 32px;
+    max-width: 100%;
 }

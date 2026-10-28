@@ -1,0 +1,224 @@
+/* Grid story card — no border, no shadow. The title button's ::after is the click target. */
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+/* ---- Thumbnail ---- */
+.thumb {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--surface-steel);
+    isolation: isolate;
+}
+
+.img {
+    object-fit: cover;
+    object-position: center 30%;
+    transition:
+        transform var(--duration-slow) var(--ease-out),
+        filter 0.5s var(--ease-out);
+}
+
+/* True navy duotone for stock imagery only (shared with the featured story; see newsUtils.isDuotone).
+   The photo goes greyscale, a navy SCREEN lifts the shadows to navy, then a steel-blue MULTIPLY tints the
+   highlights: black → ~#00173a, mid-grey → ~rgb(92, 111, 134), white → #b9c7d8. Real dealership photos
+   keep their natural colour. Full colour on hover / keyboard focus. Blending stays inside .thumb (isolate). */
+.duo .img {
+    filter: grayscale(1) contrast(1.08) brightness(1.05);
+}
+
+.duo::before,
+.duo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    transition: opacity 0.5s var(--ease-out);
+}
+
+/* Shadows → navy. */
+.duo::before {
+    background: var(--primary);
+    mix-blend-mode: screen;
+    z-index: 1;
+}
+
+/* Highlights → steel blue. */
+.duo::after {
+    background: var(--duo-highlight, #b9c7d8);
+    mix-blend-mode: multiply;
+    z-index: 2;
+}
+
+/* ---- Text ---- */
+.body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.date {
+    margin-top: 16px;
+    font-variant-numeric: tabular-nums;
+}
+
+.card .title {
+    margin: 10px 0 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: var(--primary);
+}
+
+.button {
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+/* Stretch the button over the whole card. */
+.button::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: var(--radius-md);
+}
+
+.button:focus-visible {
+    outline: none;
+}
+
+.button:focus-visible::after {
+    outline: 2px solid var(--secondary);
+    outline-offset: 6px;
+}
+
+.clamp {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+    text-decoration-line: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    transition: text-decoration-color var(--duration-fast) var(--ease-out);
+}
+
+.excerpt {
+    margin-top: 8px;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+}
+
+.more {
+    margin-top: auto;
+    padding-top: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.arrow {
+    flex: none;
+    color: var(--secondary);
+    transition: transform 0.25s var(--ease-out);
+}
+
+@media (hover: hover) {
+    .card:hover .img {
+        transform: scale(1.04);
+    }
+
+    .card:hover .duo .img,
+    .card:focus-within .duo .img {
+        filter: none;
+    }
+
+    .card:hover .duo::before,
+    .card:hover .duo::after,
+    .card:focus-within .duo::before,
+    .card:focus-within .duo::after {
+        opacity: 0;
+    }
+
+    .card:hover .clamp {
+        text-decoration-color: var(--secondary);
+    }
+
+    .card:hover .arrow {
+        transform: translateX(4px);
+    }
+}
+
+/* ---- Phones: compact rows (112px thumb + date + title, no excerpt) ---- */
+@media (max-width: 639px) {
+    .card {
+        display: grid;
+        grid-template-columns: 112px minmax(0, 1fr);
+        gap: 16px;
+        align-items: center;
+        padding: 16px 0;
+        border-top: 1px solid var(--hairline);
+    }
+
+    .thumb {
+        width: 112px;
+        aspect-ratio: 1 / 1;
+    }
+
+    .body {
+        justify-content: center;
+    }
+
+    .date {
+        margin-top: 0;
+    }
+
+    .card .title {
+        margin-top: 6px;
+        font-size: 1rem;
+        line-height: 1.35;
+    }
+
+    .excerpt,
+    .more {
+        display: none;
+    }
+
+    .button::after {
+        border-radius: var(--radius-sm);
+    }
+
+    .button:focus-visible::after {
+        outline-offset: 2px;
+    }
+}
