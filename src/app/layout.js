@@ -32,7 +32,7 @@ export const metadata = {
     alternateLocale: 'en_US',
     url: 'https://perkasajayamarine.com',
     title: 'Perkasa Jaya Marine - Yamaha Marine Dealer Padang',
-    description: 'Distributor Resmi Yamaha Marine di Padang. Jual Mesin Tempel, Sparepart, dan Service. Authorized Dealer for Yamaha Outboards in West Sumatra.',
+    description: 'Dealer Resmi Yamaha Marine di Padang. Jual Mesin Tempel, Sparepart, dan Service. Authorized Dealer for Yamaha Outboards in West Sumatra.',
     siteName: 'Perkasa Jaya Marine',
     images: [
       {
