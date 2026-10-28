@@ -5,6 +5,8 @@ import Image from 'next/image';
 import styles from './page.module.css';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
+import Reveal from '@/components/motion/Reveal';
+import { StaggerGroup, StaggerItem } from '@/components/motion/Stagger';
 
 const heroImages = [
     '/images/yamalube.jpg',
@@ -12,7 +14,36 @@ const heroImages = [
     '/images/yamalube3.jpg',
 ];
 
-
+const productSections = [
+    {
+        titleKey: 'product2TTitle',
+        listKey: 'product2TList',
+        image: '/images/yamalube-2tak-info.jpg',
+        alt: 'Yamalube 2 Tak',
+        reverse: false,
+    },
+    {
+        titleKey: 'product4TTitle',
+        listKey: 'product4TList',
+        image: '/images/yamalube-4tak-info.jpg',
+        alt: 'Yamalube 4 Tak',
+        reverse: true,
+    },
+    {
+        titleKey: 'productGL4Title',
+        listKey: 'productGL4List',
+        image: '/images/yamalube-SAE90-GL-4.jpg',
+        alt: 'Yamalube GL-4',
+        reverse: false,
+    },
+    {
+        titleKey: 'productGL5Title',
+        listKey: 'productGL5List',
+        image: '/images/yamalube-SAE90-GL-5.jpg',
+        alt: 'Yamalube GL-5',
+        reverse: true,
+    },
+];
 
 export default function YamalubePage() {
     const { language } = useLanguage();
@@ -48,17 +79,22 @@ export default function YamalubePage() {
                     ))}
                 </div>
                 <div className={styles.heroContent}>
-                    <h1 className={styles.pageTitle}>{t.heroTitle}</h1>
-                    <p className={styles.pageSubtitle}>{t.heroSubtitle}</p>
+                    <Reveal as="h1" className={styles.pageTitle} delay={0.1}>
+                        {t.heroTitle}
+                    </Reveal>
+                    <span className={styles.heroDivider} aria-hidden="true" />
+                    <Reveal as="p" className={styles.pageSubtitle} delay={0.25}>
+                        {t.heroSubtitle}
+                    </Reveal>
                 </div>
             </div>
 
             <div className={styles.content}>
-                <div className={styles.introText}>
+                <Reveal as="div" className={styles.introText}>
                     <p>{t.intro1}</p>
-                </div>
+                </Reveal>
 
-                <div className={styles.videoWrapper}>
+                <Reveal as="div" className={styles.videoWrapper} delay={0.1}>
                     <iframe
                         width="100%"
                         height="100%"
@@ -68,69 +104,43 @@ export default function YamalubePage() {
                         allowFullScreen
                         className={styles.iframe}
                     ></iframe>
-                </div>
+                </Reveal>
 
-                <div className={styles.introText}>
+                <Reveal as="div" className={styles.introText}>
                     <p>{t.intro2}</p>
-                </div>
+                </Reveal>
 
                 {/* Product Sections */}
-                <div className={styles.productSection}>
-                    <div className={styles.productInfo}>
-                        <h2 className={styles.productTitle}>{t.product2TTitle}</h2>
-                        <ul className={styles.featureList}>
-                            {t.product2TList.map((item, index) => (
-                                <li key={index}>{item}</li>
-                            ))}
-                        </ul>
-                    </div>
-                    <div className={styles.productImageWrapper}>
-                        <Image src="/images/yamalube-2tak-info.jpg" alt="Yamalube 2 Tak" width={300} height={300} style={{ width: '100%', height: 'auto' }} />
-                    </div>
-                </div>
-
-                <div className={styles.productSectionReverse}>
-                    <div className={styles.productInfo}>
-                        <h2 className={styles.productTitle}>{t.product4TTitle}</h2>
-                        <ul className={styles.featureList}>
-                            {t.product4TList.map((item, index) => (
-                                <li key={index}>{item}</li>
-                            ))}
-                        </ul>
-                    </div>
-                    <div className={styles.productImageWrapper}>
-                        <Image src="/images/yamalube-4tak-info.jpg" alt="Yamalube 4 Tak" width={300} height={300} style={{ width: '100%', height: 'auto' }} />
-                    </div>
-                </div>
-
-                <div className={styles.productSection}>
-                    <div className={styles.productInfo}>
-                        <h2 className={styles.productTitle}>{t.productGL4Title}</h2>
-                        <ul className={styles.featureList}>
-                            {t.productGL4List.map((item, index) => (
-                                <li key={index}>{item}</li>
-                            ))}
-                        </ul>
-                    </div>
-                    <div className={styles.productImageWrapper}>
-                        <Image src="/images/yamalube-SAE90-GL-4.jpg" alt="Yamalube GL-4" width={300} height={300} style={{ width: '100%', height: 'auto' }} />
-                    </div>
-                </div>
-
-                <div className={styles.productSectionReverse}>
-                    <div className={styles.productInfo}>
-                        <h2 className={styles.productTitle}>{t.productGL5Title}</h2>
-                        <ul className={styles.featureList}>
-                            {t.productGL5List.map((item, index) => (
-                                <li key={index}>{item}</li>
-                            ))}
-                        </ul>
-                    </div>
-                    <div className={styles.productImageWrapper}>
-                        <Image src="/images/yamalube-SAE90-GL-5.jpg" alt="Yamalube GL-5" width={300} height={300} style={{ width: '100%', height: 'auto' }} />
-                    </div>
-                </div>
-
+                {productSections.map(({ titleKey, listKey, image, alt, reverse }) => (
+                    <Reveal
+                        key={listKey}
+                        as="section"
+                        className={reverse ? styles.productSectionReverse : styles.productSection}
+                        amount={0.15}
+                    >
+                        <div className={styles.productInfo}>
+                            <h2 className={styles.productTitle}>{t[titleKey]}</h2>
+                            <StaggerGroup as="ul" className={styles.featureList} amount={0.3}>
+                                {t[listKey].map((item, index) => (
+                                    <StaggerItem as="li" key={index}>
+                                        {item}
+                                    </StaggerItem>
+                                ))}
+                            </StaggerGroup>
+                        </div>
+                        <div className={styles.productImageWrapper}>
+                            <div className={styles.imageInner}>
+                                <Image
+                                    src={image}
+                                    alt={alt}
+                                    width={300}
+                                    height={300}
+                                    className={styles.productImage}
+                                />
+                            </div>
+                        </div>
+                    </Reveal>
+                ))}
             </div>
         </div>
     );
