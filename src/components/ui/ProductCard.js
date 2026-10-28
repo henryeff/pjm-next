@@ -13,6 +13,34 @@ const COPY = {
 };
 
 /**
+ * Model code with safe line breaks: the only preferred break is after a "/"
+ * (e.g. "F300BET/" + "FL300BET-300PK"), and the "-NNPK" suffix stays glued to
+ * the inline arrow, so a code never splits mid-token on narrow phone cards.
+ */
+function ModelName({ name }) {
+    const match = name.match(/^(.*?)(-\d+(?:\.\d+)?PK)$/i);
+    const head = match ? match[1] : name;
+    const suffix = match ? match[2] : '';
+    const parts = head.split('/');
+
+    return (
+        <>
+            {parts.map((part, i) => (
+                <span key={i}>
+                    {part}
+                    {i < parts.length - 1 && <>/<wbr /></>}
+                </span>
+            ))}
+            <span className={styles.suffix}>
+                {suffix}
+                {/* Phones: the footer row is hidden and this arrow marks the card as a link. */}
+                <ArrowRight size={14} aria-hidden="true" className={styles.inlineArrow} />
+            </span>
+        </>
+    );
+}
+
+/**
  * One engine as a single link card: lit stage + big HP numeral + model code.
  * series: 'four' | 'two' (decides the detail URL).
  * Wrap it in a StaggerItem if you want an entrance — the card's own hover lift lives on the <a>.
@@ -54,9 +82,7 @@ export default function ProductCard({
                     </p>
                 )}
                 <Heading className={styles.model}>
-                    {product.name}
-                    {/* Phones: the footer row is hidden and this arrow marks the card as a link. */}
-                    <ArrowRight size={14} aria-hidden="true" className={styles.inlineArrow} />
+                    <ModelName name={product.name} />
                 </Heading>
                 {product.tipeMesin && <p className={styles.type}>{product.tipeMesin}</p>}
 

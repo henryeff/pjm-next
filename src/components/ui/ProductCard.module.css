@@ -69,7 +69,14 @@
     text-transform: uppercase;
     letter-spacing: 0.04em;
     color: var(--primary);
-    overflow-wrap: anywhere;
+    /* Break only where ModelName allows (after a slash); a mid-code break happens
+       only if a single segment can't fit at all. */
+    overflow-wrap: break-word;
+}
+
+/* The "-NNPK" suffix and the inline arrow never split from each other. */
+.suffix {
+    white-space: nowrap;
 }
 
 .type {
