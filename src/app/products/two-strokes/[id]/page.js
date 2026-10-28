@@ -23,7 +23,20 @@ export async function generateMetadata({ params }) {
     return {
         title: `${product.name} - Yamaha 2 Stroke`,
         description: `Spesifikasi Yamaha ${product.name}. Mesin Tempel 2 Tak (Enduro). ${product.tipeMesin}. Tangguh dan Handal. Beli di Perkasa Jaya Marine Padang.`,
+        // A page-level openGraph replaces the layout's whole openGraph object, so restate the fields
+        // link previews (WhatsApp, Facebook) need alongside the engine image.
         openGraph: {
+            type: 'website',
+            locale: 'id_ID',
+            siteName: 'Perkasa Jaya Marine',
+            url: `/products/two-strokes/${product.id}`,
+            title: `Yamaha ${product.name} — Mesin Tempel 2 Tak | Perkasa Jaya Marine`,
+            description: `Spesifikasi lengkap Yamaha ${product.name}. Tanya harga dan ketersediaan di Perkasa Jaya Marine, dealer resmi Yamaha Marine di Padang.`,
+            images: [{ url: product.image, alt: `Mesin tempel Yamaha ${product.name}` }],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: `Yamaha ${product.name} — Mesin Tempel 2 Tak`,
             images: [product.image],
         },
     };

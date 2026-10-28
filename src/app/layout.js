@@ -36,10 +36,12 @@ export const metadata = {
     siteName: 'Perkasa Jaya Marine',
     images: [
       {
-        url: '/images/logo.png', // Using logo as fallback for now
-        width: 800,
-        height: 600,
-        alt: 'Perkasa Jaya Marine Logo',
+        // 1200x630 link-preview card (WhatsApp, Facebook, X, LinkedIn).
+        url: '/images/og-image.jpg',
+        width: 1200,
+        height: 630,
+        type: 'image/jpeg',
+        alt: 'Perkasa Jaya Marine — Dealer Resmi Yamaha Marine di Padang: mesin tempel, suku cadang asli dan Yamalube',
       },
     ],
   },
@@ -47,7 +49,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Perkasa Jaya Marine - Authorized Yamaha Marine Dealer',
     description: 'Authorized Yamaha Marine Dealer in Padang, West Sumatra.',
-    images: ['/images/logo.png'],
+    images: ['/images/og-image.jpg'],
   },
   robots: {
     index: true,
