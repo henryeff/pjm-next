@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
 import Reveal from '@/components/motion/Reveal';
+import ContourLines from './ContourLines';
 import Eyebrow from './Eyebrow';
 import { Chat, Phone } from './Icons';
 import { STORES } from './stores';
@@ -36,6 +37,7 @@ export default function CtaBand({ chatQuery, title, lead }) {
 
     return (
         <section className={'section on-dark ' + styles.band}>
+            <ContourLines />
             <div className={'container ' + styles.grid}>
                 <Reveal className={styles.text}>
                     <Eyebrow>{t.eyebrow}</Eyebrow>

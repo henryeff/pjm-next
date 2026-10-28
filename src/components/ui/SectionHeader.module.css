@@ -45,3 +45,13 @@
 .center .lead {
     margin-inline: auto;
 }
+
+/* Small: utility sections (stores, latest news, the home 2-up). */
+.sm {
+    margin-bottom: clamp(24px, 3vw, 40px);
+}
+
+.sm .title {
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+    letter-spacing: -0.02em;
+}

@@ -74,6 +74,7 @@ export default function LatestNews({ titleId = 'home-news-title' }) {
         <section className={'section ' + styles.news} aria-labelledby={titleId}>
             <div className="container">
                 <SectionHeader
+                    size="sm"
                     eyebrow={c.eyebrow}
                     title={tNews.title}
                     id={titleId}

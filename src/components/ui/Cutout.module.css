@@ -1,0 +1,32 @@
+/* Fills its positioned parent; callers set the breathing room with padding (e.g. padding: 10%). */
+.root {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Frame for a cropped source: it carries the file's own aspect ratio (inline style), so the
+   feathering mask lines up with the image's real edges. Fallback sizing: full height, capped width. */
+.frame {
+    position: relative;
+    display: block;
+    flex: none;
+    height: 100%;
+    max-width: 100%;
+}
+
+/* Where container units exist, size the frame to the largest box of the file's ratio that fits the
+   padded area — so the mask stays aligned even in a box narrower than the image. */
+@supports (width: 1cqw) {
+    .root {
+        container-type: size;
+    }
+
+    .frame {
+        height: auto;
+        max-width: none;
+        width: min(100cqw, 100cqh * var(--cut-ratio, 1));
+    }
+}

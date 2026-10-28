@@ -12,12 +12,28 @@
     gap: 12px;
 }
 
-/* The three actions need ~845px; PageHero's text column is 760px. Let the row run on to the
-   container edge so they sit on one line on desktop, and wrap (call pair together) below that. */
+/* The three actions need ~845px (EN) / ~940px (ID); PageHero's text column is 760px. Let the row
+   run on to the container edge so they sit on one line on desktop, and wrap (call pair together)
+   below that. */
 .heroActions {
     flex: none;
     width: max-content;
     max-width: calc(min(100vw, 1280px) - 2 * var(--gutter));
+}
+
+/* ≥1024px: always one row. All three stay btn-lg (56px); between 1024 and 1279 the side padding
+   eases 32 → 28px so the Indonesian labels keep ~25px of headroom even with a classic scrollbar. */
+@media (min-width: 1024px) {
+    .heroActions,
+    .callGroup {
+        flex-wrap: nowrap;
+    }
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+    .heroBtn:global(.btn-lg) {
+        padding-inline: 28px;
+    }
 }
 
 @media (max-width: 640px) {

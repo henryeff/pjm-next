@@ -1,0 +1,38 @@
+/* Pevita's mark — navy disc, thin red inner ring, white chat glyph. */
+
+.mark {
+    position: relative;
+    flex: none;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    box-shadow: inset 0 0 0 2px rgba(var(--secondary-rgb), 0.9);
+}
+
+.glyph {
+    display: block;
+    /* The bubble's tail sits bottom-left; nudge the glyph so it reads optically centred. */
+    transform: translate(4%, -2%);
+}
+
+/* ring: an outer white border (inside the box, so the size stays `size`) lifts the mark off a navy band. */
+.ring {
+    border: 3px solid #fff;
+    box-shadow:
+        inset 0 0 0 2px rgba(var(--secondary-rgb), 0.9),
+        0 10px 28px rgba(var(--primary-rgb), 0.28);
+}
+
+/* "Online" dot: 10px green with a 2px white border, on the lower-right edge. */
+.status {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    background: #22c55e;
+}

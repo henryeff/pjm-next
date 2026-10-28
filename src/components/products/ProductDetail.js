@@ -1,7 +1,6 @@
 'use client';
 
 import { Fragment } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
@@ -11,8 +10,9 @@ import { StaggerGroup, StaggerItem } from '@/components/motion/Stagger';
 import Eyebrow from '@/components/ui/Eyebrow';
 import SectionHeader from '@/components/ui/SectionHeader';
 import CtaBand from '@/components/ui/CtaBand';
+import Cutout from '@/components/ui/Cutout';
 import { ArrowLeft, ArrowRight, Chat, Phone } from '@/components/ui/Icons';
-import { getHp, seriesPath } from '@/components/ui/productUtils';
+import { formatSpec, getHp, seriesPath } from '@/components/ui/productUtils';
 import { MAIN_STORE, STORES } from '@/components/ui/stores';
 import styles from '@/app/products/four-strokes/[id]/page.module.css';
 
@@ -110,20 +110,51 @@ const COPY = {
 
 const hasValue = (v) => v !== undefined && v !== null && String(v).trim() !== '';
 
-/** Model names like 'F300BET/FL300BET-300PK' get a soft break after each slash. */
-function ModelName({ name }) {
-    return String(name)
-        .split('/')
-        .map((part, i) => (
-            <Fragment key={i}>
-                {i > 0 && (
-                    <>
-                        /<wbr />
-                    </>
-                )}
-                {part}
-            </Fragment>
-        ));
+// A trailing '-NNPK' (power in PK) is set apart from the model code: 'F300BET/FL300BET-300PK'.
+const SUFFIX_RE = /-(\d+(?:\.\d+)?PK)$/i;
+
+/**
+ * { main, suffix } — suffix keeps its '-' so main + suffix === name ('FT9.9LMHL' + '-9.9PK').
+ * Names without the pattern ('F250', 'F300D') get an empty suffix.
+ */
+function splitName(name) {
+    const full = String(name ?? '');
+    const m = full.match(SUFFIX_RE);
+    if (!m) return { main: full, suffix: '' };
+    return { main: full.slice(0, m.index), suffix: full.slice(m.index) };
+}
+
+/** Length of the longest '/'-separated segment of the main code (sizes the title to its column). */
+function longestSegment(name) {
+    return splitName(name)
+        .main.split('/')
+        .reduce((max, seg) => Math.max(max, seg.length), 0);
+}
+
+/**
+ * A model code that never breaks mid-code: each '/'-separated segment is unbreakable and the only
+ * wrap point is after a '/'. The '-NNPK' suffix is a designed second line (variant 'title') or a
+ * smaller muted tail on the same line (variant 'inline'). textContent always equals the name.
+ */
+function ModelName({ name, variant = 'title' }) {
+    const { main, suffix } = splitName(name);
+    return (
+        <>
+            {main.split('/').map((seg, i) => (
+                <Fragment key={i}>
+                    {i > 0 && (
+                        <>
+                            /<wbr />
+                        </>
+                    )}
+                    <span className={styles.seg}>{seg}</span>
+                </Fragment>
+            ))}
+            {suffix && (
+                <span className={variant === 'inline' ? styles.suffixInline : styles.suffix}>{suffix}</span>
+            )}
+        </>
+    );
 }
 
 function PagerCard({ item, dir, href, label }) {
@@ -137,12 +168,12 @@ function PagerCard({ item, dir, href, label }) {
         >
             <Arrow size={20} className={styles.pagerArrow} />
             <span className={'stage-light ' + styles.thumb}>
-                <Image src={item.image} alt="" fill sizes="96px" className={styles.thumbImg} />
+                <Cutout src={item.image} sizes="80px" className={styles.thumbCutout} />
             </span>
             <span className={styles.pagerText}>
                 <span className={'eyebrow eyebrow-plain ' + styles.pagerLabel}>{label}</span>
                 <span className={styles.pagerName}>
-                    <ModelName name={item.name} />
+                    <ModelName name={item.name} variant="inline" />
                 </span>
             </span>
         </Link>
@@ -168,15 +199,19 @@ export default function ProductDetail({ product, series = 'four', prev = null, n
     const askQuery = c.askQuery(product.name);
     const altStore = STORES[0];
 
+    // Values go through formatSpec, a display-only tidy-up ('5000-6000rpm' → '5000–6000 rpm').
     const stats = STAT_KEYS.filter((k) => hasValue(product[k]))
         .slice(0, 4)
-        .map((k) => ({ key: k, label: labels[k], value: product[k] }));
+        .map((k) => ({ key: k, label: labels[k], value: formatSpec(product[k]) }));
 
     const specs = SPEC_KEYS.filter((k) => hasValue(product[k])).map((k) => ({
         key: k,
         label: labels[k],
-        value: product[k],
+        value: formatSpec(product[k]),
     }));
+
+    // The title scales to its column by the longest unbreakable segment (min 6 so short codes stay large).
+    const titleChars = Math.max(6, longestSegment(product.name));
 
     return (
         <>
@@ -191,9 +226,7 @@ export default function ProductDetail({ product, series = 'four', prev = null, n
                             <Link href={listHref}>{seriesLabel}</Link>
                         </li>
                         <li>
-                            <span aria-current="page">
-                                <ModelName name={product.name} />
-                            </span>
+                            <span aria-current="page">{product.name}</span>
                         </li>
                     </ol>
                 </nav>
@@ -202,42 +235,47 @@ export default function ProductDetail({ product, series = 'four', prev = null, n
             {/* ---- Stage + summary ---- */}
             <section className={styles.hero}>
                 <div className={'container ' + styles.heroGrid}>
-                    {/* Reveal on mount (not in view), settling from 0.96 instead of rising. */}
-                    <Reveal
-                        immediate
-                        y={0}
-                        duration={0.9}
-                        initial={{ opacity: 0, scale: 0.96 }}
-                        animate={{ opacity: 1, scale: 1 }}
+                    {/* The engine is the LCP: it settles from 0.97 on mount but is never hidden (no opacity). */}
+                    <motion.div
                         className={styles.stageCol}
+                        initial={{ scale: 0.97 }}
+                        animate={{ scale: 1 }}
+                        transition={{ duration: 0.9, ease: EASE_OUT }}
                     >
                         <div className={'stage-dark floor-shadow ' + styles.stage}>
                             {hp && (
-                                <span className={styles.watermark} aria-hidden="true">
+                                <motion.span
+                                    className={'tabular ' + styles.watermark}
+                                    aria-hidden="true"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ duration: 1.2, ease: EASE_OUT, delay: 0.2 }}
+                                >
                                     {hp}
-                                </span>
+                                </motion.span>
                             )}
-                            <Image
+                            <Cutout
                                 src={product.image}
                                 alt={product.name}
-                                fill
                                 priority
+                                fetchPriority="high"
                                 sizes="(max-width: 1024px) 100vw, 58vw"
-                                className={styles.stageImg}
+                                className={styles.stageCutout}
                             />
                         </div>
-                    </Reveal>
+                    </motion.div>
 
                     <div className={styles.info}>
                         <Eyebrow immediate>{c.eyebrow[key]}</Eyebrow>
 
                         <motion.h1
                             className={'h1 ' + styles.title}
+                            style={{ '--chars': String(titleChars) }}
                             initial={{ y: 16 }}
                             animate={{ y: 0 }}
                             transition={{ duration: 0.8, ease: EASE_OUT }}
                         >
-                            <ModelName name={product.name} />
+                            <ModelName name={product.name} variant="title" />
                         </motion.h1>
 
                         <Reveal immediate delay={0.1} y={12}>

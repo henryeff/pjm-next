@@ -38,21 +38,20 @@
     pointer-events: none;
 }
 
-/* Huge, faint HP numeral behind the engine. */
+/* Huge, faint HP numeral behind the engine. It sits high, so the top half of the digits reads
+   above and around the cowls (whose cropped top edge is feathered by Cutout). */
 .watermark {
     position: absolute;
     inset: 0;
     display: grid;
-    /* Low in the stage, where the engine narrows to its legs, so the numeral reads around them. */
-    place-items: end center;
-    padding-bottom: 2%;
-    font-size: clamp(10rem, 22vw, 20rem);
+    place-items: start center;
+    font-size: clamp(12rem, 26vw, 24rem);
     font-weight: 800;
-    line-height: 1;
+    line-height: 0.8;
     letter-spacing: -0.05em;
     font-variant-numeric: tabular-nums;
-    color: #fff;
-    opacity: 0.06;
+    color: rgba(255, 255, 255, 0.06);
+    transform: translateY(-6%);
     pointer-events: none;
     user-select: none;
     white-space: nowrap;
@@ -76,10 +75,6 @@
     bottom: -1%;
     height: 7%;
     background: radial-gradient(closest-side, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
-}
-
-.img {
-    object-fit: contain;
 }
 
 /* ---- Copy ---- */

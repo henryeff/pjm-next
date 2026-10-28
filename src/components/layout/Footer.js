@@ -8,19 +8,17 @@ import { translations } from '@/utils/translations';
 import Reveal from '@/components/motion/Reveal';
 import LangSwitch from '@/components/ui/LangSwitch';
 import { STORES } from '@/components/ui/stores';
-import { Chat, Phone, ExternalLink } from '@/components/ui/Icons';
+import { Phone, ExternalLink } from '@/components/ui/Icons';
 
 const COPY = {
     en: {
         tagline: 'Your trusted Yamaha Marine dealer in Padang. Providing sales, service, and spare parts.',
-        chat: 'Chat with Pevita',
         directions: 'Directions',
         company: 'Company',
         rights: 'All rights reserved.',
     },
     id: {
         tagline: 'Dealer Yamaha Marine terpercaya Anda di Padang. Melayani penjualan, servis, dan suku cadang.',
-        chat: 'Chat dengan Pevita',
         directions: 'Petunjuk arah',
         company: 'Perusahaan',
         rights: 'Hak cipta dilindungi.',
@@ -49,6 +47,7 @@ const Footer = () => {
     return (
         <footer className={'on-dark ' + styles.footer}>
             <div className="container">
+                {/* Logo + tagline only: the chat CTA lives in the CtaBand right above, the navbar and the Company list. */}
                 <Reveal className={styles.brandRow}>
                     <div className={styles.brand}>
                         <Link href="/" className={styles.logo}>
@@ -59,10 +58,6 @@ const Footer = () => {
                         </Link>
                         <p className={styles.tagline}>{c.tagline}</p>
                     </div>
-                    <Link href="/chat" className={'btn btn-primary ' + styles.cta}>
-                        <Chat />
-                        {c.chat}
-                    </Link>
                 </Reveal>
 
                 <div className={styles.divider} />

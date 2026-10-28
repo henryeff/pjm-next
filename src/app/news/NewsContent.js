@@ -88,6 +88,8 @@ export default function NewsContent() {
 
             <div className={'section ' + styles.page}>
                 <div className="container">
+                    {/* Text-first: the headline is the on-topic part. ≥1024px the body leads (7fr) and the
+                        duotone photo sits beside it (5fr); below that the photo comes first. */}
                     {FEATURED && (
                         <article id={FEATURED.id} className={styles.featured}>
                             <ImageReveal immediate className={styles.featuredMedia}>
@@ -96,7 +98,7 @@ export default function NewsContent() {
                                     alt={FEATURED.title}
                                     fill
                                     priority
-                                    sizes="(min-width: 1280px) 690px, (min-width: 1024px) 56vw, (min-width: 768px) 48vw, 100vw"
+                                    sizes="(min-width: 1280px) 500px, (min-width: 1024px) 40vw, 100vw"
                                     className={styles.featuredImg}
                                 />
                                 <span className={styles.featuredShade} aria-hidden="true" />

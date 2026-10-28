@@ -27,3 +27,35 @@ export function hpBucket(hp) {
 export function seriesPath(series) {
     return series === 'two' ? '/products/two-strokes' : '/products/four-strokes';
 }
+
+/**
+ * Display-only tidy-up of a spec value (the data is never changed): en dash in numeric ranges and a
+ * thin gap before a trailing unit. '5000-6000rpm' → '5000–6000 rpm'; '47-50kg' → '47–50 kg';
+ * '212cc' → '212 cc'; '3.9l/h' → '3.9 l/h'.
+ */
+export function formatSpec(value) {
+    if (value === null || value === undefined) return '';
+    return String(value)
+        .trim()
+        .replace(/(\d)\s*-\s*(\d)/g, '$1–$2')
+        .replace(/(\d)\s*(cc|rpm|kg|mm|l\/h)$/i, '$1 $2');
+}
+
+/** The highest-HP product in a list (first one wins a tie), or null for an empty list. */
+export function topModel(list) {
+    if (!Array.isArray(list) || list.length === 0) return null;
+    const hpOf = (p) => {
+        const n = Number(getHp(p && p.name));
+        return Number.isNaN(n) ? 0 : n;
+    };
+    let best = list[0];
+    let bestHp = hpOf(best);
+    for (let i = 1; i < list.length; i++) {
+        const hp = hpOf(list[i]);
+        if (hp > bestHp) {
+            best = list[i];
+            bestHp = hp;
+        }
+    }
+    return best;
+}

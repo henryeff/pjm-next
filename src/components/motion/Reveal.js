@@ -11,7 +11,12 @@
  * - Hover: cards lift 4px, images scale to 1.04 over 0.7s, arrows nudge 4px — only inside
  *   @media (hover: hover).
  * - Only the home hero loops (slides), and it always has a pause control.
+ * - The home hero's bottom-rail scroll cue is the only other loop: pure CSS, and off for reduced motion.
+ * - Numbered rails (Why Yamaha, How to get the right part): each hairline draws scaleX 0 → 1 over 0.8s,
+ *   staggered 0.1s.
+ * - ContourLines (the bathymetric signature on navy surfaces without a photo) are static — never animated.
  * - The h1 / LCP text never starts at opacity 0 (it may slide, never fade from nothing).
+ * - LCP images use a transform-only entrance (scale 0.97 → 1), never opacity.
  * - Above-the-fold content uses `immediate` (animate on mount) instead of waiting for in-view.
  * - MotionConfig reducedMotion="user" (Providers.js) turns transform animations off for visitors
  *   who ask for reduced motion; non-transform effects (clip-path) opt out explicitly.

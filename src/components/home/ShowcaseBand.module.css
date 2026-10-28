@@ -25,7 +25,8 @@
     inset: 0;
     z-index: 1;
     pointer-events: none;
-    background: linear-gradient(90deg, rgba(0, 20, 42, 0.75) 0%, rgba(0, 20, 42, 0.2) 60%, rgba(0, 20, 42, 0) 100%);
+    /* The page's one breath of daylight: the scrim only backs the panel; the right half is untinted. */
+    background: linear-gradient(90deg, rgba(0, 20, 42, 0.75) 0%, rgba(0, 20, 42, 0) 55%);
 }
 
 .inner {
@@ -36,15 +37,13 @@
     align-items: center;
 }
 
-/* ---- Glass panel ---- */
+/* ---- Solid panel (no backdrop blur: it sits over a layer that moves on every scroll frame) ---- */
 .panel {
     max-width: 520px;
     padding: 40px;
     border-radius: 12px;
     border: 1px solid var(--hairline-dark);
-    background: rgba(0, 20, 42, 0.72);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
+    background: rgba(0, 20, 42, 0.86);
 }
 
 .band .title {
@@ -79,7 +78,7 @@
     }
 
     .scrim {
-        background: linear-gradient(0deg, rgba(0, 20, 42, 0.7) 0%, rgba(0, 20, 42, 0.15) 60%, rgba(0, 20, 42, 0) 100%);
+        background: linear-gradient(0deg, rgba(0, 20, 42, 0.6) 0%, rgba(0, 20, 42, 0) 50%);
     }
 
     .inner {

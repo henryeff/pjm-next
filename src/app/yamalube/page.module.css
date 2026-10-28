@@ -1,6 +1,7 @@
 /* Yamalube — "Deep water, precise engineering"
- * Static hero (PageHero) → editorial intro + range photo → product cards with packaging tables
- * → click-to-load video → CTA band. Red is a signal only: kicker rules, check marks, play button. */
+ * Static hero (PageHero: photo band on phones, strong scrim on desktop) → editorial intro + range photo
+ * → product jump bar (< 1024px) + product cards with packaging tables → click-to-load video → CTA band.
+ * Red is a signal only: kicker rules, check marks, play button. */
 
 /* =========================================================================
    Intro
@@ -82,12 +83,101 @@
     }
 }
 
+/* -------------------------------------------------------------------------
+   Jump bar — < 1024px only. The four cards stack ~4,000px tall on phones, so a row of
+   product chips jumps straight to one. Sticky under the navbar below 768px.
+   ------------------------------------------------------------------------- */
+
+.jump {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    /* Room for the 2px + 3px focus ring inside the scroll box; the negative margin keeps the chips
+       aligned with the container edge and the visible gap to the cards at 24px. */
+    padding: 6px;
+    margin: -6px -6px 18px;
+}
+
+.jumpLink {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: 999px;
+    border: 1px solid var(--hairline);
+    background: var(--surface);
+    color: var(--primary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+@media (hover: hover) {
+    .jumpLink:hover {
+        border-color: rgba(0, 30, 61, 0.35);
+    }
+}
+
+@media (pointer: coarse) {
+    .jumpLink {
+        min-height: 44px;
+    }
+}
+
+@media (max-width: 767px) {
+    .jump {
+        position: sticky;
+        /* Flush under the navbar: by the time the bar sticks the page is scrolled, and the
+           scrolled navbar is 12px shorter than --nav-h (80 → 68px, see Navbar.module.css). */
+        top: calc(var(--nav-h) - 12px);
+        z-index: 5;
+        margin: 0 calc(-1 * var(--gutter)) 24px;
+        padding: 10px var(--gutter);
+        background: var(--surface-alt);
+        border-bottom: 1px solid var(--hairline);
+    }
+
+    /* Right-edge fade so a chip running off-screen reads as "scrolls" (the ID labels can end flush
+       with the edge). Sticky inside the scroller; at the scroll end it covers only empty space. */
+    .jump::after {
+        content: '';
+        position: sticky;
+        right: 0;
+        flex: none;
+        width: 24px;
+        margin-left: -8px;
+        background: linear-gradient(90deg, rgba(243, 245, 248, 0), var(--surface-alt));
+        pointer-events: none;
+    }
+}
+
+@media (min-width: 1024px) {
+    .jump {
+        display: none;
+    }
+}
+
 .card {
     min-width: 0;
+    /* Jump-bar anchor target. html already has scroll-padding-top: var(--nav-h) (globals.css), and the two
+       add up, so this is only the gap below the navbar here; phones add the sticky bar (below). */
+    scroll-margin-top: 24px;
     background: var(--surface);
     border: 1px solid var(--hairline);
     border-radius: 12px;
     padding: clamp(24px, 3vw, 40px);
+}
+
+@media (max-width: 767px) {
+    /* + the stuck jump bar (61px; 65px with 44px chips): the card lands ~20px below it, title in view.
+       Effective offset = --nav-h (html scroll-padding) + 72px. */
+    .card {
+        scroll-margin-top: 72px;
+    }
 }
 
 .card .cardTitle {

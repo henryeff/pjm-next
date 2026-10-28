@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
@@ -15,11 +14,10 @@ import LineReveal from '@/components/motion/LineReveal';
 import { StaggerGroup, StaggerItem } from '@/components/motion/Stagger';
 import Eyebrow from '@/components/ui/Eyebrow';
 import SectionHeader from '@/components/ui/SectionHeader';
+import RangeTile from '@/components/ui/RangeTile';
 import StoreCards from '@/components/ui/StoreCards';
 import CtaBand from '@/components/ui/CtaBand';
 import { ArrowRight, Chat } from '@/components/ui/Icons';
-import fourStrokes from '@/data/four-strokes.json';
-import twoStrokes from '@/data/two-strokes.json';
 import styles from './page.module.css';
 
 const COPY = {
@@ -27,8 +25,8 @@ const COPY = {
         // Non-breaking spaces keep "dealer · Padang" together when the eyebrow wraps on phones.
         heroEyebrow: 'Authorized Yamaha Marine dealer · Padang',
         heroLines: ['Power Your', 'Journey'],
-        rangeTitle: 'Explore our range',
-        models: (n) => `${n} models`,
+        scroll: 'Scroll',
+        moreTitle: 'Genuine parts & Yamalube',
         whyEyebrow: 'Why Yamaha',
         storesEyebrow: 'Visit us',
         storesTitle: 'Two stores in Padang',
@@ -37,8 +35,8 @@ const COPY = {
     id: {
         heroEyebrow: 'Dealer Resmi Yamaha Marine · Padang',
         heroLines: ['Tenagai', 'Perjalanan Anda'],
-        rangeTitle: 'Jelajahi produk kami',
-        models: (n) => `${n} model`,
+        scroll: 'Gulir',
+        moreTitle: 'Suku cadang asli & Yamalube',
         whyEyebrow: 'Kenapa Yamaha',
         storesEyebrow: 'Kunjungi kami',
         storesTitle: 'Dua toko di Padang',
@@ -59,36 +57,21 @@ export default function Home() {
     const t = all.home;
     const nav = all.navbar;
 
-    const tiles = [
-        {
-            href: '/products/four-strokes',
-            label: nav.fourStrokes,
-            sub: c.models(fourStrokes.length),
-            src: '/images/FourStrokes/250pk.png',
-            kind: 'engine',
-        },
-        {
-            href: '/products/two-strokes',
-            label: nav.twoStrokes,
-            sub: c.models(twoStrokes.length),
-            src: '/images/TwoStrokes/40pk.png',
-            kind: 'engine',
-        },
+    // Genuine parts & Yamalube. The 4S/2S choice lives in the hero CTAs and the engine lineup only.
+    const more = [
         {
             href: '/parts',
-            label: nav.parts,
+            title: nav.parts,
             sub: firstSentence(all.parts.description),
             src: '/images/parts1.jpg',
-            position: '25% 50%',
-            kind: 'photo',
+            objectPosition: '25% 50%',
         },
         {
             href: '/yamalube',
-            label: nav.yamalube,
+            title: nav.yamalube,
             sub: all.yamalube.heroSubtitle,
             src: '/images/yamalube.jpg',
-            position: '78% 50%',
-            kind: 'photo',
+            objectPosition: '78% 50%',
         },
     ];
 
@@ -127,77 +110,61 @@ export default function Home() {
                         </Reveal>
                     </div>
                 </div>
+
+                {/* Bottom rail (≥768px): scroll cue on the left; the slide controls sit at its right end. */}
+                <div className={styles.heroRail} aria-hidden="true">
+                    <span className={'eyebrow eyebrow-plain ' + styles.scrollLabel}>{c.scroll}</span>
+                    <span className={styles.scrollTrack}>
+                        <span className={styles.scrollFill} />
+                    </span>
+                </div>
             </HeroSlider>
 
-            {/* 2 — Explore our range (white) */}
-            <section className="section" aria-labelledby="home-range-title">
+            {/* 2 — Engine lineup: find your outboard (surface-alt) */}
+            <EngineLineup />
+
+            {/* 3 — Spotlight: the highest-output engine (dark stage) */}
+            <Spotlight />
+
+            {/* 4 — Genuine parts & Yamalube, 2-up (surface-alt) */}
+            <section className="section section-alt" aria-labelledby="home-more-title">
                 <div className="container">
-                    <SectionHeader eyebrow={nav.products} title={c.rangeTitle} id="home-range-title" />
+                    <SectionHeader size="sm" eyebrow={nav.products} title={c.moreTitle} id="home-more-title" />
 
-                    <StaggerGroup as="ul" className={styles.tiles}>
-                        {tiles.map((tile) => {
-                            const engine = tile.kind === 'engine';
-                            const tileClass = [
-                                styles.tile,
-                                engine ? 'stage-light floor-shadow ' + styles.tileEngine : styles.tilePhoto,
-                            ].join(' ');
-
-                            return (
-                                <StaggerItem as="li" key={tile.href} className={styles.tileCell}>
-                                    <Link href={tile.href} className={tileClass}>
-                                        <span className={styles.tileMedia}>
-                                            <Image
-                                                src={tile.src}
-                                                alt=""
-                                                fill
-                                                sizes={
-                                                    engine
-                                                        ? '(max-width: 1023px) 40vw, 240px'
-                                                        : '(max-width: 1023px) 50vw, 320px'
-                                                }
-                                                className={styles.tileImg}
-                                                style={tile.position ? { objectPosition: tile.position } : undefined}
-                                            />
-                                        </span>
-                                        {!engine && <span className={styles.tileScrim} aria-hidden="true" />}
-                                        <span className={styles.tileLabel}>
-                                            <span className={styles.tileTitle}>
-                                                {tile.label}
-                                                <ArrowRight size={20} className={styles.tileArrow} />
-                                            </span>
-                                            <span className={styles.tileSub}>{tile.sub}</span>
-                                        </span>
-                                    </Link>
-                                </StaggerItem>
-                            );
-                        })}
+                    <StaggerGroup as="ul" className={styles.more}>
+                        {more.map((tile) => (
+                            <StaggerItem as="li" key={tile.href} className={styles.moreItem}>
+                                <RangeTile
+                                    kind="photo"
+                                    ratio="16 / 9"
+                                    href={tile.href}
+                                    title={tile.title}
+                                    sub={tile.sub}
+                                    src={tile.src}
+                                    objectPosition={tile.objectPosition}
+                                    sizes="(max-width: 767px) 120vw, (max-width: 1279px) 64vw, 780px"
+                                />
+                            </StaggerItem>
+                        ))}
                     </StaggerGroup>
                 </div>
             </section>
 
-            {/* 3 — Engine lineup (surface-alt) */}
-            <EngineLineup />
-
-            {/* 4 — Spotlight: the highest-output engine (dark stage) */}
-            <Spotlight />
-
-            {/* 5 — Why Yamaha (white, editorial) */}
-            <section className="section" aria-labelledby="home-why-title">
-                <div className={'container ' + styles.whyGrid}>
-                    <div className={styles.whyHead}>
-                        <SectionHeader eyebrow={c.whyEyebrow} title={t.whyChoose} id="home-why-title" />
-                    </div>
+            {/* 5 — Why Yamaha: full-width numbered rail (white) */}
+            <section className={'section ' + styles.why} aria-labelledby="home-why-title">
+                <div className="container">
+                    <SectionHeader eyebrow={c.whyEyebrow} title={t.whyChoose} id="home-why-title" />
 
                     <StaggerGroup as="ol" className={styles.whyList}>
                         {reasons.map((reason, i) => (
-                            <StaggerItem as="li" key={i} className={styles.whyRow}>
+                            <StaggerItem as="li" key={i} className={styles.whyItem}>
                                 <motion.span
                                     className={styles.whyRule}
                                     aria-hidden="true"
                                     initial={{ scaleX: 0 }}
                                     whileInView={{ scaleX: 1 }}
                                     viewport={{ once: true }}
-                                    transition={{ duration: 0.8, ease: EASE_OUT }}
+                                    transition={{ duration: 0.8, ease: EASE_OUT, delay: i * 0.1 }}
                                 />
                                 <span className={'tabular ' + styles.whyNum} aria-hidden="true">
                                     {String(i + 1).padStart(2, '0')}
@@ -219,6 +186,7 @@ export default function Home() {
             <section className="section section-alt" aria-labelledby="home-stores-title">
                 <div className="container">
                     <SectionHeader
+                        size="sm"
                         eyebrow={c.storesEyebrow}
                         title={c.storesTitle}
                         id="home-stores-title"

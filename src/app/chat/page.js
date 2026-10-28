@@ -2,21 +2,24 @@
 
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
 import { Send, Phone as PhoneIcon } from '@/components/ui/Icons';
-import { MAIN_STORE } from '@/components/ui/stores';
+import { MAIN_STORE, STORES } from '@/components/ui/stores';
+import ContourLines from '@/components/ui/ContourLines';
+import Eyebrow from '@/components/ui/Eyebrow';
 import { StaggerGroup, StaggerItem } from '@/components/motion/Stagger';
-import { EASE_OUT } from '@/components/motion/Reveal';
+import Reveal, { EASE_OUT } from '@/components/motion/Reveal';
 import useReducedMotionSafe from '@/components/motion/useReducedMotionSafe';
+import AssistantMark from '@/components/chat/AssistantMark';
 import { Outboard, Gear, OilDrop, Gps, Pin, Phone } from '@/components/chat/SuggestionIcons';
 import styles from './chat.module.css';
 
 const COPY = {
     en: {
+        eyebrow: 'Virtual assistant',
         name: 'Pevita',
         subline: 'Virtual Assistant · Perkasa Jaya Marine',
         call: 'Call a store',
@@ -41,6 +44,7 @@ const COPY = {
         note: 'Pevita can make mistakes. For orders, please call our stores.',
     },
     id: {
+        eyebrow: 'Asisten virtual',
         name: 'Pevita',
         subline: 'Asisten Virtual · Perkasa Jaya Marine',
         call: 'Telepon toko',
@@ -86,14 +90,6 @@ function QueryPrefill({ onPrefill }) {
     }, [searchParams, onPrefill]);
 
     return null;
-}
-
-function LogoPlate({ size, logo, className }) {
-    return (
-        <span className={className} style={{ width: size, height: size }} aria-hidden="true">
-            <Image src="/images/logo.png" alt="" width={logo} height={logo} />
-        </span>
-    );
 }
 
 export default function Chat() {
@@ -290,40 +286,100 @@ export default function Chat() {
         transition: { duration: 0.25, ease: EASE_OUT },
     };
 
+    const isEmpty = messages.length === 0;
+
     return (
-        <div ref={pageRef} className={styles.page}>
-            <div className={`${styles.band} on-dark`}>
-                <div className={styles.bandInner}>
-                    <LogoPlate size={44} logo={32} className={styles.plate} />
-                    <div className={styles.bandText}>
-                        <p className={styles.bandName}>{c.name}</p>
-                        <p className={styles.bandSub}>
-                            <span className={styles.statusDot} aria-hidden="true" />
-                            {c.subline}
-                        </p>
+        <div ref={pageRef} className={`${styles.page} ${isEmpty ? styles.pageEmpty : ''}`}>
+            {isEmpty ? (
+                /* Empty state: the navy band grows into a branded opener. Pevita's mark sits on its bottom
+                   edge, half over the suggestions below. */
+                <div className={styles.opener}>
+                    <div className={`${styles.band} ${styles.bandOpen} on-dark`}>
+                        <ContourLines />
+                        <div className={styles.openerInner}>
+                            <Reveal immediate delay={0.05} y={12}>
+                                <Eyebrow immediate>{c.eyebrow}</Eyebrow>
+                            </Reveal>
+
+                            {/* LCP text: slides up, never fades in from nothing. */}
+                            <motion.h1
+                                className={`h1 ${styles.openerTitle}`}
+                                initial={{ y: 16 }}
+                                animate={{ y: 0 }}
+                                transition={{ duration: 0.8, ease: EASE_OUT }}
+                            >
+                                {c.title}
+                            </motion.h1>
+
+                            <Reveal immediate delay={0.15}>
+                                <p className={`lead ${styles.openerLead}`}>{c.lead}</p>
+                                <p className={styles.openerHint}>{c.hint}</p>
+                            </Reveal>
+
+                            <Reveal immediate delay={0.25} className={styles.openerCalls}>
+                                {STORES.map((store) => (
+                                    <a
+                                        key={store.id}
+                                        href={store.tel}
+                                        className={`btn btn-ghost btn-sm ${styles.callBtn}`}
+                                    >
+                                        <PhoneIcon />
+                                        <span className={styles.callText}>
+                                            {store.name} · <span className={styles.callNum}>{store.phone}</span>
+                                        </span>
+                                    </a>
+                                ))}
+                            </Reveal>
+                        </div>
                     </div>
-                    <a href={MAIN_STORE.tel} className={styles.bandCall}>
-                        <PhoneIcon size={18} />
-                        {c.call}
-                    </a>
+
+                    <div className={styles.openerMark}>
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.7 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.6, delay: 0.3, ease: EASE_OUT }}
+                        >
+                            <AssistantMark size={64} ring status />
+                        </motion.div>
+                    </div>
                 </div>
-            </div>
+            ) : (
+                /* Conversation: the opener collapses to a slim identity band. */
+                <div className={`${styles.band} on-dark`}>
+                    <ContourLines />
+                    <motion.div
+                        className={styles.bandInner}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.4, ease: EASE_OUT }}
+                    >
+                        <AssistantMark size={40} />
+                        <div className={styles.bandText}>
+                            <p className={styles.bandName}>{c.name}</p>
+                            <p className={styles.bandSub}>
+                                <span className={styles.statusDot} aria-hidden="true" />
+                                {c.subline}
+                            </p>
+                        </div>
+                        <a href={MAIN_STORE.tel} className={styles.bandCall}>
+                            <PhoneIcon size={18} />
+                            {c.call}
+                        </a>
+                    </motion.div>
+                </div>
+            )}
 
             {/* Once the greeting (and its h1) gives way to the conversation, keep a page heading for screen readers. */}
-            {messages.length > 0 && <h1 className="visually-hidden">{c.srTitle}</h1>}
+            {!isEmpty && <h1 className="visually-hidden">{c.srTitle}</h1>}
 
-            <div className={styles.thread} role="log" aria-live="polite" aria-relevant="additions">
-                {messages.length === 0 && (
-                    <div className={styles.empty}>
-                        <LogoPlate size={64} logo={44} className={`${styles.plate} ${styles.emptyPlate}`} />
-                        <h1 className={styles.emptyTitle}>{c.title}</h1>
-                        <p className={styles.emptyLead}>{c.lead}</p>
-                        <p className={styles.emptyHint}>{c.hint}</p>
-
+            {isEmpty && (
+                <div className={`${styles.starters} section-alt`}>
+                    <div className={styles.startersInner}>
                         <StaggerGroup
                             as="ul"
                             immediate
                             stagger={0.05}
+                            delayChildren={0.2}
                             className={styles.suggestions}
                             role="list"
                             aria-label={c.suggestionsLabel}
@@ -343,8 +399,15 @@ export default function Chat() {
                             })}
                         </StaggerGroup>
                     </div>
-                )}
+                </div>
+            )}
 
+            <div
+                className={`${styles.thread} ${isEmpty ? styles.threadEmpty : ''}`}
+                role="log"
+                aria-live="polite"
+                aria-relevant="additions"
+            >
                 {messages.map((m) => {
                     // Hide the assistant placeholder until its first streamed text arrives.
                     if (!m.content) return null;
@@ -359,7 +422,7 @@ export default function Chat() {
 
                     return (
                         <motion.div key={m.id} className={styles.rowAssistant} {...messageMotion}>
-                            <LogoPlate size={32} logo={24} className={styles.avatar} />
+                            <AssistantMark size={32} className={styles.avatar} />
                             <div className={styles.bubbleAssistant}>
                                 <div className={styles.prose}>
                                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -373,7 +436,7 @@ export default function Chat() {
 
                 {showTyping && (
                     <motion.div className={styles.rowAssistant} {...messageMotion}>
-                        <LogoPlate size={32} logo={24} className={styles.avatar} />
+                        <AssistantMark size={32} className={styles.avatar} />
                         <div className={styles.bubbleAssistant}>
                             <span className={styles.typing} aria-hidden="true">
                                 <span /><span /><span />
@@ -385,7 +448,7 @@ export default function Chat() {
 
                 {error && !isLoading && (
                     <motion.div className={styles.rowAssistant} {...messageMotion}>
-                        <LogoPlate size={32} logo={24} className={styles.avatar} />
+                        <AssistantMark size={32} className={styles.avatar} />
                         <div className={`${styles.bubbleAssistant} ${styles.bubbleError}`}>
                             <p className={styles.errorText}>{c.error}</p>
                             <button type="button" className="btn btn-outline btn-sm" onClick={handleRetry}>
@@ -398,7 +461,7 @@ export default function Chat() {
                 <div ref={messagesEndRef} className={styles.end} aria-hidden="true" />
             </div>
 
-            <div className={styles.composer}>
+            <div className={`${styles.composer} ${isEmpty ? styles.composerAlt : ''}`}>
                 <div className={styles.composerInner}>
                     <form onSubmit={handleSubmit} className={styles.form}>
                         <textarea

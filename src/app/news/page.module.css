@@ -1,53 +1,67 @@
-/* News — featured story + editorial grid (compact rows on phones). Story dialog: components/news. */
+/* News — text-first featured story + editorial grid (compact rows on phones). Story dialog: components/news.
+   All news imagery (not the dialog) gets one navy duotone; full colour on hover / focus. */
 
 .page {
     padding-top: clamp(40px, 5vw, 72px);
 }
 
 /* =========================================================================
-   Featured story
+   Featured story — text-first. The headline is the on-topic part; the stock photo is atmosphere.
+   Phones/tablets: photo (3:2) then the body. ≥1024px: body (7fr) beside the photo (5fr, 4:3).
    ========================================================================= */
 
 .featured {
     position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 24px;
-    align-items: center;
-}
-
-@media (min-width: 768px) {
-    .featured {
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        gap: 32px;
-    }
+    gap: 28px;
 }
 
 @media (min-width: 1024px) {
     .featured {
         grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-        gap: 48px;
+        /* DOM order stays media → body (phones read the photo first); the areas flip it here. */
+        grid-template-areas: 'body media';
+        gap: 64px;
+        align-items: center;
+    }
+
+    .featured .featuredMedia {
+        grid-area: media;
+        aspect-ratio: 4 / 3;
+    }
+
+    .featured .featuredBody {
+        grid-area: body;
     }
 }
 
 .featuredMedia {
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 3 / 2;
     border-radius: var(--radius-lg);
     overflow: hidden;
+    isolation: isolate;
 }
 
+/* Editorial treatment (shared with the cards): greyscale under a navy multiply, full colour on hover. */
 .featuredImg {
     object-fit: cover;
     object-position: center 30%;
-    transition: transform var(--duration-slow) var(--ease-out);
+    filter: grayscale(1) contrast(1.05);
+    transition:
+        transform var(--duration-slow) var(--ease-out),
+        filter 0.5s var(--ease-out);
 }
 
-/* A lighter version of the grid's navy grade (inside the reveal clip, so it wipes in with the photo). */
+/* The navy duotone layer (inside the reveal clip, so it wipes in with the photo). */
 .featuredShade {
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(0, 20, 42, 0) 55%, rgba(0, 20, 42, 0.35) 100%);
+    background: var(--primary);
+    mix-blend-mode: multiply;
+    opacity: 0.5;
     pointer-events: none;
+    transition: opacity 0.5s var(--ease-out);
 }
 
 .featuredBody {
@@ -55,30 +69,34 @@
 }
 
 .featured .featuredTitle {
-    margin: 12px 0;
-    font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.25rem);
+    margin: 16px 0 0;
+    font-size: clamp(2.25rem, 1.6rem + 1.6vw, 3.25rem);
     font-weight: 800;
-    line-height: 1.15;
-    letter-spacing: -0.025em;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
     color: var(--primary);
+    text-wrap: pretty;
 }
 
 .featuredClamp {
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
     overflow: hidden;
+    /* Room for the hover underline on the last visible line. */
+    padding-bottom: 0.08em;
     text-decoration-line: underline;
     text-decoration-color: transparent;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 6px;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 0.14em;
     transition: text-decoration-color var(--duration-fast) var(--ease-out);
 }
 
 .featuredExcerpt {
-    font-size: 1.0625rem;
-    line-height: 1.65;
+    margin-top: 20px;
+    font-size: var(--fs-lead);
+    line-height: 1.6;
     color: var(--text-muted);
     max-width: 52ch;
     display: -webkit-box;
@@ -89,7 +107,7 @@
 }
 
 .featuredMore {
-    margin-top: 20px;
+    margin-top: 24px;
 }
 
 /* ---- Shared stretched title button (featured story) ---- */
@@ -128,6 +146,17 @@
 @media (hover: hover) {
     .featured:hover .featuredImg {
         transform: scale(1.04);
+    }
+
+    /* Full colour on hover / keyboard focus. */
+    .featured:hover .featuredImg,
+    .featured:focus-within .featuredImg {
+        filter: none;
+    }
+
+    .featured:hover .featuredShade,
+    .featured:focus-within .featuredShade {
+        opacity: 0;
     }
 
     .featured:hover .featuredClamp {

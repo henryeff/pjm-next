@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion, useInView } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
@@ -8,8 +8,9 @@ import { translations } from '@/utils/translations';
 import { EASE_OUT, MOTION } from '@/components/motion/Reveal';
 import PageHero from '@/components/ui/PageHero';
 import CtaBand from '@/components/ui/CtaBand';
+import Cutout from '@/components/ui/Cutout';
 import ProductCard from '@/components/ui/ProductCard';
-import { getHp, hpBucket, seriesPath } from '@/components/ui/productUtils';
+import { getHp, hpBucket, seriesPath, topModel } from '@/components/ui/productUtils';
 import styles from '@/app/products/four-strokes/page.module.css';
 
 const COPY = {
@@ -59,8 +60,9 @@ const EXIT = { opacity: 0, scale: 0.96, transition: { duration: FILTER_DURATION,
 const PILL_SPRING = { type: 'spring', stiffness: 480, damping: 38 };
 
 /**
- * Engine range listing: navy hero with a 4S / 2S switch, power filter chips and a
- * 2 / 3 / 4-column grid of ProductCards. series: 'four' | 'two'.
+ * Engine range listing: navy hero (the range's highest-output engine on the right from 1024px) with a
+ * 4S / 2S switch, power filter chips + a live model count, and a 2 / 3 / 4-column grid of ProductCards.
+ * series: 'four' | 'two'.
  */
 export default function ProductGrid({ products = [], series = 'four' }) {
     const { language } = useLanguage();
@@ -75,6 +77,26 @@ export default function ProductGrid({ products = [], series = 'four' }) {
 
     const gridRef = useRef(null);
     const inView = useInView(gridRef, { once: true, amount: 0.05 });
+
+    // Chip row (scrolls sideways on phones): fade the right edge until it is scrolled to the end.
+    const chipsRef = useRef(null);
+    const [atEnd, setAtEnd] = useState(true);
+    useEffect(() => {
+        const el = chipsRef.current;
+        if (!el) return undefined;
+        const update = () => setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 4);
+        // Fires once on observe (mount / language switch) and again whenever the row resizes.
+        const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(update) : null;
+        if (ro) ro.observe(el);
+        else update();
+        el.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        return () => {
+            if (ro) ro.disconnect();
+            el.removeEventListener('scroll', update);
+            window.removeEventListener('resize', update);
+        };
+    }, [lang]);
 
     const items = products.map((product) => ({ product, bucket: hpBucket(getHp(product.name)) }));
     const counts = { all: items.length, small: 0, mid: 0, large: 0 };
@@ -94,9 +116,44 @@ export default function ProductGrid({ products = [], series = 'four' }) {
         { id: 'two', label: nav.twoStrokes, href: seriesPath('two') },
     ];
 
+    // Hero figure: the range's highest-output engine (4S: F450A, 2S: 200AET/L200AET) on the navy.
+    // Shown from 1024px only (PageHero hides the slot below), so the image stays lazy — phones never fetch it.
+    const top = topModel(products);
+    const topHp = top ? getHp(top.name) : null;
+    const figure = top ? (
+        <span className={styles.heroFigure}>
+            <span className={styles.heroGlow} />
+            {topHp && (
+                <motion.span
+                    className={'tabular ' + styles.heroWatermark}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1.2, ease: EASE_OUT, delay: 0.2 }}
+                >
+                    {topHp}
+                </motion.span>
+            )}
+            {/* Transform-only entrance: the engine rises into place, it is never hidden. */}
+            <motion.span
+                className={styles.heroEngine}
+                initial={{ y: 24 }}
+                animate={{ y: 0 }}
+                transition={{ duration: 1.1, ease: EASE_OUT }}
+            >
+                <Cutout src={top.image} sizes="560px" className={styles.heroCutout} />
+            </motion.span>
+        </span>
+    ) : null;
+
     return (
         <>
-            <PageHero size="compact" eyebrow={c.eyebrow} title={c.title[key]} lead={c.lead[key]}>
+            <PageHero
+                size="compact"
+                eyebrow={c.eyebrow}
+                title={c.title[key]}
+                lead={c.lead[key]}
+                figure={figure}
+            >
                 <nav aria-label={c.typeNav} className={styles.segmented}>
                     {types.map((type) => {
                         const active = type.id === key;
@@ -117,40 +174,45 @@ export default function ProductGrid({ products = [], series = 'four' }) {
 
             <section className={'section ' + styles.listing}>
                 <div className="container">
-                    <motion.div
-                        role="group"
-                        aria-label={c.filterLabel}
-                        className={'no-scrollbar ' + styles.chips}
-                        layoutScroll
-                    >
-                        {FILTERS.filter((id) => counts[id] > 0).map((id) => {
-                            const active = id === filter;
-                            return (
-                                <button
-                                    key={id}
-                                    type="button"
-                                    aria-pressed={active}
-                                    className={styles.chip}
-                                    onClick={() => choose(id)}
-                                >
-                                    {active && (
-                                        <motion.span
-                                            layoutId={'pjm-power-chip-' + key}
-                                            className={styles.chipPill}
-                                            transition={PILL_SPRING}
-                                            aria-hidden="true"
-                                        />
-                                    )}
-                                    <span className={styles.chipLabel}>{c.filters[id]}</span>
-                                    <span className={styles.chipCount}>{counts[id]}</span>
-                                </button>
-                            );
-                        })}
-                    </motion.div>
+                    <div className={styles.filterBar}>
+                        <motion.div
+                            ref={chipsRef}
+                            role="group"
+                            aria-label={c.filterLabel}
+                            className={'no-scrollbar ' + styles.chips}
+                            data-fade={atEnd ? undefined : ''}
+                            layoutScroll
+                        >
+                            {FILTERS.filter((id) => counts[id] > 0).map((id) => {
+                                const active = id === filter;
+                                return (
+                                    <button
+                                        key={id}
+                                        type="button"
+                                        aria-pressed={active}
+                                        className={styles.chip}
+                                        onClick={() => choose(id)}
+                                    >
+                                        {active && (
+                                            <motion.span
+                                                layoutId={'pjm-power-chip-' + key}
+                                                className={styles.chipPill}
+                                                transition={PILL_SPRING}
+                                                aria-hidden="true"
+                                            />
+                                        )}
+                                        <span className={styles.chipLabel}>{c.filters[id]}</span>
+                                        <span className={styles.chipCount}>{counts[id]}</span>
+                                    </button>
+                                );
+                            })}
+                        </motion.div>
 
-                    <p className="visually-hidden" aria-live="polite" aria-atomic="true">
-                        {filtered ? c.showing(visible.length, items.length) : ''}
-                    </p>
+                        {/* Visible from 768px; visually hidden below, so screen readers still hear each change. */}
+                        <p className={'tabular ' + styles.count} aria-live="polite" aria-atomic="true">
+                            {c.showing(visible.length, items.length)}
+                        </p>
+                    </div>
 
                     <ul ref={gridRef} className={styles.grid}>
                         <AnimatePresence mode="popLayout">

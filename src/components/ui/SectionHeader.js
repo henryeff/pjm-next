@@ -9,6 +9,8 @@ import styles from './SectionHeader.module.css';
  * Inherits colour, so it works on light sections and inside `.on-dark`.
  *
  * action: { label, href }
+ * size: 'default' | 'sm' — 'sm' is a smaller h2 and tighter margin for utility sections
+ *   (stores, latest news, the home 2-up). Still eyebrow + h2.
  */
 export default function SectionHeader({
     eyebrow,
@@ -18,10 +20,16 @@ export default function SectionHeader({
     align = 'left',
     titleAs = 'h2',
     id,
+    size = 'default',
     className,
 }) {
     const TitleTag = titleAs;
-    const rootClass = [styles.header, align === 'center' ? styles.center : '', className || '']
+    const rootClass = [
+        styles.header,
+        align === 'center' ? styles.center : '',
+        size === 'sm' ? styles.sm : '',
+        className || '',
+    ]
         .filter(Boolean)
         .join(' ');
 

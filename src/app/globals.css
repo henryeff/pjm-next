@@ -67,6 +67,8 @@
   --stage-light: radial-gradient(120% 90% at 50% 38%, #ffffff 0%, #eef1f5 55%, #e2e7ee 100%);
   --stage-dark: radial-gradient(120% 90% at 50% 38%, #12406f 0%, #0a2d52 38%, #001e3d 72%, #00142a 100%);
   --scrim-left: linear-gradient(90deg, rgba(0, 20, 42, 0.92) 0%, rgba(0, 20, 42, 0.55) 50%, rgba(0, 20, 42, 0.12) 100%);
+  /* For bright photos (PageHero scrim="strong"): stays deep under the whole text column. */
+  --scrim-left-strong: linear-gradient(90deg, rgba(0, 20, 42, 0.95) 0%, rgba(0, 20, 42, 0.86) 38%, rgba(0, 20, 42, 0.45) 62%, rgba(0, 20, 42, 0.10) 100%);
   --scrim-bottom: linear-gradient(0deg, rgba(0, 20, 42, 0.92) 0%, rgba(0, 20, 42, 0.5) 40%, rgba(0, 20, 42, 0) 75%);
 
   /* Gradients */

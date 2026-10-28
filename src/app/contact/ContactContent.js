@@ -54,7 +54,9 @@ export default function ContactPage() {
 
     return (
         <>
-            <PageHero size="default" eyebrow={t.contactInfo} title={t.title} lead={t.intro}>
+            {/* Compact: one sentence and three actions don't need a tall navy block — it pulls the
+                store cards and maps up toward the fold. No image, so PageHero draws ContourLines. */}
+            <PageHero size="compact" eyebrow={t.contactInfo} title={t.title} lead={t.intro}>
                 {/* The two call buttons wrap as a pair, so a store is never split onto its own row. */}
                 <div className={styles.heroActions}>
                     <Link href="/chat" className={heroBtn + ' btn-primary'}>

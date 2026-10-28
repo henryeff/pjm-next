@@ -17,7 +17,7 @@ const COPY = {
     id: { eyebrow: 'Dari 2 Tak hingga 4 Tak' },
 };
 
-/** Full-bleed photo band with a slow parallax (±40px) and a glass panel. Static for reduced motion. */
+/** Full-bleed photo band with a slow parallax (±40px) and a solid navy panel. Static for reduced motion. */
 export default function ShowcaseBand({ titleId = 'home-showcase-title' }) {
     const { language } = useLanguage();
     const t = translations[language].home;

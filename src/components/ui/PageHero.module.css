@@ -53,11 +53,66 @@
     .scrim {
         background: var(--scrim-left);
     }
+
+    /* scrim="strong": for bright photos — stays deep under the whole text column. */
+    .scrimStrong .scrim {
+        background: var(--scrim-left-strong);
+    }
 }
 
 @media (max-width: 767px) {
     .img {
         object-position: var(--pos-m, var(--pos, 50% 50%));
+    }
+
+    /* Phone photo band (default for every photo hero): the photo runs across the top and fades into
+       the navy; the text starts just below it, so type never sits on the photo. --band-h can be set
+       per hero with the bandHeight prop. Two classes so this beats the size padding above. */
+    .hero.hasImage {
+        --band-h: min(72vw, 320px);
+        min-height: 0;
+        display: block;
+        padding-top: calc(var(--band-h) - 40px);
+        padding-bottom: 48px;
+    }
+
+    .hasImage .media {
+        inset: 0 0 auto 0;
+        height: var(--band-h);
+        -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%);
+        mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%);
+    }
+
+    .hasImage .scrim {
+        display: none;
+    }
+}
+
+/* ---- Figure slot (product listing heroes): right-hand media, ≥1024px only ---- */
+.figure {
+    display: none;
+}
+
+@media (min-width: 1024px) {
+    .figure {
+        display: block;
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        bottom: 0;
+        right: max(var(--gutter), calc((100% - 1280px) / 2 + var(--gutter)));
+        width: min(44%, 560px);
+        pointer-events: none;
+    }
+
+    .hasFigure .content {
+        max-width: min(640px, 54%);
+    }
+
+    .hasFigure.compact {
+        min-height: 440px;
+        display: flex;
+        align-items: center;
     }
 }
 

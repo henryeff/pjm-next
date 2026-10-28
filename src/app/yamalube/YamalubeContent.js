@@ -28,6 +28,7 @@ const COPY = {
         rangeCaption: 'The Yamalube outboard range',
         productsEyebrow: 'Products',
         productsTitle: 'Motor oils & gear oils',
+        jumpLabel: 'Yamalube products',
         packagingCaption: (title) => `${title} – packaging`,
         colPart: 'Part No.',
         colVolume: 'Volume',
@@ -57,6 +58,7 @@ const COPY = {
         rangeCaption: 'Rangkaian Yamalube untuk mesin tempel',
         productsEyebrow: 'Produk',
         productsTitle: 'Oli mesin & pelumas roda gigi',
+        jumpLabel: 'Produk Yamalube',
         packagingCaption: (title) => `${title} – kemasan`,
         colPart: 'Nomor Bagian',
         colVolume: 'Volume',
@@ -140,8 +142,10 @@ export default function YamalubePage() {
             <PageHero
                 image="/images/yamalube.jpg"
                 imageAlt={c.heroAlt}
-                imagePosition="70% 50%"
-                imagePositionMobile="80% 50%"
+                imagePosition="82% 50%"
+                imagePositionMobile="62% 50%"
+                bandHeight="min(70vw, 300px)"
+                scrim="strong"
                 size="tall"
                 eyebrow="Yamalube"
                 title={t.heroTitle}
@@ -194,11 +198,25 @@ export default function YamalubePage() {
                 <div className="container">
                     <SectionHeader eyebrow={c.productsEyebrow} title={c.productsTitle} />
 
+                    {/* Jump bar (< 1024px, sticky on phones): the stacked cards run ~4,000px tall there. */}
+                    <nav aria-label={c.jumpLabel} className={'no-scrollbar ' + styles.jump}>
+                        {PRODUCTS.map((product) => (
+                            <a key={product.id} href={'#yamalube-' + product.id} className={styles.jumpLink}>
+                                {c.kinds[product.id]}
+                            </a>
+                        ))}
+                    </nav>
+
                     <StaggerGroup className={styles.productGrid} amount={0.05}>
                         {PRODUCTS.map((product) => {
                             const title = t[product.titleKey];
                             return (
-                                <StaggerItem key={product.id} as="article" className={styles.card}>
+                                <StaggerItem
+                                    key={product.id}
+                                    as="article"
+                                    id={'yamalube-' + product.id}
+                                    className={styles.card}
+                                >
                                     <Eyebrow>{c.kinds[product.id]}</Eyebrow>
                                     <h3 className={styles.cardTitle}>{keepHyphensTogether(title)}</h3>
 

@@ -1,13 +1,13 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
 import Reveal from '@/components/motion/Reveal';
 import { StaggerGroup, StaggerItem } from '@/components/motion/Stagger';
+import Cutout from '@/components/ui/Cutout';
 import Eyebrow from '@/components/ui/Eyebrow';
 import { ArrowRight } from '@/components/ui/Icons';
-import { getHp } from '@/components/ui/productUtils';
+import { formatSpec, getHp, topModel } from '@/components/ui/productUtils';
 import fourStrokes from '@/data/four-strokes.json';
 import styles from './Spotlight.module.css';
 
@@ -42,27 +42,17 @@ const COPY = {
 
 const STAT_KEYS = ['volume', 'diameter', 'jangkauan', 'berat', 'sistemInduksi'];
 
-const hpOf = (p) => {
-    const n = Number(getHp(p.name));
-    return Number.isFinite(n) ? n : 0;
-};
-
 // The 4-stroke with the highest horsepower, straight from the data (first one wins a tie).
-const PRODUCT = fourStrokes.reduce((best, p) => (hpOf(p) > hpOf(best) ? p : best), fourStrokes[0]);
-const HP = getHp(PRODUCT.name);
+const PRODUCT = topModel(fourStrokes);
+const HP = PRODUCT ? getHp(PRODUCT.name) : null;
 
-// Display only: "5559cc" → "5559 cc", "5000-6000rpm" → "5000–6000 rpm". The values themselves are untouched.
-const formatStat = (value) =>
-    String(value)
-        .trim()
-        .replace(/(\d)\s*-\s*(\d)/g, '$1–$2')
-        .replace(/(\d)(cc|rpm|kg)$/i, '$1 $2');
-
-const STATS = STAT_KEYS.filter((key) => PRODUCT[key] && String(PRODUCT[key]).trim()).slice(0, 4);
+const STATS = PRODUCT ? STAT_KEYS.filter((key) => PRODUCT[key] && String(PRODUCT[key]).trim()).slice(0, 4) : [];
 
 export default function Spotlight({ titleId = 'home-spotlight-title' }) {
     const { language } = useLanguage();
     const c = COPY[language] || COPY.en;
+
+    if (!PRODUCT) return null;
 
     return (
         <section className={'section on-dark stage-dark ' + styles.spotlight} aria-labelledby={titleId}>
@@ -80,14 +70,9 @@ export default function Spotlight({ titleId = 'home-spotlight-title' }) {
                         whileInView={{ opacity: 1, scale: 1 }}
                         duration={0.9}
                     >
+                        {/* Cutout feathers the cropped top and right edges of the source PNG. */}
                         <div className={'floor-shadow ' + styles.imgBox}>
-                            <Image
-                                src={PRODUCT.image}
-                                alt={PRODUCT.name}
-                                fill
-                                sizes="(max-width: 1023px) 92vw, 640px"
-                                className={styles.img}
-                            />
+                            <Cutout src={PRODUCT.image} alt={PRODUCT.name} sizes="(max-width: 1023px) 92vw, 640px" />
                         </div>
                     </Reveal>
                 </div>
@@ -111,7 +96,7 @@ export default function Spotlight({ titleId = 'home-spotlight-title' }) {
                             {STATS.map((key) => (
                                 <StaggerItem key={key} className={styles.stat} y={12}>
                                     <dt>{c.stats[key]}</dt>
-                                    <dd className="tabular">{formatStat(PRODUCT[key])}</dd>
+                                    <dd className="tabular">{formatSpec(PRODUCT[key])}</dd>
                                 </StaggerItem>
                             ))}
                         </StaggerGroup>

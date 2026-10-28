@@ -21,9 +21,8 @@
     overflow: hidden;
 }
 
-/* The engine fills ~80% of the stage height. */
-.img {
-    object-fit: contain;
+/* The engine fills ~80% of the stage height (Cutout root; it contains the image and feathers cropped files). */
+.cutout {
     padding: 10%;
     transition: transform 0.7s var(--ease-out);
 }
@@ -107,6 +106,14 @@
     transition: transform 0.25s var(--ease-out);
 }
 
+/* Inline arrow after the model code: phones only (replaces the footer row there). */
+.inlineArrow {
+    display: none;
+    margin-left: 6px;
+    vertical-align: -2px;
+    color: var(--secondary);
+}
+
 /* POLICY: hover lifts/scales only on devices that really hover. */
 @media (hover: hover) {
     .card:hover {
@@ -115,7 +122,7 @@
         box-shadow: 0 18px 40px -20px rgba(0, 30, 61, 0.35);
     }
 
-    .card:hover .img {
+    .card:hover .cutout {
         transform: scale(1.04);
     }
 
@@ -153,5 +160,22 @@
 
     .more {
         display: none;
+    }
+}
+
+/* ---- Phones: no footer row; the inline arrow after the model code marks the link.
+   Last in the file so it wins over the narrow-card container rules above. ---- */
+@media (max-width: 639px) {
+    .inlineArrow {
+        display: inline-block;
+    }
+
+    /* The whole card is the link, so the "View details" row is dropped on phones. */
+    .footer {
+        display: none;
+    }
+
+    .type {
+        margin-bottom: 0;
     }
 }

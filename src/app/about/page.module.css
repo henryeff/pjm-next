@@ -2,25 +2,6 @@
    Hero (shared PageHero) → story (white) → what we offer (alt) → quote (deep navy) → stores → CTA band. */
 
 /* =========================================================================
-   Hero (shared PageHero)
-   ========================================================================= */
-
-/* home1.jpg is mostly bright sky, so on phones the shared bottom scrim (which fades out by 75%)
-   leaves the eyebrow and title on near-white. PageHero's mobile scrim reads --scrim-bottom, so
-   re-tune the token here: it stays deep under the lead and keeps a navy tint to the top.
-   (≥768px PageHero uses --scrim-left, which is untouched.) */
-.heroScope {
-    display: contents;
-    --scrim-bottom: linear-gradient(
-        0deg,
-        rgba(0, 20, 42, 0.92) 0%,
-        rgba(0, 20, 42, 0.74) 45%,
-        rgba(0, 20, 42, 0.42) 80%,
-        rgba(0, 20, 42, 0.3) 100%
-    );
-}
-
-/* =========================================================================
    Story: sticky summary (cols 1–4) + editorial copy (cols 6–12)
    ========================================================================= */
 
@@ -84,14 +65,18 @@
     margin-bottom: 0;
 }
 
-/* Two-line drop cap on the opening paragraph. */
-.dropCap::first-letter {
-    float: left;
-    font-size: 3.6em;
-    line-height: 0.9;
-    font-weight: 800;
+/* The opening paragraph reads as a lead, so the long story column has an entry point. */
+.storyBody .storyLead {
+    font-size: var(--fs-lead);
+    font-weight: 500;
+    line-height: 1.55;
     color: var(--primary);
-    margin: 0.06em 0.12em 0 0;
+}
+
+/* The closing mission paragraph carries the red signal rule. */
+.storyBody .mission {
+    border-left: 2px solid var(--secondary);
+    padding-left: 20px;
 }
 
 @media (min-width: 1024px) {
@@ -113,10 +98,10 @@
 }
 
 /* =========================================================================
-   What we offer: three image tiles
+   What we offer: three shared RangeTiles (engine on the light stage, two photos)
    ========================================================================= */
 
-.tiles {
+.offer {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -125,138 +110,20 @@
     gap: 16px;
 }
 
-@media (min-width: 900px) {
-    .tiles {
+/* StaggerItem owns the entrance transform; RangeTile owns its own hover lift. */
+.offerItem {
+    min-width: 0;
+}
+
+@media (min-width: 768px) {
+    .offer {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
 
-/* StaggerItem owns the entrance transform; the hover zoom lives on .zoom inside the link. */
-.tileCell {
-    min-width: 0;
-}
-
-.tile {
-    position: relative;
-    display: block;
-    border-radius: 12px;
-    overflow: hidden;
-    aspect-ratio: 16 / 10;
-    color: var(--primary);
-    text-decoration: none;
-    transition: box-shadow 0.35s var(--ease-out);
-}
-
-@media (min-width: 900px) {
-    .tile {
-        aspect-ratio: 4 / 3;
-    }
-}
-
-.media {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-}
-
-/* ImageReveal sets position: relative inline, so it fills .media by size instead. */
-.reveal {
-    width: 100%;
-    height: 100%;
-}
-
-.zoom {
-    position: absolute;
-    inset: 0;
-    transition: transform 0.7s var(--ease-out);
-    transform-origin: 50% 60%;
-}
-
-.label {
-    position: absolute;
-    left: clamp(20px, 2.2vw, 28px);
-    right: clamp(20px, 2.2vw, 28px);
-    bottom: clamp(18px, 2vw, 24px);
-    z-index: 2;
-}
-
-.tile .tileTitle {
-    margin: 0;
-    font-size: 1.375rem;
-    font-weight: 800;
-    line-height: 1.2;
-    letter-spacing: -0.015em;
-    color: inherit;
-    text-wrap: balance;
-}
-
-/* Inline so the arrow follows the last word when the title wraps. */
-.arrow {
-    display: inline-block;
-    vertical-align: -0.2em;
-    margin-left: 10px;
-    color: var(--secondary);
-    transition: transform 0.25s var(--ease-out);
-}
-
-/* (a) Outboards: a 150 HP engine standing on a light studio stage. */
-.engine .media {
-    top: 6%;
-    bottom: 24%;
-}
-
-/* Re-seat the global floor shadow under the engine's skeg. */
-.tile.engine::after {
-    left: 34%;
-    right: 34%;
-    bottom: 21%;
-    height: 6%;
-}
-
-/* (b) Genuine parts: product shot on white, label on a white fade. */
-.parts {
-    background: #fff;
-}
-
-.parts::after,
-.lube::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-}
-
-.parts::after {
-    /* Holds near-solid under the (up to two-line) label before fading out by half height. */
-    background: linear-gradient(0deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.82) 24%, rgba(255, 255, 255, 0) 50%);
-}
-
-/* (c) Yamalube: photo under a navy scrim, white label. */
-.lube {
-    background: var(--primary-900);
-    color: #fff;
-}
-
-.lube::after {
-    background: linear-gradient(0deg, rgba(0, 20, 42, 0.85), rgba(0, 20, 42, 0) 60%);
-}
-
-.tile:focus-visible .arrow {
-    transform: translateX(4px);
-}
-
-@media (hover: hover) {
-    .tile:hover {
-        box-shadow: 0 18px 40px -18px rgba(0, 20, 42, 0.35);
-    }
-
-    .tile:hover .zoom {
-        transform: scale(1.04);
-    }
-
-    .tile:hover .arrow {
-        transform: translateX(4px);
+@media (min-width: 1024px) {
+    .offer {
+        gap: 24px;
     }
 }
 

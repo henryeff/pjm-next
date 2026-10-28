@@ -1,5 +1,8 @@
+/* Contour lines (ContourLines) sit at z-index 0 behind the content. */
 .band {
     position: relative;
+    overflow: clip;
+    isolation: isolate;
     background:
         radial-gradient(70% 120% at 15% 0%, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 60%),
         var(--primary);
@@ -7,6 +10,8 @@
 }
 
 .grid {
+    position: relative;
+    z-index: 1;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 32px;

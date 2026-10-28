@@ -17,19 +17,26 @@
     isolation: isolate;
 }
 
+/* Editorial duotone (shared with the featured story): the photo goes greyscale under a navy multiply,
+   so the off-topic stock photos read as atmosphere. Full colour on hover / keyboard focus. */
 .img {
     object-fit: cover;
     object-position: center 30%;
-    transition: transform var(--duration-slow) var(--ease-out);
+    filter: grayscale(1) contrast(1.05);
+    transition:
+        transform var(--duration-slow) var(--ease-out),
+        filter 0.5s var(--ease-out);
 }
 
-/* One navy grade on every thumbnail, so the mixed stock photos read as a set. */
 .thumb::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(0, 20, 42, 0) 40%, rgba(0, 20, 42, 0.55) 100%);
+    background: var(--primary);
+    mix-blend-mode: multiply;
+    opacity: 0.5;
     pointer-events: none;
+    transition: opacity 0.5s var(--ease-out);
 }
 
 /* ---- Text ---- */
@@ -132,6 +139,16 @@
 @media (hover: hover) {
     .card:hover .img {
         transform: scale(1.04);
+    }
+
+    .card:hover .img,
+    .card:focus-within .img {
+        filter: none;
+    }
+
+    .card:hover .thumb::after,
+    .card:focus-within .thumb::after {
+        opacity: 0;
     }
 
     .card:hover .clamp {

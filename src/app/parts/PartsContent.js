@@ -67,30 +67,31 @@ export default function PartsPage() {
 
     return (
         <>
-            {/* The wrapper (display: contents) only art-directs the hero photo on phones — see page.module.css. */}
-            <div className={styles.heroScope}>
-                <PageHero
-                    image="/images/parts1.jpg"
-                    imageAlt={c.heroAlt}
-                    imagePosition="50% 50%"
-                    imagePositionMobile="20% 50%"
-                    size="default"
-                    eyebrow={c.heroEyebrow}
-                    title={t.title}
-                    lead={t.description}
+            {/* Phones: the shared photo band puts the propeller above the copy. Desktop: the strong scrim keeps
+                the headline off the bright propeller. */}
+            <PageHero
+                image="/images/parts1.jpg"
+                imageAlt={c.heroAlt}
+                imagePosition="50% 50%"
+                imagePositionMobile="20% 50%"
+                bandHeight="min(74vw, 320px)"
+                scrim="strong"
+                size="default"
+                eyebrow={c.heroEyebrow}
+                title={t.title}
+                lead={t.description}
+            >
+                <Link
+                    href={'/chat?q=' + encodeURIComponent(c.chatQuery)}
+                    className="btn btn-primary btn-lg btn-block-sm"
                 >
-                    <Link
-                        href={'/chat?q=' + encodeURIComponent(c.chatQuery)}
-                        className="btn btn-primary btn-lg btn-block-sm"
-                    >
-                        <Chat />
-                        {c.askPart}
-                    </Link>
-                    <Link href="/contact" className="btn btn-ghost btn-lg btn-block-sm">
-                        {c.contactStore}
-                    </Link>
-                </PageHero>
-            </div>
+                    <Chat />
+                    {c.askPart}
+                </Link>
+                <Link href="/contact" className="btn btn-ghost btn-lg btn-block-sm">
+                    {c.contactStore}
+                </Link>
+            </PageHero>
 
             {/* How to get the right part: three steps beside an engine-component macro */}
             <section className="section" aria-labelledby="parts-how-title">
@@ -129,8 +130,9 @@ export default function PartsPage() {
                 </div>
             </section>
 
-            {/* Range band: the genuine parts & accessories pack shot, full container width */}
-            <section className="section section-alt">
+            {/* Range band: the genuine parts & accessories pack shot. Phones/tablets crop in on the
+                propeller boxes, gears and con-rod so the parts read at a usable size. */}
+            <section className={'section section-alt ' + styles.rangeBand}>
                 <div className="container">
                     <figure className={styles.figure}>
                         <ImageReveal className={styles.range}>
@@ -138,7 +140,7 @@ export default function PartsPage() {
                                 src="/images/parts2.jpg"
                                 alt={c.rangeAlt}
                                 fill
-                                sizes="(min-width: 1344px) 1216px, 100vw"
+                                sizes="(max-width: 640px) 160vw, (max-width: 1023px) 130vw, (min-width: 1344px) 1216px, 100vw"
                                 className={styles.rangeImg}
                             />
                         </ImageReveal>
@@ -152,7 +154,7 @@ export default function PartsPage() {
             {/* Stores */}
             <section className="section" aria-labelledby="parts-visit-title">
                 <div className="container">
-                    <SectionHeader id="parts-visit-title" eyebrow={c.visitEyebrow} title={c.visitTitle} />
+                    <SectionHeader id="parts-visit-title" size="sm" eyebrow={c.visitEyebrow} title={c.visitTitle} />
                     <StoreCards tone="light" />
                 </div>
             </section>

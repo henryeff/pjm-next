@@ -1,34 +1,4 @@
 /* =========================================================================
-   Parts — hero art direction
-   ========================================================================= */
-
-/* Layout-neutral wrapper around <PageHero>; it only carries the phone overrides below. */
-.heroScope {
-    display: contents;
-}
-
-/* On phones the full-bleed photo would sit behind the (long) bottom-anchored text and hide the propeller.
-   Instead the photo becomes a band across the top of the hero that fades into the navy, and the text starts
-   just below it — so the propeller reads above the copy. */
-@media (max-width: 767px) {
-    .heroScope {
-        --parts-photo-h: min(74vw, 320px);
-    }
-
-    .heroScope > section {
-        padding-top: calc(var(--parts-photo-h) - 36px);
-    }
-
-    /* The hero's media layer (the element that directly holds the <img>). */
-    .heroScope section > div:has(> img) {
-        bottom: auto;
-        height: var(--parts-photo-h);
-        -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 56%, transparent 100%);
-        mask-image: linear-gradient(180deg, #000 0%, #000 56%, transparent 100%);
-    }
-}
-
-/* =========================================================================
    How to get the right part
    ========================================================================= */
 
@@ -99,6 +69,8 @@
     object-position: 45% 50%;
 }
 
+/* Pack shot (1920×850, white studio background). Wide screens show the whole range; narrower frames
+   crop in so the propeller boxes, gears and con-rod fill the frame instead of shrinking to a strip. */
 .range {
     aspect-ratio: 1920 / 850;
     border-radius: 12px;
@@ -108,6 +80,35 @@
 
 .rangeImg {
     object-fit: cover;
+    object-position: 50% 50%;
+}
+
+@media (max-width: 1023px) {
+    .range {
+        aspect-ratio: 16 / 9;
+    }
+
+    .rangeImg {
+        object-position: 45% 50%;
+    }
+}
+
+@media (max-width: 640px) {
+    .range {
+        aspect-ratio: 4 / 3;
+    }
+
+    .rangeImg {
+        object-position: 38% 52%;
+    }
+}
+
+/* Half the section rhythm on phones: the band is a single image, not a full section.
+   Two classes so it beats the global .section padding regardless of stylesheet order. */
+@media (max-width: 767px) {
+    .rangeBand:global(.section) {
+        padding-block: calc(var(--section-y) / 2);
+    }
 }
 
 /* Static caption in the eyebrow style: muted, no red rule.

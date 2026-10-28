@@ -1,20 +1,17 @@
 'use client';
 
-import Image from 'next/image';
-import Link from 'next/link';
 import styles from './page.module.css';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
 import Reveal from '@/components/motion/Reveal';
 import { StaggerGroup, StaggerItem } from '@/components/motion/Stagger';
-import ImageReveal from '@/components/motion/ImageReveal';
 import KickerLine from '@/components/motion/KickerLine';
 import PageHero from '@/components/ui/PageHero';
 import SectionHeader from '@/components/ui/SectionHeader';
 import Eyebrow from '@/components/ui/Eyebrow';
 import StoreCards from '@/components/ui/StoreCards';
 import CtaBand from '@/components/ui/CtaBand';
-import { ArrowRight } from '@/components/ui/Icons';
+import RangeTile from '@/components/ui/RangeTile';
 
 // Page-only labels. The story pillars quote the dealer's own wording from about.p2.
 const COPY = {
@@ -50,37 +47,6 @@ const COPY = {
     },
 };
 
-// The three "What we offer" tiles. Images are decorative: the tile title names the link.
-const TILES = [
-    {
-        key: 'outboards',
-        href: '/products/four-strokes',
-        src: '/images/FourStrokes/150pk.png',
-        fit: 'contain',
-        position: '50% 100%',
-        sizes: '(min-width: 900px) 18vw, 40vw',
-        variant: 'engine',
-    },
-    {
-        key: 'parts',
-        href: '/parts',
-        src: '/images/parts2.jpg',
-        fit: 'cover',
-        position: '40% 50%',
-        sizes: '(min-width: 900px) 33vw, 100vw',
-        variant: 'parts',
-    },
-    {
-        key: 'yamalube',
-        href: '/yamalube',
-        src: '/images/yamalube.jpg',
-        fit: 'cover',
-        position: '78% 50%',
-        sizes: '(min-width: 900px) 33vw, 100vw',
-        variant: 'lube',
-    },
-];
-
 export default function AboutPage() {
     const { language } = useLanguage();
     const t = translations[language].about;
@@ -91,18 +57,16 @@ export default function AboutPage() {
 
     return (
         <>
-            {/* The wrapper only re-tunes the mobile scrim token (home1 is mostly bright sky). */}
-            <div className={styles.heroScope}>
-                <PageHero
-                    image="/images/home1.jpg"
-                    imagePosition="50% 40%"
-                    imagePositionMobile="35% 50%"
-                    size="default"
-                    eyebrow={t.title}
-                    title="Perkasa Jaya Marine"
-                    lead={t.p1}
-                />
-            </div>
+            {/* Phones: photo band (both cowls in frame) with the copy on solid navy below it. */}
+            <PageHero
+                image="/images/home1.jpg"
+                imagePosition="50% 40%"
+                imagePositionMobile="62% 40%"
+                size="default"
+                eyebrow={t.title}
+                title="Perkasa Jaya Marine"
+                lead={t.p1}
+            />
 
             {/* Story: sticky summary on the left, the dealer's own words on the right */}
             <section className={'section ' + styles.story} aria-labelledby="about-story-title">
@@ -126,62 +90,58 @@ export default function AboutPage() {
                         </StaggerGroup>
                     </div>
 
+                    {/* Opening paragraph set as a lead; the closing mission paragraph carries a red rule. */}
                     <StaggerGroup className={styles.storyBody} stagger={0.1} amount={0.1}>
-                        {story.map((text, i) => (
-                            <StaggerItem
-                                as="p"
-                                key={i}
-                                className={i === 0 ? styles.paragraph + ' ' + styles.dropCap : styles.paragraph}
-                            >
-                                {text}
-                            </StaggerItem>
-                        ))}
+                        {story.map((text, i) => {
+                            let paragraphClass = styles.paragraph;
+                            if (i === 0) paragraphClass += ' ' + styles.storyLead;
+                            if (i === story.length - 1) paragraphClass += ' ' + styles.mission;
+
+                            return (
+                                <StaggerItem as="p" key={i} className={paragraphClass}>
+                                    {text}
+                                </StaggerItem>
+                            );
+                        })}
                     </StaggerGroup>
                 </div>
             </section>
 
-            {/* What we offer: three image tiles into the product areas */}
+            {/* What we offer: the shared RangeTile anatomy (media on top, label below) into each product area */}
             <section className="section section-alt" aria-labelledby="about-offer-title">
                 <div className="container">
                     <SectionHeader id="about-offer-title" eyebrow={nav.products} title={c.offerTitle} />
 
-                    <StaggerGroup as="ul" className={styles.tiles}>
-                        {TILES.map((tile, i) => {
-                            const tileClass = [
-                                styles.tile,
-                                styles[tile.variant],
-                                tile.variant === 'engine' ? 'stage-light floor-shadow' : '',
-                            ]
-                                .filter(Boolean)
-                                .join(' ');
-
-                            return (
-                                <StaggerItem as="li" key={tile.key} className={styles.tileCell}>
-                                    <Link href={tile.href} className={tileClass}>
-                                        <div className={styles.media}>
-                                            <ImageReveal className={styles.reveal} delay={0.1 + i * 0.08}>
-                                                <div className={styles.zoom}>
-                                                    <Image
-                                                        src={tile.src}
-                                                        alt=""
-                                                        fill
-                                                        sizes={tile.sizes}
-                                                        style={{ objectFit: tile.fit, objectPosition: tile.position }}
-                                                    />
-                                                </div>
-                                            </ImageReveal>
-                                        </div>
-
-                                        <div className={styles.label}>
-                                            <h3 className={styles.tileTitle}>
-                                                {c[tile.key]}
-                                                <ArrowRight className={styles.arrow} size={22} />
-                                            </h3>
-                                        </div>
-                                    </Link>
-                                </StaggerItem>
-                            );
-                        })}
+                    <StaggerGroup as="ul" className={styles.offer}>
+                        <StaggerItem as="li" className={styles.offerItem}>
+                            <RangeTile
+                                kind="engine"
+                                src="/images/FourStrokes/150pk.png"
+                                href="/products/four-strokes"
+                                title={c.outboards}
+                                sizes="(max-width: 767px) 80vw, 320px"
+                            />
+                        </StaggerItem>
+                        <StaggerItem as="li" className={styles.offerItem}>
+                            <RangeTile
+                                kind="photo"
+                                src="/images/parts2.jpg"
+                                objectPosition="40% 50%"
+                                href="/parts"
+                                title={c.parts}
+                                sizes="(max-width: 767px) 160vw, 680px"
+                            />
+                        </StaggerItem>
+                        <StaggerItem as="li" className={styles.offerItem}>
+                            <RangeTile
+                                kind="photo"
+                                src="/images/yamalube.jpg"
+                                objectPosition="78% 50%"
+                                href="/yamalube"
+                                title={c.yamalube}
+                                sizes="(max-width: 767px) 160vw, 680px"
+                            />
+                        </StaggerItem>
                     </StaggerGroup>
                 </div>
             </section>
@@ -204,7 +164,7 @@ export default function AboutPage() {
             {/* Stores */}
             <section className="section" aria-labelledby="about-visit-title">
                 <div className="container">
-                    <SectionHeader id="about-visit-title" eyebrow={c.visitEyebrow} title={c.visitTitle} />
+                    <SectionHeader id="about-visit-title" size="sm" eyebrow={c.visitEyebrow} title={c.visitTitle} />
                     <StoreCards tone="light" />
                 </div>
             </section>

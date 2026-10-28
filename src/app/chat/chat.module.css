@@ -1,42 +1,42 @@
 /* ==========================================================================
    Chat with Pevita
-   The document scrolls (no fixed height, no overflow hidden); the composer is
-   sticky at the bottom of the viewport while the chat page is on screen.
+   App-height page: the navy band, the thread (flex: 1) and the sticky composer fill the first viewport,
+   so the site footer starts below it. The document scrolls (no fixed height, no overflow hidden); the
+   composer is sticky at the bottom of the viewport while the chat page is on screen.
+   Every column (band, opener, suggestions, thread, composer) shares one width, --chat-w.
    ========================================================================== */
 
 .page {
+    --chat-w: 880px;
     min-height: calc(100svh - var(--nav-h));
     display: flex;
     flex-direction: column;
     background: #fff;
 }
 
-/* ---- Logo plates (header, empty state, assistant avatar) ---- */
-
-.plate {
-    flex: none;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    background: #fff;
-}
-
-.plate img,
-.avatar img {
-    display: block;
-    object-fit: contain;
+/* Empty state: the suggestions' grey runs on behind the composer's fade, so no white strip shows. */
+.pageEmpty {
+    background: var(--surface-alt);
 }
 
 /* ==========================================================================
-   1) Header band
+   1) Navy band — a slim identity bar during a conversation; grows into the opener when empty
    ========================================================================== */
 
 .band {
-    background: linear-gradient(180deg, var(--primary) 0%, var(--primary-900) 100%);
+    position: relative;
+    overflow: clip;
+    isolation: isolate;
+    /* Same surface as PageHero (no photo), with the bathymetric ContourLines inside. */
+    background:
+        radial-gradient(60% 90% at 85% 0%, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 70%),
+        linear-gradient(160deg, var(--primary) 0%, var(--primary-900) 100%);
 }
 
 .bandInner {
-    max-width: 880px;
+    position: relative;
+    z-index: 1;
+    max-width: var(--chat-w);
     margin: 0 auto;
     padding: 18px var(--gutter);
     display: flex;
@@ -106,80 +106,100 @@
 }
 
 /* ==========================================================================
-   2) Thread
+   2) Opener (empty state)
    ========================================================================== */
 
-.thread {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 820px;
+/* Positioned wrapper: the band clips its ContourLines, so the mark that straddles the band's bottom
+   edge lives beside it, not inside it. z-index keeps the mark above the suggestions below. */
+.opener {
+    position: relative;
+    z-index: 1;
+}
+
+.bandOpen {
+    padding: clamp(40px, 6vw, 72px) 0 64px;
+}
+
+.openerInner {
+    position: relative;
+    z-index: 1;
+    max-width: var(--chat-w);
     margin: 0 auto;
-    padding: 32px var(--gutter) 24px;
-    gap: 20px;
+    padding-inline: var(--gutter);
 }
 
-/* Zero-height scroll target. The negative margin cancels the flex gap before it; the scroll margin keeps
-   the newest message clear of the sticky composer. */
-.end {
-    height: 0;
-    margin-top: -20px;
-    scroll-margin-bottom: 140px;
+.openerTitle {
+    margin: 16px 0 0;
 }
 
-/* ==========================================================================
-   3) Empty state
-   ========================================================================== */
-
-.empty {
-    margin-block: auto;
-    text-align: center;
+.openerLead {
+    margin-top: 16px;
 }
 
-.emptyPlate {
-    margin: 0 auto;
-    border: 1px solid var(--hairline);
-    box-shadow: 0 10px 30px rgba(var(--primary-rgb), 0.10);
-}
-
-.emptyTitle {
-    margin: 20px 0 8px;
-    font-size: clamp(1.75rem, 1.2rem + 2vw, 2.5rem);
-    font-weight: 800;
-    line-height: 1.1;
-    letter-spacing: -0.025em;
-    color: var(--primary);
-}
-
-.emptyLead {
-    max-width: 44ch;
-    margin: 0 auto;
-    font-size: 1.125rem;
+.openerHint {
+    max-width: 60ch;
+    margin-top: 10px;
+    font-size: 0.9375rem;
     line-height: 1.55;
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.7);
 }
 
-.emptyHint {
-    max-width: 56ch;
-    margin: 10px auto 0;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    color: var(--text-muted);
+.openerCalls {
+    margin-top: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* 44px tap target (the global .btn-sm is 40px). */
+.callBtn {
+    min-height: 44px;
+    font-variant-numeric: tabular-nums;
+}
+
+/* The number never breaks; on the narrowest phones the label wraps before it (see Mobile). */
+.callNum {
+    white-space: nowrap;
+}
+
+/* Pevita's mark, at the column's left edge, centred on the band's bottom edge. */
+.openerMark {
+    position: absolute;
+    bottom: 0;
+    left: max(var(--gutter), calc(50% - var(--chat-w) / 2 + var(--gutter)));
+    z-index: 2;
+    transform: translateY(50%);
+}
+
+/* ---- Suggestions (below the band) ---- */
+
+.starters {
+    flex: 1;
+    padding: 56px 0 32px;
+}
+
+.startersInner {
+    max-width: var(--chat-w);
+    margin: 0 auto;
+    padding-inline: var(--gutter);
 }
 
 .suggestions {
     list-style: none;
-    margin-top: 32px;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 12px;
-    text-align: left;
 }
 
 @media (min-width: 640px) {
     .suggestions {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .suggestions {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
 
@@ -193,12 +213,12 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    min-height: 56px;
-    padding: 12px 16px;
+    min-height: 64px;
+    padding: 12px 16px 12px 14px;
     text-align: left;
     background: #fff;
     border: 1px solid var(--hairline);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     color: var(--text-main);
     transition:
         border-color var(--duration-fast),
@@ -215,7 +235,9 @@
     border-radius: 50%;
     background: var(--surface-alt);
     color: var(--primary);
-    transition: background-color var(--duration-fast);
+    transition:
+        background-color var(--duration-fast),
+        color var(--duration-fast);
 }
 
 .suggestionLabel {
@@ -227,23 +249,53 @@
 }
 
 .suggestion:focus-visible {
-    border-color: rgba(0, 30, 61, 0.3);
+    border-color: rgba(var(--primary-rgb), 0.3);
 }
 
 @media (hover: hover) {
     .suggestion:hover {
-        border-color: rgba(0, 30, 61, 0.3);
+        border-color: rgba(var(--primary-rgb), 0.3);
         transform: translateY(-2px);
         box-shadow: 0 8px 20px rgba(var(--primary-rgb), 0.08);
     }
 
     .suggestion:hover .suggestionIcon {
-        background: var(--surface-steel);
+        background: var(--primary);
+        color: #fff;
     }
 }
 
 .suggestion:active {
     transform: translateY(0);
+}
+
+/* ==========================================================================
+   3) Thread
+   ========================================================================== */
+
+.thread {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: var(--chat-w);
+    margin: 0 auto;
+    padding: 32px var(--gutter) 24px;
+    gap: 20px;
+}
+
+/* Empty state: the suggestions take the free height; the (still mounted) live region collapses. */
+.threadEmpty {
+    flex: none;
+    padding: 0;
+}
+
+/* Zero-height scroll target. The negative margin cancels the flex gap before it; the scroll margin keeps
+   the newest message clear of the sticky composer. */
+.end {
+    height: 0;
+    margin-top: -20px;
+    scroll-margin-bottom: 140px;
 }
 
 /* ==========================================================================
@@ -277,14 +329,9 @@
     align-items: start;
 }
 
+/* AssistantMark (32px) draws itself; this only nudges it toward the bubble's first line. */
 .avatar {
-    width: 32px;
-    height: 32px;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    background: #fff;
-    border: 1px solid var(--hairline);
+    margin-top: 2px;
 }
 
 .bubbleAssistant {
@@ -496,9 +543,18 @@
     background: linear-gradient(to top, #fff 75%, rgba(255, 255, 255, 0));
 }
 
+/* Empty state: the composer sits on the suggestions' grey surface, so the field turns white. */
+.composerAlt {
+    background: linear-gradient(to top, var(--surface-alt) 75%, rgba(243, 245, 248, 0));
+}
+
+.composerAlt .form {
+    background: #fff;
+}
+
 /* Matches the thread's content width so the field lines up with the bubbles. */
 .composerInner {
-    max-width: calc(820px - 2 * var(--gutter));
+    max-width: calc(var(--chat-w) - 2 * var(--gutter));
     margin: 0 auto;
 }
 
@@ -591,33 +647,30 @@
     }
 }
 
-/* Phones: the band right above already shows Pevita's avatar, so the big plate goes and the greeting
-   tightens up — the h1 and all six suggestions fit above the composer on a 390 × 844 screen. */
 @media (max-width: 639px) {
     .thread {
         padding-top: 24px;
     }
 
-    .emptyPlate {
-        display: none;
+    .threadEmpty {
+        padding: 0;
     }
 
-    .emptyTitle {
-        margin-top: 0;
+    /* The two store calls stack and go full width; below ~360px the label may wrap onto two lines. */
+    .callBtn {
+        flex: 1 1 100%;
+        white-space: normal;
+        padding-block: 10px;
     }
 
-    .emptyLead {
-        font-size: 1.0625rem;
+    .callText {
+        min-width: 0;
+        line-height: 1.35;
+        text-align: center;
     }
 
     .suggestions {
-        margin-top: 24px;
         gap: 10px;
-    }
-
-    .suggestion {
-        min-height: 48px;
-        padding: 5px 14px 5px 6px;
     }
 
     .bubbleUser,
