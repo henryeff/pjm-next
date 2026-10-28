@@ -1,0 +1,187 @@
+'use client';
+
+import { useRef, useState } from 'react';
+import Link from 'next/link';
+import { AnimatePresence, motion, useInView } from 'framer-motion';
+import { useLanguage } from '@/context/LanguageContext';
+import { translations } from '@/utils/translations';
+import { EASE_OUT, MOTION } from '@/components/motion/Reveal';
+import PageHero from '@/components/ui/PageHero';
+import CtaBand from '@/components/ui/CtaBand';
+import ProductCard from '@/components/ui/ProductCard';
+import { getHp, hpBucket, seriesPath } from '@/components/ui/productUtils';
+import styles from '@/app/products/four-strokes/page.module.css';
+
+const COPY = {
+    en: {
+        eyebrow: 'Yamaha Outboards',
+        title: { four: '4-Stroke Outboards', two: '2-Stroke Outboards' },
+        lead: {
+            four: "Experience the pinnacle of marine engineering with Yamaha's 4-stroke lineup. Cleaner, Quieter, Stronger.",
+            two: 'Proven reliability and easy maintenance. The choice of professionals for decades.',
+        },
+        typeNav: 'Outboard type',
+        models: (n) => n + (n === 1 ? ' model' : ' models'),
+        filterLabel: 'Filter by power',
+        filters: { all: 'All', small: 'Up to 25 HP', mid: '30–115 HP', large: '150 HP and up' },
+        showing: (n, total) => 'Showing ' + n + ' of ' + total + ' models',
+        chatQuery: {
+            four: 'Help me choose a 4-stroke outboard.',
+            two: 'Help me choose a 2-stroke outboard.',
+        },
+    },
+    id: {
+        eyebrow: 'Mesin Tempel Yamaha',
+        title: { four: 'Mesin Tempel 4 Tak', two: 'Mesin Tempel 2 Tak' },
+        lead: {
+            four: 'Rasakan puncak rekayasa kelautan dengan jajaran mesin 4 tak Yamaha. Lebih bersih, lebih senyap, lebih bertenaga.',
+            two: 'Keandalan teruji dan perawatan mudah. Pilihan para profesional selama puluhan tahun.',
+        },
+        typeNav: 'Jenis mesin tempel',
+        models: (n) => n + ' model',
+        filterLabel: 'Saring berdasarkan tenaga',
+        filters: { all: 'Semua', small: 'Sampai 25 PK', mid: '30–115 PK', large: '150 PK ke atas' },
+        showing: (n, total) => 'Menampilkan ' + n + ' dari ' + total + ' model',
+        chatQuery: {
+            four: 'Bantu saya memilih mesin tempel 4 tak.',
+            two: 'Bantu saya memilih mesin tempel 2 tak.',
+        },
+    },
+};
+
+const FILTERS = ['all', 'small', 'mid', 'large'];
+
+// Filtering: cards leave/enter with opacity + a 0.96 scale; the rest re-flow with a layout animation.
+const FILTER_DURATION = 0.25;
+const LAYOUT_TRANSITION = { duration: 0.4, ease: EASE_OUT };
+const SHOWN = { opacity: 1, y: 0, scale: 1 };
+const EXIT = { opacity: 0, scale: 0.96, transition: { duration: FILTER_DURATION, ease: EASE_OUT } };
+const PILL_SPRING = { type: 'spring', stiffness: 480, damping: 38 };
+
+/**
+ * Engine range listing: navy hero with a 4S / 2S switch, power filter chips and a
+ * 2 / 3 / 4-column grid of ProductCards. series: 'four' | 'two'.
+ */
+export default function ProductGrid({ products = [], series = 'four' }) {
+    const { language } = useLanguage();
+    const lang = language === 'id' ? 'id' : 'en';
+    const c = COPY[lang];
+    const nav = translations[lang].navbar;
+    const key = series === 'two' ? 'two' : 'four';
+
+    const [filter, setFilter] = useState('all');
+    // Becomes true after the first chip press: from then on entering cards scale in instead of rising.
+    const [filtered, setFiltered] = useState(false);
+
+    const gridRef = useRef(null);
+    const inView = useInView(gridRef, { once: true, amount: 0.05 });
+
+    const items = products.map((product) => ({ product, bucket: hpBucket(getHp(product.name)) }));
+    const counts = { all: items.length, small: 0, mid: 0, large: 0 };
+    items.forEach((item) => {
+        if (item.bucket) counts[item.bucket] += 1;
+    });
+    const visible = filter === 'all' ? items : items.filter((item) => item.bucket === filter);
+
+    const choose = (next) => {
+        if (next === filter) return;
+        setFilter(next);
+        setFiltered(true);
+    };
+
+    const types = [
+        { id: 'four', label: nav.fourStrokes, href: seriesPath('four') },
+        { id: 'two', label: nav.twoStrokes, href: seriesPath('two') },
+    ];
+
+    return (
+        <>
+            <PageHero size="compact" eyebrow={c.eyebrow} title={c.title[key]} lead={c.lead[key]}>
+                <nav aria-label={c.typeNav} className={styles.segmented}>
+                    {types.map((type) => {
+                        const active = type.id === key;
+                        return (
+                            <Link
+                                key={type.id}
+                                href={type.href}
+                                aria-current={active ? 'page' : undefined}
+                                className={styles.segment}
+                            >
+                                {type.label}
+                            </Link>
+                        );
+                    })}
+                </nav>
+                <p className={styles.heroCount}>{c.models(products.length)}</p>
+            </PageHero>
+
+            <section className={'section ' + styles.listing}>
+                <div className="container">
+                    <motion.div
+                        role="group"
+                        aria-label={c.filterLabel}
+                        className={'no-scrollbar ' + styles.chips}
+                        layoutScroll
+                    >
+                        {FILTERS.filter((id) => counts[id] > 0).map((id) => {
+                            const active = id === filter;
+                            return (
+                                <button
+                                    key={id}
+                                    type="button"
+                                    aria-pressed={active}
+                                    className={styles.chip}
+                                    onClick={() => choose(id)}
+                                >
+                                    {active && (
+                                        <motion.span
+                                            layoutId={'pjm-power-chip-' + key}
+                                            className={styles.chipPill}
+                                            transition={PILL_SPRING}
+                                            aria-hidden="true"
+                                        />
+                                    )}
+                                    <span className={styles.chipLabel}>{c.filters[id]}</span>
+                                    <span className={styles.chipCount}>{counts[id]}</span>
+                                </button>
+                            );
+                        })}
+                    </motion.div>
+
+                    <p className="visually-hidden" aria-live="polite" aria-atomic="true">
+                        {filtered ? c.showing(visible.length, items.length) : ''}
+                    </p>
+
+                    <ul ref={gridRef} className={styles.grid}>
+                        <AnimatePresence mode="popLayout">
+                            {visible.map(({ product }, i) => (
+                                <motion.li
+                                    key={product.id}
+                                    layout
+                                    className={styles.item}
+                                    initial={filtered ? { opacity: 0, scale: 0.96 } : { opacity: 0, y: MOTION.y }}
+                                    animate={inView ? SHOWN : undefined}
+                                    exit={EXIT}
+                                    transition={
+                                        filtered
+                                            ? { duration: FILTER_DURATION, ease: EASE_OUT, layout: LAYOUT_TRANSITION }
+                                            : { duration: 0.6, ease: EASE_OUT, delay: i * 0.06, layout: LAYOUT_TRANSITION }
+                                    }
+                                >
+                                    <ProductCard
+                                        product={product}
+                                        series={key}
+                                        headingLevel="h2"
+                                        sizes="(max-width: 899px) 48vw, (max-width: 1199px) 31vw, 300px"
+                                    />
+                                </motion.li>
+                            ))}
+                        </AnimatePresence>
+                    </ul>
+                </div>
+            </section>
+
+            <CtaBand chatQuery={c.chatQuery[key]} />
+        </>
+    );
+}

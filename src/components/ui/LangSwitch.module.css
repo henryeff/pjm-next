@@ -1,0 +1,58 @@
+.switch {
+    display: inline-flex;
+    align-items: stretch;
+    padding: 3px;
+    gap: 2px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 999px;
+}
+
+.option {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.72);
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.active {
+    background: #fff;
+    color: var(--primary);
+    cursor: default;
+}
+
+@media (hover: hover) {
+    .option:not(.active):hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.08);
+    }
+}
+
+/* ---- Pill: compact, for bars ---- */
+.pill {
+    height: 36px;
+}
+
+.pill .option {
+    min-width: 40px;
+    padding: 0 12px;
+}
+
+/* ---- Segmented: full width, for the mobile menu ---- */
+.segmented {
+    display: flex;
+    width: 100%;
+}
+
+.segmented .option {
+    flex: 1 1 50%;
+    height: 44px;
+    font-size: 0.875rem;
+}

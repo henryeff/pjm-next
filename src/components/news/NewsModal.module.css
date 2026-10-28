@@ -1,0 +1,126 @@
+/* Article dialog — sits above the sticky navbar (1000) and the mobile menu (1100). */
+
+.root {
+    position: fixed;
+    inset: 0;
+    z-index: 1500;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 20, 42, 0.7);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
+
+.panel {
+    position: relative;
+    width: 100%;
+    max-width: 760px;
+    max-height: calc(100svh - 48px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: 0 40px 80px -24px rgba(0, 20, 42, 0.55);
+}
+
+.panel:focus-visible {
+    outline: 2px solid var(--secondary);
+    outline-offset: -2px;
+}
+
+/* Zero-height sticky bar: the button floats over the image and follows the scroll. */
+.closeBar {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    height: 0;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.close {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    margin: 12px 12px 0 0;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.94);
+    color: var(--primary);
+    box-shadow: 0 4px 16px rgba(0, 20, 42, 0.2);
+    transition: background-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+}
+
+.close svg {
+    transition: transform 0.25s var(--ease-out);
+}
+
+@media (hover: hover) {
+    .close:hover {
+        background: var(--primary);
+        color: #fff;
+    }
+
+    .close:hover svg {
+        transform: rotate(90deg);
+    }
+}
+
+.media {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: var(--surface-steel);
+}
+
+.img {
+    object-fit: cover;
+    object-position: center 30%;
+}
+
+.body {
+    padding: clamp(24px, 4vw, 40px);
+}
+
+.panel .title {
+    margin: 12px 0 24px;
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--primary);
+}
+
+.content {
+    max-width: var(--measure);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: var(--text-main);
+    overflow-wrap: anywhere;
+}
+
+.content p {
+    margin: 0 0 0.6em;
+}
+
+/* Phones: full-screen sheet. */
+@media (max-width: 639px) {
+    .root {
+        display: block;
+        padding: 0;
+    }
+
+    /* 100% of the fixed root = the live viewport, so no strip shows when the browser bar collapses. */
+    .panel {
+        height: 100svh;
+        height: 100%;
+        max-height: none;
+        border-radius: 0;
+    }
+}

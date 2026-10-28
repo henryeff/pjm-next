@@ -1,41 +1,131 @@
-import styles from './Footer.module.css';
+'use client';
+
 import Link from 'next/link';
-import { StaggerGroup, StaggerItem } from '@/components/motion/Stagger';
+import Image from 'next/image';
+import styles from './Footer.module.css';
+import { useLanguage } from '@/context/LanguageContext';
+import { translations } from '@/utils/translations';
+import Reveal from '@/components/motion/Reveal';
+import LangSwitch from '@/components/ui/LangSwitch';
+import { STORES } from '@/components/ui/stores';
+import { Chat, Phone, ExternalLink } from '@/components/ui/Icons';
+
+const COPY = {
+    en: {
+        tagline: 'Your trusted Yamaha Marine dealer in Padang. Providing sales, service, and spare parts.',
+        chat: 'Chat with Pevita',
+        directions: 'Directions',
+        company: 'Company',
+        rights: 'All rights reserved.',
+    },
+    id: {
+        tagline: 'Dealer Yamaha Marine terpercaya Anda di Padang. Melayani penjualan, servis, dan suku cadang.',
+        chat: 'Chat dengan Pevita',
+        directions: 'Petunjuk arah',
+        company: 'Perusahaan',
+        rights: 'Hak cipta dilindungi.',
+    },
+};
 
 const Footer = () => {
+    const { language } = useLanguage();
+    const t = translations[language].navbar;
+    const c = COPY[language] || COPY.en;
+
+    const productLinks = [
+        { href: '/products/four-strokes', label: t.fourStrokes },
+        { href: '/products/two-strokes', label: t.twoStrokes },
+        { href: '/parts', label: t.parts },
+        { href: '/yamalube', label: t.yamalube },
+    ];
+
+    const companyLinks = [
+        { href: '/about', label: t.about },
+        { href: '/news', label: t.news },
+        { href: '/chat', label: t.chat },
+        { href: '/contact', label: t.contact },
+    ];
+
     return (
-        <footer className={styles.footer}>
-            <StaggerGroup className={styles.container} as="div" amount={0.1}>
-                <StaggerItem className={styles.column}>
-                    <h3>Perkasa Jaya Marine</h3>
-                    <p>Your trusted Yamaha Marine dealer in Padang. Providing sales, service, and spare parts.</p>
-                </StaggerItem>
+        <footer className={'on-dark ' + styles.footer}>
+            <div className="container">
+                <Reveal className={styles.brandRow}>
+                    <div className={styles.brand}>
+                        <Link href="/" className={styles.logo}>
+                            <span className={styles.logoPlate}>
+                                <Image src="/images/logo.png" alt="" width={34} height={34} className={styles.logoImg} />
+                            </span>
+                            <span className={styles.brandName}>Perkasa Jaya Marine</span>
+                        </Link>
+                        <p className={styles.tagline}>{c.tagline}</p>
+                    </div>
+                    <Link href="/chat" className={'btn btn-primary ' + styles.cta}>
+                        <Chat />
+                        {c.chat}
+                    </Link>
+                </Reveal>
 
-                <StaggerItem className={styles.column}>
-                    <h3>Toko Tunggal Jaya</h3>
-                    <p>Jalan M. Yamin SH No 144</p>
-                    <p>Padang, West Sumatera</p>
-                    <p>Phone: +62 751 36628</p>
-                </StaggerItem>
+                <div className={styles.divider} />
 
-                <StaggerItem className={styles.column}>
-                    <h3>Perkasa Jaya Marine</h3>
-                    <p>Jalan Imam Bonjol No. 27D</p>
-                    <p>Padang, West Sumatera</p>
-                    <p>Phone: +62 751 840010</p>
-                </StaggerItem>
+                <div className={styles.grid}>
+                    {STORES.map((store) => (
+                        <div key={store.id} className={`${styles.column} ${styles.storeColumn}`}>
+                            <h2 className={styles.storeName}>{store.name}</h2>
+                            <address className={styles.address}>
+                                <span>{store.street}</span>
+                                <span>{store.city[language] || store.city.en}</span>
+                            </address>
+                            <ul className={styles.list}>
+                                <li>
+                                    <a href={store.tel} className={styles.iconLink}>
+                                        <Phone size={16} />
+                                        {store.phone}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href={store.mapsUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={styles.iconLink}
+                                    >
+                                        <ExternalLink size={16} />
+                                        {c.directions}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    ))}
 
-                <StaggerItem className={styles.column}>
-                    <h3>Quick Links</h3>
-                    <Link href="/">Home</Link>
-                    <Link href="/products/four-strokes">4 Strokes</Link>
-                    <Link href="/products/two-strokes">2 Strokes</Link>
-                    <Link href="/news">News</Link>
-                    <Link href="/contact">Contact</Link>
-                </StaggerItem>
-            </StaggerGroup>
-            <div className={styles.copyright}>
-                <p>&copy; {new Date().getFullYear()} Perkasa Jaya Marine. All rights reserved.</p>
+                    <nav className={styles.column} aria-label={t.products}>
+                        <h2 className={styles.heading}>{t.products}</h2>
+                        <ul className={styles.list}>
+                            {productLinks.map((link) => (
+                                <li key={link.href}>
+                                    <Link href={link.href}>{link.label}</Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+
+                    <nav className={styles.column} aria-label={c.company}>
+                        <h2 className={styles.heading}>{c.company}</h2>
+                        <ul className={styles.list}>
+                            {companyLinks.map((link) => (
+                                <li key={link.href}>
+                                    <Link href={link.href}>{link.label}</Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+                </div>
+
+                <div className={styles.bottom}>
+                    <p className={styles.copyright}>
+                        &copy; {new Date().getFullYear()} Perkasa Jaya Marine. {c.rights}
+                    </p>
+                    <LangSwitch variant="pill" />
+                </div>
             </div>
         </footer>
     );

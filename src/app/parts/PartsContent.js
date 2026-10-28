@@ -1,49 +1,163 @@
 'use client';
 
-import styles from './page.module.css';
 import Image from 'next/image';
+import Link from 'next/link';
+import styles from './page.module.css';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
 import Reveal from '@/components/motion/Reveal';
+import ImageReveal from '@/components/motion/ImageReveal';
 import { StaggerGroup, StaggerItem } from '@/components/motion/Stagger';
+import PageHero from '@/components/ui/PageHero';
+import SectionHeader from '@/components/ui/SectionHeader';
+import StoreCards from '@/components/ui/StoreCards';
+import CtaBand from '@/components/ui/CtaBand';
+import { Chat } from '@/components/ui/Icons';
 
-const partsImages = [
-    { src: '/images/parts1.jpg', alt: 'Genuine Spare Parts' },
-    { src: '/images/parts2.jpg', alt: 'Yamaha Components' },
-];
-
-
+// Page-only labels (translations.js only carries the title and description for this page).
+const COPY = {
+    en: {
+        heroEyebrow: 'Parts & accessories',
+        heroAlt: 'Genuine Spare Parts',
+        askPart: 'Ask about a part',
+        contactStore: 'Contact a store',
+        chatQuery: "I'm looking for a Yamaha genuine part for my outboard.",
+        howEyebrow: 'How it works',
+        howTitle: 'How to get the right part',
+        steps: [
+            'Tell us your engine model',
+            'Chat with us or call a store',
+            'Pick up at one of our two stores in Padang',
+        ],
+        pistonAlt: 'Outboard engine piston and piston pin',
+        pistonCaption: 'Engine components',
+        rangeAlt: 'Yamaha Components',
+        rangeCaption: 'Yamaha Genuine Parts & Accessories',
+        visitEyebrow: 'Visit us',
+        visitTitle: 'Two stores in Padang',
+        ctaTitle: 'Not sure which part you need?',
+    },
+    id: {
+        heroEyebrow: 'Suku cadang & aksesori',
+        heroAlt: 'Suku Cadang Asli',
+        askPart: 'Tanya suku cadang',
+        contactStore: 'Hubungi toko',
+        chatQuery: 'Saya mencari suku cadang asli Yamaha untuk mesin tempel saya.',
+        howEyebrow: 'Cara kerjanya',
+        howTitle: 'Cara mendapatkan suku cadang yang tepat',
+        steps: [
+            'Sebutkan model mesin Anda',
+            'Chat atau telepon toko kami',
+            'Ambil di salah satu dari dua toko kami di Padang',
+        ],
+        pistonAlt: 'Piston dan pin piston mesin tempel',
+        pistonCaption: 'Komponen mesin',
+        rangeAlt: 'Komponen Yamaha',
+        rangeCaption: 'Suku Cadang & Aksesori Asli Yamaha',
+        visitEyebrow: 'Kunjungi kami',
+        visitTitle: 'Dua toko di Padang',
+        ctaTitle: 'Tidak yakin suku cadang mana yang Anda butuhkan?',
+    },
+};
 
 export default function PartsPage() {
     const { language } = useLanguage();
     const t = translations[language].parts;
+    const c = COPY[language] || COPY.en;
 
     return (
-        <div className={styles.container}>
-            <Reveal as="header" className={styles.header}>
-                <h1 className={styles.title}>{t.title}</h1>
-                <span className={styles.divider} aria-hidden="true" />
-                <p className={styles.description}>
-                    {t.description}
-                </p>
-            </Reveal>
+        <>
+            {/* The wrapper (display: contents) only art-directs the hero photo on phones — see page.module.css. */}
+            <div className={styles.heroScope}>
+                <PageHero
+                    image="/images/parts1.jpg"
+                    imageAlt={c.heroAlt}
+                    imagePosition="50% 50%"
+                    imagePositionMobile="20% 50%"
+                    size="default"
+                    eyebrow={c.heroEyebrow}
+                    title={t.title}
+                    lead={t.description}
+                >
+                    <Link
+                        href={'/chat?q=' + encodeURIComponent(c.chatQuery)}
+                        className="btn btn-primary btn-lg btn-block-sm"
+                    >
+                        <Chat />
+                        {c.askPart}
+                    </Link>
+                    <Link href="/contact" className="btn btn-ghost btn-lg btn-block-sm">
+                        {c.contactStore}
+                    </Link>
+                </PageHero>
+            </div>
 
-            <StaggerGroup className={styles.gallery} stagger={0.15} amount={0.1}>
-                {partsImages.map((img, idx) => (
-                    <StaggerItem key={idx} className={styles.card}>
-                        <div className={styles.imageWrap}>
+            {/* How to get the right part: three steps beside an engine-component macro */}
+            <section className="section" aria-labelledby="parts-how-title">
+                <div className={'container ' + styles.howGrid}>
+                    <div className={styles.howText}>
+                        <SectionHeader id="parts-how-title" eyebrow={c.howEyebrow} title={c.howTitle} />
+
+                        {/* role="list" keeps list semantics in Safari once list-style is removed. */}
+                        <StaggerGroup as="ol" role="list" className={styles.steps} stagger={0.1}>
+                            {/* Index keys: the rows must survive a language switch after they've revealed. */}
+                            {c.steps.map((step, i) => (
+                                <StaggerItem as="li" key={i} className={styles.step} y={16}>
+                                    <span className={styles.stepNum} aria-hidden="true">
+                                        {String(i + 1).padStart(2, '0')}
+                                    </span>
+                                    <p className={styles.stepText}>{step}</p>
+                                </StaggerItem>
+                            ))}
+                        </StaggerGroup>
+                    </div>
+
+                    <figure className={styles.figure}>
+                        <ImageReveal className={styles.photo}>
                             <Image
-                                src={img.src}
-                                alt={img.alt}
-                                width={500}
-                                height={400}
-                                className={styles.image}
+                                src="/images/PartContent/3.jpg"
+                                alt={c.pistonAlt}
+                                fill
+                                sizes="(min-width: 1344px) 576px, (min-width: 1024px) 45vw, 100vw"
+                                className={styles.photoImg}
                             />
-                        </div>
-                        <div className={styles.caption}>{img.alt}</div>
-                    </StaggerItem>
-                ))}
-            </StaggerGroup>
-        </div>
+                        </ImageReveal>
+                        <Reveal as="figcaption" className={'eyebrow eyebrow-plain ' + styles.caption} delay={0.2} y={8}>
+                            {c.pistonCaption}
+                        </Reveal>
+                    </figure>
+                </div>
+            </section>
+
+            {/* Range band: the genuine parts & accessories pack shot, full container width */}
+            <section className="section section-alt">
+                <div className="container">
+                    <figure className={styles.figure}>
+                        <ImageReveal className={styles.range}>
+                            <Image
+                                src="/images/parts2.jpg"
+                                alt={c.rangeAlt}
+                                fill
+                                sizes="(min-width: 1344px) 1216px, 100vw"
+                                className={styles.rangeImg}
+                            />
+                        </ImageReveal>
+                        <Reveal as="figcaption" className={'eyebrow eyebrow-plain ' + styles.caption} delay={0.2} y={8}>
+                            {c.rangeCaption}
+                        </Reveal>
+                    </figure>
+                </div>
+            </section>
+
+            {/* Stores */}
+            <section className="section" aria-labelledby="parts-visit-title">
+                <div className="container">
+                    <SectionHeader id="parts-visit-title" eyebrow={c.visitEyebrow} title={c.visitTitle} />
+                    <StoreCards tone="light" />
+                </div>
+            </section>
+
+            <CtaBand chatQuery={c.chatQuery} title={c.ctaTitle} />
+        </>
     );
 }

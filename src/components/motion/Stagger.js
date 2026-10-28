@@ -1,30 +1,34 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { EASE_OUT } from './Reveal';
+import { EASE_OUT, MOTION } from './Reveal';
 
 /**
  * Wraps a group of StaggerItem children and reveals them in sequence
  * as the group scrolls into view. Use for grids/lists (cards, features).
+ * Pass `immediate` for above-the-fold groups: they animate on mount.
  */
 export function StaggerGroup({
     children,
     className,
-    stagger = 0.12,
+    stagger = MOTION.stagger,
     delayChildren = 0,
     once = true,
     amount = 0.15,
     as = 'div',
+    immediate = false,
     ...rest
 }) {
     const MotionTag = motion[as] || motion.div;
+    const trigger = immediate
+        ? { animate: 'visible' }
+        : { whileInView: 'visible', viewport: { once, amount } };
 
     return (
         <MotionTag
             className={className}
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once, amount }}
+            {...trigger}
             variants={{
                 hidden: {},
                 visible: {
@@ -41,7 +45,7 @@ export function StaggerGroup({
 export function StaggerItem({
     children,
     className,
-    y = 24,
+    y = MOTION.y,
     duration = 0.6,
     as = 'div',
     ...rest

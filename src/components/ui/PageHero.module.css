@@ -1,0 +1,147 @@
+.hero {
+    position: relative;
+    overflow: clip;
+    color: #fff;
+    background:
+        radial-gradient(60% 90% at 85% 0%, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 70%),
+        linear-gradient(160deg, var(--primary) 0%, var(--primary-900) 100%);
+    isolation: isolate;
+}
+
+/* ---- Sizes ---- */
+.compact {
+    padding: calc(var(--section-y) * 0.7) 0 calc(var(--section-y) * 0.6);
+}
+
+.default {
+    min-height: clamp(360px, 48vh, 540px);
+}
+
+.tall {
+    min-height: clamp(520px, 72vh, 760px);
+}
+
+.default,
+.tall {
+    display: flex;
+    align-items: flex-end;
+    padding-top: calc(var(--section-y) * 0.9);
+    padding-bottom: calc(var(--section-y) * 0.75);
+}
+
+/* ---- Photo variant ---- */
+.media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.img {
+    object-fit: cover;
+    object-position: var(--pos, 50% 50%);
+}
+
+.scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: var(--scrim-bottom);
+    pointer-events: none;
+}
+
+@media (min-width: 768px) {
+    .scrim {
+        background: var(--scrim-left);
+    }
+}
+
+@media (max-width: 767px) {
+    .img {
+        object-position: var(--pos-m, var(--pos, 50% 50%));
+    }
+}
+
+/* ---- Content ---- */
+.inner {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+}
+
+.content {
+    max-width: 760px;
+}
+
+.breadcrumbs {
+    margin-bottom: 20px;
+}
+
+.breadcrumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+    list-style: none;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.breadcrumbs li {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.breadcrumbs li + li::before {
+    content: '/';
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.breadcrumbs a {
+    color: inherit;
+}
+
+.breadcrumbs [aria-current='page'] {
+    color: rgba(255, 255, 255, 0.92);
+}
+
+@media (hover: hover) {
+    .breadcrumbs a:hover {
+        color: #fff;
+        text-decoration: underline;
+        text-underline-offset: 4px;
+    }
+}
+
+.hero .title {
+    color: #fff;
+    margin: 16px 0 0;
+}
+
+.breadcrumbs + .title {
+    margin-top: 0;
+}
+
+.lead {
+    font-size: var(--fs-lead);
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.82);
+    max-width: 56ch;
+    margin-top: 20px;
+}
+
+.actions {
+    margin-top: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+@media (max-width: 640px) {
+    /* Buttons share the row on phones and go full width when they wrap. */
+    .actions > :global(.btn):not(:global(.btn-link)) {
+        flex: 1 1 auto;
+    }
+}

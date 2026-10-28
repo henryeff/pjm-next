@@ -1,9 +1,7 @@
 import styles from '../../four-strokes/[id]/page.module.css'; // Reuse 4-strokes styles
-import Image from 'next/image';
 import twoStokesData from '@/data/two-strokes.json';
 import Link from 'next/link';
-import Reveal from '@/components/motion/Reveal';
-import { StaggerGroup, StaggerItem } from '@/components/motion/Stagger';
+import ProductDetail from '@/components/products/ProductDetail';
 
 export async function generateStaticParams() {
     return twoStokesData.map((product) => ({
@@ -30,59 +28,33 @@ export async function generateMetadata({ params }) {
     };
 }
 
+// Neighbours in JSON order, trimmed to what the prev / next cards show.
+const pick = (p) => (p ? { id: p.id, name: p.name, image: p.image } : null);
+
 export default async function Page({ params }) {
     const { id } = await params;
-    const product = twoStokesData.find((p) => p.id === id);
+    const index = twoStokesData.findIndex((p) => p.id === id);
+    const product = index === -1 ? null : twoStokesData[index];
 
     if (!product) {
-        return <div className={styles.container}>Product not found</div>;
+        return (
+            <div className={styles.page}>
+                <div className={'container ' + styles.notFound}>
+                    <p>Product not found</p>
+                    <Link href="/products/two-strokes" className="btn btn-link">&larr; Back to 2 Strokes</Link>
+                </div>
+            </div>
+        );
     }
 
-    const specs = [
-        { label: 'Engine Type', value: product.tipeMesin },
-        { label: 'Displacement', value: product.volume },
-        { label: 'Bore x Stroke', value: product.diameter },
-        { label: 'Max RPM', value: product.jangkauan },
-        { label: 'Compression Ratio', value: product.kompresi },
-        { label: 'Induction System', value: product.sistemInduksi },
-        { label: 'Ignition System', value: product.pengapian },
-        { label: 'Fuel Consumption', value: product.konsumsibb },
-        { label: 'Gear Ratio', value: product.gigi },
-        { label: 'Lubrication', value: product.pelumas },
-        { label: 'Trim System', value: product.trim },
-        { label: 'Starter System', value: product.starter },
-        { label: 'Steering', value: product.kemudi },
-        { label: 'Weight', value: product.berat },
-        { label: 'Transom Height', value: product.transom },
-    ].filter((spec) => spec.value);
-
     return (
-        <div className={styles.container}>
-            <Link href="/products/two-strokes" className={styles.backLink}>&larr; Back to 2 Strokes</Link>
-            <div className={styles.content}>
-                <Reveal className={styles.imageWrapper} amount={0.3}>
-                    <Image
-                        src={product.image}
-                        alt={product.name}
-                        width={500}
-                        height={500}
-                        className={styles.image}
-                    />
-                </Reveal>
-                <Reveal as="div" className={styles.details} delay={0.1} amount={0.3}>
-                    <h1 className={styles.title}>{product.name}</h1>
-                    <p className={styles.subTitle}>{product.type}</p>
-
-                    <StaggerGroup as="div" className={styles.specGrid} stagger={0.04} amount={0.1}>
-                        {specs.map((spec) => (
-                            <StaggerItem as="div" key={spec.label} className={styles.specItem}>
-                                <span className={styles.label}>{spec.label}</span>
-                                <span className={styles.value}>{spec.value}</span>
-                            </StaggerItem>
-                        ))}
-                    </StaggerGroup>
-                </Reveal>
-            </div>
+        <div className={styles.page}>
+            <ProductDetail
+                product={product}
+                series="two"
+                prev={pick(twoStokesData[index - 1])}
+                next={pick(twoStokesData[index + 1])}
+            />
         </div>
     );
 }

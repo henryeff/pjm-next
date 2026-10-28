@@ -1,0 +1,106 @@
+.lineup {
+    position: relative;
+}
+
+/* ---- Segmented control (4 Strokes · n | 2 Strokes · n) ---- */
+.switchRow {
+    margin-bottom: 32px;
+}
+
+.switcher {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 4px;
+    background: #fff;
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+}
+
+.option {
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 18px;
+    border-radius: 999px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    color: var(--primary);
+    background: transparent;
+    cursor: pointer;
+    transition: color 0.25s var(--ease-out);
+}
+
+.optionActive {
+    color: #fff;
+    cursor: default;
+}
+
+/* The navy pill slides between the options (Framer layoutId). */
+.pill {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--primary);
+}
+
+.optionText {
+    position: relative;
+}
+
+.count {
+    font-variant-numeric: tabular-nums;
+    opacity: 0.7;
+}
+
+@media (hover: hover) {
+    .option:not(.optionActive):hover {
+        background: var(--surface-alt);
+    }
+}
+
+/* ---- Cards: a swipe rail below 900px, a 3-column grid above ---- */
+.listWrap {
+    position: relative;
+}
+
+.list {
+    list-style: none;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: clamp(240px, 72vw, 320px);
+    gap: 12px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    /* Bleeds to the screen edges; the padding keeps the first card on the grid line. */
+    margin-inline: calc(-1 * var(--gutter));
+    padding-inline: var(--gutter);
+    /* Room for the card hover lift and shadow inside the scroll box. */
+    padding-block: 6px 24px;
+    margin-block: -6px -24px;
+}
+
+.item {
+    min-width: 0;
+    scroll-snap-align: start;
+}
+
+@media (min-width: 900px) {
+    .list {
+        grid-auto-flow: row;
+        grid-auto-columns: auto;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 24px;
+        overflow: visible;
+        scroll-snap-type: none;
+        margin: 0;
+        padding: 0;
+    }
+}
