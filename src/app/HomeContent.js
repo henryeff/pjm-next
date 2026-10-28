@@ -4,6 +4,8 @@ import styles from './page.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import HeroSlider from '@/components/home/HeroSlider';
+import Reveal from '@/components/motion/Reveal';
+import { StaggerGroup, StaggerItem } from '@/components/motion/Stagger';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
 
@@ -18,47 +20,58 @@ export default function Home() {
       <section className={styles.hero}>
         <HeroSlider />
         <div className={styles.heroContent}>
-          <h1 className={styles.title}>{t.heroTitle}</h1>
-          <p className={styles.subtitle}>{t.heroSubtitle}</p>
-          <div className={styles.ctaGroup}>
+          <Reveal as="h1" className={styles.title} delay={0.1}>
+            {t.heroTitle}
+          </Reveal>
+          <Reveal as="p" className={styles.subtitle} delay={0.25}>
+            {t.heroSubtitle}
+          </Reveal>
+          <Reveal
+            as="div"
+            className={styles.ctaGroup}
+            delay={0.4}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+          >
             <Link href="/chat" className={styles.primaryButton}>{t.talkToUs}</Link>
-          </div>
+          </Reveal>
         </div>
       </section>
 
       <section className={styles.featured}>
-        <h2 className={styles.sectionTitle}>{t.whyChoose}</h2>
-        <div className={styles.featuresDict}>
-          <div className={styles.featureCard}>
+        <Reveal as="h2" className={styles.sectionTitle}>{t.whyChoose}</Reveal>
+        <StaggerGroup className={styles.featuresDict} amount={0.2}>
+          <StaggerItem className={styles.featureCard} whileHover={{ y: -8 }}>
             <h3>{t.reliabilityTitle}</h3>
             <p>{t.reliabilityDesc}</p>
-          </div>
-          <div className={styles.featureCard}>
+          </StaggerItem>
+          <StaggerItem className={styles.featureCard} whileHover={{ y: -8 }}>
             <h3>{t.performanceTitle}</h3>
             <p>{t.performanceDesc}</p>
-          </div>
-          <div className={styles.featureCard}>
+          </StaggerItem>
+          <StaggerItem className={styles.featureCard} whileHover={{ y: -8 }}>
             <h3>{t.innovationTitle}</h3>
             <p>{t.innovationDesc}</p>
-          </div>
-        </div>
+          </StaggerItem>
+        </StaggerGroup>
       </section>
 
       <section className={styles.showcase}>
-        <div className={styles.showcaseContent}>
+        <Reveal as="div" className={styles.showcaseContent}>
           <h2 className={styles.showcaseTitle}>{t.showcaseTitle}</h2>
           <p className={styles.showcaseText}>{t.showcaseDesc}</p>
           <Link href="/yamalube" className={styles.showcaseLink}>{t.showcaseLink} &rarr;</Link>
-        </div>
-        <div className={styles.showcaseImage}>
+        </Reveal>
+        <Reveal as="div" className={styles.showcaseImage} delay={0.15}>
           <Image
             src="/images/home1.jpg"
             alt="Yamaha Outboard Showcase"
-            width={800}
-            height={600}
-            style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+            fill
+            sizes="(max-width: 900px) 100vw, 50vw"
+            className={styles.showcaseImg}
+            style={{ objectFit: 'cover' }}
           />
-        </div>
+        </Reveal>
       </section>
     </div>
   );

@@ -1,5 +1,5 @@
 .hero {
-  height: 85vh;
+  min-height: 85vh;
   position: relative;
   display: flex;
   align-items: center;
@@ -14,23 +14,23 @@
   position: relative;
   z-index: 10;
   max-width: 900px;
-  padding: 0 24px;
+  padding: 0 var(--space-md);
 }
 
 .title {
-  font-size: 4.5rem;
+  font-size: clamp(2.75rem, 6vw, 4.5rem);
   font-weight: 800;
-  margin-bottom: 24px;
+  margin-bottom: var(--space-md);
   color: var(--white);
   line-height: 1.1;
   letter-spacing: -0.03em;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.55);
 }
 
 .subtitle {
-  font-size: 1.25rem;
-  margin-bottom: 48px;
-  color: rgba(255, 255, 255, 0.9);
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  margin-bottom: var(--space-xl);
+  color: rgba(255, 255, 255, 0.92);
   max-width: 640px;
   margin-left: auto;
   margin-right: auto;
@@ -40,63 +40,67 @@
 
 .ctaGroup {
   display: flex;
-  gap: 16px;
+  gap: var(--space-sm);
   justify-content: center;
 }
 
 .primaryButton {
+  display: inline-block;
   background-color: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   color: var(--white);
-  padding: 18px 36px;
+  padding: 18px 40px;
   font-weight: 600;
   border-radius: 50px;
-  transition: var(--transition);
-  border: 2px solid rgba(255, 255, 255, 0.8);
+  transition: background-color var(--duration-base) var(--ease-out),
+    color var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out),
+    border-color var(--duration-base) var(--ease-out);
+  border: 2px solid rgba(255, 255, 255, 0.85);
   font-size: 1rem;
 }
 
 .primaryButton:hover {
   background-color: var(--white);
   color: var(--primary);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-lg);
   border-color: var(--white);
 }
 
 .secondaryButton {
+  display: inline-block;
   background-color: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   color: var(--white);
-  padding: 18px 36px;
+  padding: 18px 40px;
   font-weight: 600;
   border-radius: 50px;
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  transition: var(--transition);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  transition: background-color var(--duration-base) var(--ease-out),
+    color var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out);
   font-size: 1rem;
 }
 
 .secondaryButton:hover {
   background-color: var(--white);
   color: var(--primary);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-lg);
 }
 
-/* Featured Section */
+/* Featured Section ("Why Choose Yamaha") */
 .featured {
-  padding: 120px 0;
+  padding: var(--space-2xl) 0;
   background-color: var(--primary);
-  /* Changed to Dark Navy */
+  background-image: var(--gradient-primary);
   color: var(--white);
 }
 
 .sectionTitle {
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 4vw, 2.5rem);
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: var(--space-xl);
   color: var(--white);
-  /* Changed to white */
   position: relative;
   letter-spacing: -0.02em;
 }
@@ -106,47 +110,67 @@
   display: block;
   width: 60px;
   height: 4px;
-  background-color: var(--secondary);
-  margin: 16px auto 0;
+  background: var(--gradient-accent);
+  border-radius: var(--radius-sm);
+  margin: var(--space-sm) auto 0;
 }
 
 .featuresDict {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 40px;
-  padding: 0 24px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-lg);
+  padding: 0 var(--space-md);
   max-width: 1280px;
   margin: 0 auto;
 }
 
 .featureCard {
+  position: relative;
   background-color: rgba(255, 255, 255, 0.05);
-  /* Semi-transparent white */
-  padding: 48px 32px;
+  padding: var(--space-xl) var(--space-lg);
   border-radius: var(--radius-lg);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  transition: var(--transition);
+  box-shadow: var(--shadow-md);
+  transition: background-color var(--duration-base) var(--ease-out),
+    border-color var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out);
   border: 1px solid rgba(255, 255, 255, 0.1);
   text-align: center;
+  overflow: hidden;
+  will-change: transform;
+}
+
+.featureCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 3px;
+  background: var(--gradient-accent);
+  transition: width var(--duration-base) var(--ease-out);
 }
 
 .featureCard:hover {
-  transform: translateY(-8px);
   background-color: rgba(255, 255, 255, 0.1);
   border-color: var(--secondary);
+  box-shadow: var(--shadow-lg);
+}
+
+.featureCard:hover::before {
+  width: 56px;
 }
 
 .featureCard h3 {
   color: var(--white);
-  /* Changed to white */
   font-size: 1.5rem;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-sm);
 }
 
 .featureCard p {
-  color: rgba(255, 255, 255, 0.7);
-  /* Changed to light grey */
+  color: rgba(255, 255, 255, 0.72);
   font-size: 1.05rem;
+  line-height: 1.7;
 }
 
 /* Showcase Section */
@@ -158,23 +182,23 @@
 }
 
 .showcaseContent {
-  padding: 80px 60px;
+  padding: var(--space-2xl) var(--space-xl);
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
 .showcaseTitle {
-  font-size: 3rem;
+  font-size: clamp(2.25rem, 4vw, 3rem);
   color: var(--primary);
-  margin-bottom: 24px;
+  margin-bottom: var(--space-md);
   letter-spacing: -0.03em;
 }
 
 .showcaseText {
   font-size: 1.15rem;
   color: var(--text-muted);
-  margin-bottom: 40px;
+  margin-bottom: var(--space-lg);
   max-width: 500px;
   line-height: 1.8;
 }
@@ -183,23 +207,34 @@
   color: var(--primary);
   font-weight: 600;
   font-size: 1.1rem;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-xs);
   border-bottom: 2px solid var(--secondary);
   width: fit-content;
   padding-bottom: 4px;
+  transition: color var(--duration-base) var(--ease-out),
+    gap var(--duration-base) var(--ease-out);
 }
 
 .showcaseLink:hover {
   color: var(--secondary);
-  gap: 16px;
+  gap: var(--space-sm);
 }
 
 .showcaseImage {
   position: relative;
   width: 100%;
   height: 100%;
+  overflow: hidden;
+}
+
+.showcaseImg {
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+.showcaseImage:hover .showcaseImg {
+  transform: scale(1.06);
 }
 
 @media (max-width: 900px) {
@@ -212,11 +247,19 @@
   }
 
   .title {
-    font-size: 3rem;
+    font-size: clamp(2.25rem, 7vw, 3rem);
   }
 }
 
 @media (max-width: 768px) {
+  .featured {
+    padding: var(--space-xl) 0;
+  }
+
+  .showcaseContent {
+    padding: var(--space-xl) var(--space-md);
+  }
+
   .ctaGroup {
     flex-direction: column;
     width: 100%;
@@ -227,5 +270,19 @@
   .primaryButton,
   .secondaryButton {
     width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    min-height: 90vh;
+  }
+
+  .featuresDict {
+    gap: var(--space-md);
+  }
+
+  .featureCard {
+    padding: var(--space-lg) var(--space-md);
   }
 }
