@@ -4,8 +4,12 @@
   /* Refined Premium Palette */
   --primary: #001e3d;
   /* Darker Navy */
+  --primary-rgb: 0, 30, 61;
+  --primary-light: #0a2d52;
+  --primary-dark: #000f20;
   --secondary: #e60012;
   /* Brand Red */
+  --secondary-rgb: 230, 0, 18;
   --accent: #007bff;
   /* Subtle blue accent */
 
@@ -24,10 +28,31 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-glow: 0 8px 30px rgba(var(--primary-rgb), 0.12);
 
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
+  --radius-xl: 20px;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  --gradient-overlay: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(2, 12, 27, 0.75) 100%);
+  --gradient-accent: linear-gradient(90deg, var(--secondary) 0%, #ff4d5e 100%);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 0.2s;
+  --duration-base: 0.4s;
+  --duration-slow: 0.7s;
+
+  /* Spacing scale */
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 24px;
+  --space-lg: 40px;
+  --space-xl: 64px;
+  --space-2xl: 96px;
 }
 
 * {
@@ -95,4 +120,30 @@ button {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* Selection & focus */
+::selection {
+  background-color: var(--secondary);
+  color: var(--white);
+}
+
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
