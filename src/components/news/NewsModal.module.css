@@ -109,6 +109,24 @@
     margin: 0 0 0.6em;
 }
 
+.content ul {
+    margin: 0 0 0.8em;
+    padding-left: 1.25em;
+}
+
+.content li {
+    margin-bottom: 0.4em;
+}
+
+.content li::marker {
+    color: var(--secondary);
+}
+
+.content strong {
+    color: var(--primary);
+    font-weight: 700;
+}
+
 /* Phones: full-screen sheet. */
 @media (max-width: 639px) {
     .root {

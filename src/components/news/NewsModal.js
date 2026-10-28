@@ -8,6 +8,35 @@ import { Close } from '@/components/ui/Icons';
 import NewsDate from './NewsDate';
 import styles from './NewsModal.module.css';
 
+// News content is plain text with blank-line paragraphs. Two older posts also contain a little HTML
+// (<strong>, <ul><li>). Render that small subset as real elements and drop any other tag — never inject
+// raw HTML, so the data can't break or script the page.
+const stripTags = (s) => s.replace(/<[^>]*>/g, '');
+
+function renderInline(text, keyPrefix) {
+    return text.split(/(<strong>[\s\S]*?<\/strong>)/gi).map((part, i) => {
+        const bold = part.match(/^<strong>([\s\S]*?)<\/strong>$/i);
+        return bold ? <strong key={`${keyPrefix}-${i}`}>{stripTags(bold[1])}</strong> : stripTags(part);
+    });
+}
+
+function renderContent(content) {
+    return content.split('\n').map((line, idx) => {
+        if (!line.trim()) return <br key={idx} />;
+        if (/<li>/i.test(line)) {
+            const items = [...line.matchAll(/<li>([\s\S]*?)<\/li>/gi)].map((m) => m[1]);
+            return (
+                <ul key={idx}>
+                    {items.map((it, j) => (
+                        <li key={j}>{renderInline(it, `${idx}-${j}`)}</li>
+                    ))}
+                </ul>
+            );
+        }
+        return <p key={idx}>{renderInline(line, idx)}</p>;
+    });
+}
+
 const FOCUSABLE =
     'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -152,11 +181,7 @@ function Dialog({ item, language, closeLabel, onClose }) {
                         {item.title}
                     </h2>
                     <div className={styles.content}>
-                        {item.content
-                            .split('\n')
-                            .map((line, idx) =>
-                                line ? <p key={idx}>{line}</p> : <br key={idx} />
-                            )}
+                        {renderContent(item.content)}
                     </div>
                 </div>
             </motion.div>
