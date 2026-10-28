@@ -32,13 +32,12 @@
     transition: opacity var(--duration-base) var(--ease-out);
 }
 
-/* Scrolled: the bar shrinks 80 → 68px. The 12px goes to margin-bottom so the page below never shifts. */
+/* Scrolled: the bar shrinks 80 → 68px. The 12px goes to margin-bottom so the page below never shifts.
+   Solid navy: page content never ghosts through the bar. */
 .scrolled {
     height: 68px;
     margin-bottom: 12px;
-    background-color: rgba(var(--primary-rgb), 0.94);
-    backdrop-filter: blur(14px) saturate(140%);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    background-color: var(--primary);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
 }
 
@@ -47,8 +46,6 @@
     background-color: transparent;
     box-shadow: none;
     border-bottom-color: transparent;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
 }
 
 .navbar[data-transparent='true']::before {
@@ -252,8 +249,9 @@
     transition: opacity 0.2s, transform 0.25s var(--ease-out);
 }
 
+/* Small red text on the white panel: the AA-safe text token. */
 .panelItemActive {
-    color: var(--secondary);
+    color: var(--secondary-text);
 }
 
 .panelItemActive .panelArrow,

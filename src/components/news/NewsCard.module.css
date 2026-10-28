@@ -17,26 +17,43 @@
     isolation: isolate;
 }
 
-/* Editorial duotone (shared with the featured story): the photo goes greyscale under a navy multiply,
-   so the off-topic stock photos read as atmosphere. Full colour on hover / keyboard focus. */
 .img {
     object-fit: cover;
     object-position: center 30%;
-    filter: grayscale(1) contrast(1.05);
     transition:
         transform var(--duration-slow) var(--ease-out),
         filter 0.5s var(--ease-out);
 }
 
-.thumb::after {
+/* True navy duotone for stock imagery only (shared with the featured story; see newsUtils.isDuotone).
+   The photo goes greyscale, a navy SCREEN lifts the shadows to navy, then a steel-blue MULTIPLY tints the
+   highlights: black → ~#00173a, mid-grey → ~rgb(92, 111, 134), white → #b9c7d8. Real dealership photos
+   keep their natural colour. Full colour on hover / keyboard focus. Blending stays inside .thumb (isolate). */
+.duo .img {
+    filter: grayscale(1) contrast(1.08) brightness(1.05);
+}
+
+.duo::before,
+.duo::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: var(--primary);
-    mix-blend-mode: multiply;
-    opacity: 0.5;
     pointer-events: none;
     transition: opacity 0.5s var(--ease-out);
+}
+
+/* Shadows → navy. */
+.duo::before {
+    background: var(--primary);
+    mix-blend-mode: screen;
+    z-index: 1;
+}
+
+/* Highlights → steel blue. */
+.duo::after {
+    background: var(--duo-highlight, #b9c7d8);
+    mix-blend-mode: multiply;
+    z-index: 2;
 }
 
 /* ---- Text ---- */
@@ -141,13 +158,15 @@
         transform: scale(1.04);
     }
 
-    .card:hover .img,
-    .card:focus-within .img {
+    .card:hover .duo .img,
+    .card:focus-within .duo .img {
         filter: none;
     }
 
-    .card:hover .thumb::after,
-    .card:focus-within .thumb::after {
+    .card:hover .duo::before,
+    .card:hover .duo::after,
+    .card:focus-within .duo::before,
+    .card:focus-within .duo::after {
         opacity: 0;
     }
 

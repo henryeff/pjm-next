@@ -194,11 +194,15 @@
     .heroRail {
         display: none;
     }
-}
 
-@media (max-width: 640px) {
+    /* The two buttons share a row at equal widths, or stack at equal widths (no uneven 641–767px row);
+       the chat link sits centred on its own line below them. flex-basis beats .btn-block-sm's width. */
+    .heroCtas > :global(.btn) {
+        flex: 1 1 220px;
+    }
+
     .heroChat {
-        width: 100%;
+        flex: 1 1 100%;
         justify-content: center;
     }
 }

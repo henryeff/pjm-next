@@ -28,17 +28,37 @@ export function seriesPath(series) {
     return series === 'two' ? '/products/two-strokes' : '/products/four-strokes';
 }
 
+const NBSP = ' ';
+
 /**
- * Display-only tidy-up of a spec value (the data is never changed): en dash in numeric ranges and a
- * thin gap before a trailing unit. '5000-6000rpm' → '5000–6000 rpm'; '47-50kg' → '47–50 kg';
- * '212cc' → '212 cc'; '3.9l/h' → '3.9 l/h'.
+ * Display-only tidy-up of a spec value (the data is never changed). Number and unit are joined by a
+ * no-break space, so a line can only break between a value and its qualifier:
+ *   - en dash in numeric ranges:   '5000-6000rpm'       → '5000–6000 rpm'
+ *   - bore × stroke, one unit:     '96.0 mm x 96.0 mm'  → '96.0 × 96.0 mm';  '81mm x 88.9mm' → '81 × 88.9 mm'
+ *   - number + unit anywhere:      '212cc' → '212 cc';  '11.5 L/h' → '11.5 l/h'
+ *   - fuel at engine speed:        '2.2l/h @5000r/min'  → '2.2 l/h @ 5000 r/min'
+ * (The gaps between number and unit, inside 'a × b' and after '@' are U+00A0.)
  */
 export function formatSpec(value) {
     if (value === null || value === undefined) return '';
-    return String(value)
-        .trim()
-        .replace(/(\d)\s*-\s*(\d)/g, '$1–$2')
-        .replace(/(\d)\s*(cc|rpm|kg|mm|l\/h)$/i, '$1 $2');
+    return (
+        String(value)
+            .trim()
+            // Numeric ranges: en dash.
+            .replace(/(\d)\s*-\s*(\d)/g, '$1–$2')
+            // Bore × stroke: one multiplication sign and one trailing unit.
+            .replace(
+                /^(\d+(?:\.\d+)?)\s*(?:mm)?\s*[x×]\s*(\d+(?:\.\d+)?)\s*mm$/i,
+                '$1' + NBSP + '×' + NBSP + '$2' + NBSP + 'mm'
+            )
+            // Number + unit anywhere: a no-break space between them; 'L/h' → 'l/h'.
+            .replace(/(\d)\s*(cc|rpm|kg|mm|l\/h)\b/gi, (m, d, unit) => {
+                const u = unit.toLowerCase() === 'l/h' ? 'l/h' : unit;
+                return d + NBSP + u;
+            })
+            // '@5000r/min' → '@ 5000 r/min': a normal space before the '@', no-break after it.
+            .replace(/\s*@\s*(\d+)\s*r\/min/gi, ' @' + NBSP + '$1' + NBSP + 'r/min')
+    );
 }
 
 /** The highest-HP product in a list (first one wins a tie), or null for an empty list. */

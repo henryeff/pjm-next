@@ -28,7 +28,7 @@ const COPY = {
     },
 };
 
-const PICKS = 6;
+const PICKS = 8;
 
 /** An even spread of `count` models across the range, smallest to largest: indices round(i * (n - 1) / (count - 1)). */
 function spread(list, count = PICKS) {
@@ -151,7 +151,7 @@ export default function EngineLineup({ titleId = 'home-lineup-title' }) {
                                     <ProductCard
                                         product={product}
                                         series={series}
-                                        sizes="(max-width: 899px) min(72vw, 320px), (max-width: 1280px) 30vw, 400px"
+                                        sizes="(max-width: 899px) min(72vw, 320px), (max-width: 1199px) 23vw, 300px"
                                     />
                                 </motion.li>
                             ))}

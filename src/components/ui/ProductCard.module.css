@@ -56,7 +56,7 @@
     margin-left: 4px;
     font-size: 0.875rem;
     font-weight: 700;
-    color: var(--secondary);
+    color: var(--secondary-text);
     letter-spacing: 0.02em;
 }
 
@@ -146,11 +146,9 @@
         margin: 6px 0 2px;
     }
 
+    /* Narrow phone cards: HP numeral, model code and the inline arrow only — no ellipsised engine type. */
     .type {
-        -webkit-line-clamp: 1;
-        line-clamp: 1;
-        margin-bottom: 12px;
-        font-size: 0.8125rem;
+        display: none;
     }
 
     .footer {
@@ -175,6 +173,7 @@
         display: none;
     }
 
+    /* Margin only: never sets display, so .type stays hidden inside narrow (≤220px) cards. */
     .type {
         margin-bottom: 0;
     }

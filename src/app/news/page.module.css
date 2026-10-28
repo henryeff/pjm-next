@@ -1,5 +1,6 @@
 /* News — text-first featured story + editorial grid (compact rows on phones). Story dialog: components/news.
-   All news imagery (not the dialog) gets one navy duotone; full colour on hover / focus. */
+   Stock news imagery (not the dialog) gets one true navy duotone; the real dealership photos stay in natural
+   colour (newsUtils.isDuotone). Full colour on hover / focus. */
 
 .page {
     padding-top: clamp(40px, 5vw, 72px);
@@ -43,25 +44,41 @@
     isolation: isolate;
 }
 
-/* Editorial treatment (shared with the cards): greyscale under a navy multiply, full colour on hover. */
 .featuredImg {
     object-fit: cover;
     object-position: center 30%;
-    filter: grayscale(1) contrast(1.05);
     transition:
         transform var(--duration-slow) var(--ease-out),
         filter 0.5s var(--ease-out);
 }
 
-/* The navy duotone layer (inside the reveal clip, so it wipes in with the photo). */
-.featuredShade {
+/* True navy duotone (same recipe as NewsCard's .duo): greyscale photo, navy SCREEN lifts the shadows to
+   navy, steel-blue MULTIPLY tints the highlights (mid-grey → ~rgb(92, 111, 134)). Both layers sit inside
+   the reveal clip, so they wipe in with the photo; .featuredMedia isolates the blend. */
+.featuredDuo .featuredImg {
+    filter: grayscale(1) contrast(1.08) brightness(1.05);
+}
+
+.duoShadow,
+.duoTint {
     position: absolute;
     inset: 0;
-    background: var(--primary);
-    mix-blend-mode: multiply;
-    opacity: 0.5;
     pointer-events: none;
     transition: opacity 0.5s var(--ease-out);
+}
+
+/* Shadows → navy. */
+.duoShadow {
+    background: var(--primary);
+    mix-blend-mode: screen;
+    z-index: 1;
+}
+
+/* Highlights → steel blue. */
+.duoTint {
+    background: var(--duo-highlight, #b9c7d8);
+    mix-blend-mode: multiply;
+    z-index: 2;
 }
 
 .featuredBody {
@@ -154,8 +171,10 @@
         filter: none;
     }
 
-    .featured:hover .featuredShade,
-    .featured:focus-within .featuredShade {
+    .featured:hover .duoShadow,
+    .featured:hover .duoTint,
+    .featured:focus-within .duoShadow,
+    .featured:focus-within .duoTint {
         opacity: 0;
     }
 

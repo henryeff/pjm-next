@@ -8,6 +8,7 @@ import { EASE_OUT, MOTION } from './Reveal';
  * Wraps a group of StaggerItem children and reveals them in sequence
  * as the group scrolls into view. Use for grids/lists (cards, features).
  * Pass `immediate` for above-the-fold groups: they animate on mount.
+ * Default trigger: the group's top edge past 88% of the viewport (amount 'some', bottom margin -12%).
  *
  * Once a one-time (`once`) group has revealed, it switches from whileInView to animate="visible".
  * Items that mount later — e.g. children keyed by translated text remounting on an EN/ID switch,
@@ -20,7 +21,8 @@ export function StaggerGroup({
     stagger = MOTION.stagger,
     delayChildren = 0,
     once = true,
-    amount = 0.15,
+    amount = 'some',
+    margin = '0px 0px -12% 0px',
     as = 'div',
     immediate = false,
     onAnimationComplete,
@@ -31,7 +33,7 @@ export function StaggerGroup({
     const trigger =
         immediate || revealed
             ? { animate: 'visible' }
-            : { whileInView: 'visible', viewport: { once, amount } };
+            : { whileInView: 'visible', viewport: { once, amount, margin } };
 
     // Fires after the group and all of its items have finished (variant children are awaited).
     const handleAnimationComplete = (definition) => {

@@ -22,7 +22,8 @@ const COPY = {
 };
 
 /**
- * Both stores as cards with call / directions actions.
+ * Both stores as cards, call-first: name → address → the phone number as the typographic hero (a
+ * tel: link behind a hairline) → a quiet row with directions and email. No red fills.
  * tone: 'light' (white cards) | 'dark' (for navy sections)
  * showMap: stacks the cards and adds an embedded Google Map to each (≥1024px: info | map).
  */
@@ -61,26 +62,34 @@ export default function StoreCards({ tone = 'light', showMap = false, headingLev
                                 )}
                             </address>
 
-                            <div className={styles.actions}>
-                                <a href={store.tel} className="btn btn-primary">
-                                    <Phone />
-                                    {t.call.replace('{phone}', store.phone)}
-                                </a>
+                            <div className={styles.contact}>
                                 <a
-                                    href={store.mapsUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={'btn ' + (dark ? 'btn-ghost' : 'btn-outline')}
+                                    href={store.tel}
+                                    className={styles.phone}
+                                    aria-label={t.call.replace('{phone}', store.phone) + ', ' + store.name}
                                 >
-                                    <ExternalLink />
-                                    {t.directions}
+                                    <span className={styles.phoneIcon}>
+                                        <Phone size={18} />
+                                    </span>
+                                    <span className={styles.phoneNum}>{store.phone}</span>
                                 </a>
-                            </div>
 
-                            <a href={'mailto:' + store.email} className={styles.mail}>
-                                <Mail size={16} />
-                                {store.email}
-                            </a>
+                                <div className={styles.links}>
+                                    <a
+                                        href={store.mapsUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={'btn btn-link ' + styles.directions}
+                                    >
+                                        {t.directions}
+                                        <ExternalLink className="btn-arrow" />
+                                    </a>
+                                    <a href={'mailto:' + store.email} className={styles.mail}>
+                                        <Mail size={16} />
+                                        {store.email}
+                                    </a>
+                                </div>
+                            </div>
                         </div>
 
                         {showMap && (

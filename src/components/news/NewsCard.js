@@ -4,18 +4,21 @@ import Image from 'next/image';
 import { StaggerItem } from '@/components/motion/Stagger';
 import { ArrowRight } from '@/components/ui/Icons';
 import NewsDate from './NewsDate';
-import { getHighlight } from './newsUtils';
+import { getHighlight, isDuotone } from './newsUtils';
 import styles from './NewsCard.module.css';
 
 /**
  * Grid story card (no border, no shadow). The title is a <button> whose ::after stretches over the
  * whole card, so the card is one click target with the title as its accessible name.
  * Under 640px it collapses to a compact row: 112px thumbnail + date + title.
+ * Stock imagery gets the navy duotone (`.duo`); the real dealership photos stay in natural colour.
  */
 export default function NewsCard({ item, language, readMore, onOpen }) {
+    const thumbClass = styles.thumb + (isDuotone(item.image) ? ' ' + styles.duo : '');
+
     return (
         <StaggerItem as="article" id={item.id} className={styles.card}>
-            <div className={styles.thumb}>
+            <div className={thumbClass}>
                 <Image
                     src={item.image}
                     alt={item.title}

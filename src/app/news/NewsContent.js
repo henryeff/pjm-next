@@ -14,7 +14,7 @@ import { StaggerGroup } from '@/components/motion/Stagger';
 import NewsCard from '@/components/news/NewsCard';
 import NewsDate from '@/components/news/NewsDate';
 import NewsModal from '@/components/news/NewsModal';
-import { SORTED_NEWS, getHighlight } from '@/components/news/newsUtils';
+import { SORTED_NEWS, getHighlight, isDuotone } from '@/components/news/newsUtils';
 
 const COPY = {
     en: { eyebrow: 'News & guides', more: 'More stories', close: 'Close' },
@@ -23,6 +23,8 @@ const COPY = {
 
 // Newest first: the 2026 guides lead. The newest post is the featured story.
 const [FEATURED, ...REST] = SORTED_NEWS;
+// Stock imagery gets the navy duotone; a real dealership photo would stay in natural colour.
+const FEATURED_DUO = FEATURED ? isDuotone(FEATURED.image) : false;
 
 function readHashId() {
     const raw = window.location.hash.slice(1);
@@ -89,10 +91,13 @@ export default function NewsContent() {
             <div className={'section ' + styles.page}>
                 <div className="container">
                     {/* Text-first: the headline is the on-topic part. ≥1024px the body leads (7fr) and the
-                        duotone photo sits beside it (5fr); below that the photo comes first. */}
+                        photo sits beside it (5fr); below that the photo comes first. Stock photos get the navy duotone. */}
                     {FEATURED && (
                         <article id={FEATURED.id} className={styles.featured}>
-                            <ImageReveal immediate className={styles.featuredMedia}>
+                            <ImageReveal
+                                immediate
+                                className={styles.featuredMedia + (FEATURED_DUO ? ' ' + styles.featuredDuo : '')}
+                            >
                                 <Image
                                     src={FEATURED.image}
                                     alt={FEATURED.title}
@@ -101,7 +106,12 @@ export default function NewsContent() {
                                     sizes="(min-width: 1280px) 500px, (min-width: 1024px) 40vw, 100vw"
                                     className={styles.featuredImg}
                                 />
-                                <span className={styles.featuredShade} aria-hidden="true" />
+                                {FEATURED_DUO && (
+                                    <>
+                                        <span className={styles.duoShadow} aria-hidden="true" />
+                                        <span className={styles.duoTint} aria-hidden="true" />
+                                    </>
+                                )}
                             </ImageReveal>
 
                             <Reveal immediate delay={0.15} className={styles.featuredBody}>

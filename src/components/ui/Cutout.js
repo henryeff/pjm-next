@@ -25,7 +25,9 @@ function ratioNumber(ratio) {
  * A product cut-out (transparent PNG) contained inside its positioned parent, on the light or dark stage.
  * Cropped source files get a feathered edge so the cut never reads as a hard line.
  *
- * className: goes on the root (absolute, inset 0, flex-centred) — pass the padding here, e.g. padding: 10%.
+ * className: goes on the root (absolute, inset 0, flex-centred) — pass the breathing room here, either as
+ *   padding (e.g. padding: 10%) or as an inset. Padding works for every file: uncropped files sit in an inner
+ *   box that fills the root's content box, cropped files in a ratio frame sized to it.
  * imgClassName: goes on the <img>.
  * sizes: the RENDERED width of the engine, not the box.
  * priority / fetchPriority: pass through to next/image for LCP use (never fade an LCP cut-out in from opacity 0).
@@ -47,7 +49,12 @@ export default function Cutout({ src, alt = '', sizes, priority, fetchPriority, 
     );
 
     if (!crop) {
-        return <span className={rootClass}>{image}</span>;
+        // .box fills the root's CONTENT box, so the fill image is positioned inside the root's padding.
+        return (
+            <span className={rootClass}>
+                <span className={styles.box}>{image}</span>
+            </span>
+        );
     }
 
     return (

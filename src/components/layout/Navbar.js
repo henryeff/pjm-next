@@ -377,8 +377,8 @@ const Navbar = () => {
             </nav>
 
             {/* ---------- Mobile sheet ----------
-                Rendered outside <nav>: the scrolled bar uses backdrop-filter, which would otherwise become
-                the containing block for these position: fixed layers. */}
+                Rendered outside <nav>, so no filter or transform on the bar can ever become the containing
+                block for these position: fixed layers. */}
             <AnimatePresence>
                 {isOpen && (
                     <>

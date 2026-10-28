@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './page.module.css';
@@ -124,11 +125,105 @@ const PRODUCTS = [
     },
 ];
 
+const CARD_ID = (id) => 'yamalube-' + id;
+
 // Keep hyphenated tokens ("2-Stroke", "GL-4") on one line so titles never break as "2-" / "Stroke".
 function keepHyphensTogether(text) {
     return text
         .split(/(\S*\w-\w\S*)/)
         .map((part, i) => (i % 2 ? <span key={i} className={styles.nowrap}>{part}</span> : part));
+}
+
+/**
+ * Product jump chips (< 1024px; CSS hides them above) with a scroll-spy: the chip of the card crossing
+ * a thin band at 40–45% of the viewport gets aria-current, and the chip row scrolls sideways — never
+ * the page — to keep that chip in view. Its own component so only the chip row re-renders on scroll.
+ */
+function ProductJump({ label, kinds }) {
+    const rowRef = useRef(null);
+    const chipRefs = useRef({});
+    const [active, setActive] = useState(null);
+
+    useEffect(() => {
+        if (typeof IntersectionObserver === 'undefined') return undefined;
+        const cards = PRODUCTS.map((product) => document.getElementById(CARD_ID(product.id))).filter(Boolean);
+        if (!cards.length) return undefined;
+
+        const idOf = new Map(PRODUCTS.map((product) => [CARD_ID(product.id), product.id]));
+        const inBand = new Set();
+        const observer = new IntersectionObserver(
+            (entries) => {
+                for (const entry of entries) {
+                    const id = idOf.get(entry.target.id);
+                    if (entry.isIntersecting) inBand.add(id);
+                    else inBand.delete(id);
+                }
+                // Nothing in the band (a 24px gutter between cards, or past the last card): keep the last
+                // chip rather than flicker off.
+                const current = PRODUCTS.find((product) => inBand.has(product.id));
+                if (current) setActive(current.id);
+            },
+            { rootMargin: '-40% 0px -55% 0px' }
+        );
+        cards.forEach((card) => observer.observe(card));
+
+        // Back above the products — the first card's top below the band — clears the chip. A root that
+        // reaches far above the viewport makes this flip even on an instant jump to the top from below
+        // the products (Home key; the site has no smooth scrolling), which crosses no card edge.
+        const above = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) return;
+                inBand.clear();
+                setActive(null);
+            },
+            { rootMargin: '100000px 0px -55% 0px' }
+        );
+        above.observe(cards[0]);
+
+        return () => {
+            observer.disconnect();
+            above.disconnect();
+        };
+    }, []);
+
+    // Keep the active chip in view by scrolling the chip row horizontally only (scrollIntoView could
+    // also move the page). Leave the row alone while the chip is already fully visible beside the fade;
+    // with no active chip (back above the products) return the row to its start.
+    useEffect(() => {
+        const row = rowRef.current;
+        if (!row || !row.clientWidth) return;
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const behavior = reduce ? 'auto' : 'smooth';
+        const chip = active ? chipRefs.current[active] : null;
+        if (!chip) {
+            if (row.scrollLeft) row.scrollTo({ left: 0, behavior });
+            return;
+        }
+        const fade = 24;
+        const start = chip.offsetLeft;
+        const end = start + chip.offsetWidth;
+        if (start >= row.scrollLeft && end <= row.scrollLeft + row.clientWidth - fade) return;
+        const inset = parseFloat(window.getComputedStyle(row).paddingLeft) || 16;
+        row.scrollTo({ left: start - inset, behavior });
+    }, [active]);
+
+    return (
+        <nav ref={rowRef} aria-label={label} className={'no-scrollbar ' + styles.jump}>
+            {PRODUCTS.map((product) => (
+                <a
+                    key={product.id}
+                    ref={(node) => {
+                        chipRefs.current[product.id] = node;
+                    }}
+                    href={'#' + CARD_ID(product.id)}
+                    className={styles.jumpLink}
+                    aria-current={active === product.id ? 'true' : undefined}
+                >
+                    {kinds[product.id]}
+                </a>
+            ))}
+        </nav>
+    );
 }
 
 export default function YamalubePage() {
@@ -199,13 +294,7 @@ export default function YamalubePage() {
                     <SectionHeader eyebrow={c.productsEyebrow} title={c.productsTitle} />
 
                     {/* Jump bar (< 1024px, sticky on phones): the stacked cards run ~4,000px tall there. */}
-                    <nav aria-label={c.jumpLabel} className={'no-scrollbar ' + styles.jump}>
-                        {PRODUCTS.map((product) => (
-                            <a key={product.id} href={'#yamalube-' + product.id} className={styles.jumpLink}>
-                                {c.kinds[product.id]}
-                            </a>
-                        ))}
-                    </nav>
+                    <ProductJump label={c.jumpLabel} kinds={c.kinds} />
 
                     <StaggerGroup className={styles.productGrid} amount={0.05}>
                         {PRODUCTS.map((product) => {
@@ -214,7 +303,7 @@ export default function YamalubePage() {
                                 <StaggerItem
                                     key={product.id}
                                     as="article"
-                                    id={'yamalube-' + product.id}
+                                    id={CARD_ID(product.id)}
                                     className={styles.card}
                                 >
                                     <Eyebrow>{c.kinds[product.id]}</Eyebrow>

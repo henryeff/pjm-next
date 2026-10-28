@@ -89,6 +89,9 @@
    ------------------------------------------------------------------------- */
 
 .jump {
+    /* Positioned so each chip's offsetLeft is measured from this row (the scroll-spy keeps the
+       active chip in view by scrolling the row); phones override this with sticky, also positioned. */
+    position: relative;
     display: flex;
     gap: 8px;
     overflow-x: auto;
@@ -113,13 +116,24 @@
     line-height: 1.2;
     white-space: nowrap;
     text-decoration: none;
-    transition: border-color var(--duration-fast) var(--ease-out);
+    transition:
+        border-color var(--duration-fast) var(--ease-out),
+        background-color var(--duration-fast) var(--ease-out),
+        color var(--duration-fast) var(--ease-out);
 }
 
 @media (hover: hover) {
     .jumpLink:hover {
         border-color: rgba(0, 30, 61, 0.35);
     }
+}
+
+/* Scroll-spy: the chip of the card currently mid-viewport (set in YamalubeContent.js).
+   After the hover rule (same specificity) so hovering the active chip keeps its navy border. */
+.jumpLink[aria-current='true'] {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
 }
 
 @media (pointer: coarse) {
@@ -177,6 +191,28 @@
        Effective offset = --nav-h (html scroll-padding) + 72px. */
     .card {
         scroll-margin-top: 72px;
+    }
+}
+
+/* Two columns: each card spans four rows of .productGrid and adopts them as a subgrid, so a pair's
+   eyebrow, title, bullet list and packaging table start on the same lines (the 2-Stroke/4-Stroke and
+   GL-4/GL-5 tables line up even though their bullet lists differ in length). The card's four direct
+   children are exactly: Eyebrow span, h3, ul, table. row-gap 0 lets the parent's 24px gutters fold
+   into the tracks; the children's own margins (title 14/16px, table 24px) keep the rhythm.
+   Children (the table included) align to the top of their row: .bullets is itself a grid and would
+   otherwise stretch, spreading the shorter list's items apart. */
+@media (min-width: 1024px) {
+    .card {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        grid-row: span 4;
+        grid-template-rows: subgrid;
+        row-gap: 0;
+        align-content: start;
+    }
+
+    .card > * {
+        align-self: start;
     }
 }
 

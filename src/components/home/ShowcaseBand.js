@@ -8,6 +8,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
 import Reveal from '@/components/motion/Reveal';
 import useReducedMotionSafe from '@/components/motion/useReducedMotionSafe';
+import ContourLines from '@/components/ui/ContourLines';
 import Eyebrow from '@/components/ui/Eyebrow';
 import { ArrowRight } from '@/components/ui/Icons';
 import styles from './ShowcaseBand.module.css';
@@ -17,7 +18,11 @@ const COPY = {
     id: { eyebrow: 'Dari 2 Tak hingga 4 Tak' },
 };
 
-/** Full-bleed photo band with a slow parallax (±40px) and a solid navy panel. Static for reduced motion. */
+/**
+ * Editorial split band: a solid navy copy column (static contour lines) beside a full-height photo with a
+ * slow ±40px parallax. ≥1024px the copy sits left, its text on the site container's left edge; below that the
+ * photo comes first and fades into the navy copy. Static for reduced motion.
+ */
 export default function ShowcaseBand({ titleId = 'home-showcase-title' }) {
     const { language } = useLanguage();
     const t = translations[language].home;
@@ -30,29 +35,38 @@ export default function ShowcaseBand({ titleId = 'home-showcase-title' }) {
 
     return (
         <section ref={sectionRef} className={'on-dark ' + styles.band} aria-labelledby={titleId}>
-            <motion.div className={styles.bg} style={{ y: reduce ? 0 : parallaxY }}>
-                <Image
-                    src="/images/home1.jpg"
-                    alt="Yamaha Outboard Showcase"
-                    fill
-                    sizes="100vw"
-                    className={styles.img}
-                />
-            </motion.div>
-            <div className={styles.scrim} aria-hidden="true" />
-
-            <div className={'container ' + styles.inner}>
-                <Reveal className={styles.panel}>
+            <div className={styles.copy}>
+                <ContourLines />
+                <Reveal className={styles.copyInner}>
                     <Eyebrow>{c.eyebrow}</Eyebrow>
-                    <h2 id={titleId} className={'h2 ' + styles.title}>
+                    <h2 id={titleId} className={'display ' + styles.title}>
                         {t.showcaseTitle}
                     </h2>
                     <p className={styles.text}>{t.showcaseDesc}</p>
-                    <Link href="/yamalube" className={'btn btn-ghost ' + styles.cta}>
-                        {t.showcaseLink}
-                        <ArrowRight className="btn-arrow" />
-                    </Link>
+                    <div className={styles.actions}>
+                        <Link href="/products/four-strokes" className={'btn btn-ghost btn-lg ' + styles.primaryAction}>
+                            {t.btn4Stroke}
+                            <ArrowRight className="btn-arrow" />
+                        </Link>
+                        <Link href="/products/two-strokes" className="btn btn-link">
+                            {t.btn2Stroke}
+                            <ArrowRight className="btn-arrow" />
+                        </Link>
+                    </div>
                 </Reveal>
+            </div>
+
+            {/* Photo column (decorative layout; the image keeps its alt). Placed first below 1024px via CSS order. */}
+            <div className={styles.media}>
+                <motion.div className={styles.bg} style={{ y: reduce ? 0 : parallaxY }}>
+                    <Image
+                        src="/images/home1.jpg"
+                        alt="Yamaha Outboard Showcase"
+                        fill
+                        sizes="(min-width: 1024px) 58vw, 100vw"
+                        className={styles.img}
+                    />
+                </motion.div>
             </div>
         </section>
     );

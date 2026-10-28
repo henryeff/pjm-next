@@ -29,8 +29,6 @@ const COPY = {
             'Chat with us or call a store',
             'Pick up at one of our two stores in Padang',
         ],
-        pistonAlt: 'Outboard engine piston and piston pin',
-        pistonCaption: 'Engine components',
         rangeAlt: 'Yamaha Components',
         rangeCaption: 'Yamaha Genuine Parts & Accessories',
         visitEyebrow: 'Visit us',
@@ -50,8 +48,6 @@ const COPY = {
             'Chat atau telepon toko kami',
             'Ambil di salah satu dari dua toko kami di Padang',
         ],
-        pistonAlt: 'Piston dan pin piston mesin tempel',
-        pistonCaption: 'Komponen mesin',
         rangeAlt: 'Komponen Yamaha',
         rangeCaption: 'Suku Cadang & Aksesori Asli Yamaha',
         visitEyebrow: 'Kunjungi kami',
@@ -93,54 +89,40 @@ export default function PartsPage() {
                 </Link>
             </PageHero>
 
-            {/* How to get the right part: three steps beside an engine-component macro */}
+            {/* How to get the right part: header left, numbered steps right (stacked below 1024px), then the
+                genuine parts & accessories pack shot across the full row. */}
             <section className="section" aria-labelledby="parts-how-title">
                 <div className={'container ' + styles.howGrid}>
-                    <div className={styles.howText}>
-                        <SectionHeader id="parts-how-title" eyebrow={c.howEyebrow} title={c.howTitle} />
+                    <SectionHeader
+                        id="parts-how-title"
+                        eyebrow={c.howEyebrow}
+                        title={c.howTitle}
+                        className={styles.howHeader}
+                    />
 
-                        {/* role="list" keeps list semantics in Safari once list-style is removed. */}
-                        <StaggerGroup as="ol" role="list" className={styles.steps} stagger={0.1}>
-                            {/* Index keys: the rows must survive a language switch after they've revealed. */}
-                            {c.steps.map((step, i) => (
-                                <StaggerItem as="li" key={i} className={styles.step} y={16}>
-                                    <span className={styles.stepNum} aria-hidden="true">
-                                        {String(i + 1).padStart(2, '0')}
-                                    </span>
-                                    <p className={styles.stepText}>{step}</p>
-                                </StaggerItem>
-                            ))}
-                        </StaggerGroup>
-                    </div>
+                    {/* role="list" keeps list semantics in Safari once list-style is removed. */}
+                    <StaggerGroup as="ol" role="list" className={styles.steps} stagger={0.1}>
+                        {/* Index keys: the rows must survive a language switch after they've revealed. */}
+                        {c.steps.map((step, i) => (
+                            <StaggerItem as="li" key={i} className={styles.step} y={16}>
+                                <span className={styles.stepNum} aria-hidden="true">
+                                    {String(i + 1).padStart(2, '0')}
+                                </span>
+                                <p className={styles.stepText}>{step}</p>
+                            </StaggerItem>
+                        ))}
+                    </StaggerGroup>
 
-                    <figure className={styles.figure}>
-                        <ImageReveal className={styles.photo}>
-                            <Image
-                                src="/images/PartContent/3.jpg"
-                                alt={c.pistonAlt}
-                                fill
-                                sizes="(min-width: 1344px) 576px, (min-width: 1024px) 45vw, 100vw"
-                                className={styles.photoImg}
-                            />
-                        </ImageReveal>
-                        <Reveal as="figcaption" className={'eyebrow eyebrow-plain ' + styles.caption} delay={0.2} y={8}>
-                            {c.pistonCaption}
-                        </Reveal>
-                    </figure>
-                </div>
-            </section>
-
-            {/* Range band: the genuine parts & accessories pack shot. Phones/tablets crop in on the
-                propeller boxes, gears and con-rod so the parts read at a usable size. */}
-            <section className={'section section-alt ' + styles.rangeBand}>
-                <div className="container">
-                    <figure className={styles.figure}>
+                    {/* Pack shot on the white section, no card chrome: wide screens show the whole range at its
+                        natural ratio; phones/tablets bleed to the screen edge and crop in on the propeller boxes,
+                        gears and con-rod so the parts read at a usable size. */}
+                    <figure className={styles.rangeFigure}>
                         <ImageReveal className={styles.range}>
                             <Image
                                 src="/images/parts2.jpg"
                                 alt={c.rangeAlt}
                                 fill
-                                sizes="(max-width: 640px) 160vw, (max-width: 1023px) 130vw, (min-width: 1344px) 1216px, 100vw"
+                                sizes="(max-width: 640px) 170vw, (max-width: 1023px) 130vw, 1080px"
                                 className={styles.rangeImg}
                             />
                         </ImageReveal>
@@ -151,8 +133,8 @@ export default function PartsPage() {
                 </div>
             </section>
 
-            {/* Stores */}
-            <section className="section" aria-labelledby="parts-visit-title">
+            {/* Stores: grey, so the white how-it-works section doesn't run straight into them. */}
+            <section className="section section-alt" aria-labelledby="parts-visit-title">
                 <div className="container">
                     <SectionHeader id="parts-visit-title" size="sm" eyebrow={c.visitEyebrow} title={c.visitTitle} />
                     <StoreCards tone="light" />

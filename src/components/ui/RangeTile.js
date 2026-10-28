@@ -33,6 +33,37 @@ export default function RangeTile({
     const Heading = headingAs;
     const isEngine = kind === 'engine';
     const mediaClass = isEngine ? styles.media + ' stage-light floor-shadow' : styles.media;
+    const arrow = <ArrowRight size={20} className={styles.arrow} aria-hidden="true" />;
+
+    // String titles: the last word and the arrow never break apart, so the arrow always follows the
+    // final word, even when the title wraps.
+    let heading;
+    if (typeof title === 'string') {
+        const text = title.trim();
+        const cut = text.lastIndexOf(' ');
+        const head = cut > 0 ? text.slice(0, cut) : '';
+        const lastWord = cut > 0 ? text.slice(cut + 1) : text;
+        heading = (
+            <>
+                {head && (
+                    <>
+                        {head}{' '}
+                    </>
+                )}
+                <span className={styles.tail}>
+                    {lastWord}
+                    {arrow}
+                </span>
+            </>
+        );
+    } else {
+        heading = (
+            <>
+                {title}
+                {arrow}
+            </>
+        );
+    }
 
     return (
         <Link href={href} className={styles.tile}>
@@ -45,10 +76,7 @@ export default function RangeTile({
                     ))}
             </span>
             <span className={styles.label}>
-                <Heading className={styles.title}>
-                    {title}
-                    <ArrowRight size={20} className={styles.arrow} />
-                </Heading>
+                <Heading className={styles.title}>{heading}</Heading>
                 {sub && <span className={styles.sub}>{sub}</span>}
             </span>
         </Link>

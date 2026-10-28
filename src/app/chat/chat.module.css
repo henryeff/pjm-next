@@ -157,7 +157,7 @@
     font-variant-numeric: tabular-nums;
 }
 
-/* The number never breaks; on the narrowest phones the label wraps before it (see Mobile). */
+/* The number never breaks. (Phones hide this row; the composer note carries the calls there.) */
 .callNum {
     white-space: nowrap;
 }
@@ -622,19 +622,44 @@
     }
 }
 
+/* Neutral steel when there is nothing to send: no washed-out red tint. */
 .send:disabled {
-    opacity: 0.4;
+    background: var(--surface-steel);
+    color: var(--text-muted);
+    opacity: 1;
     cursor: not-allowed;
 }
 
-/* The line box (12px × 1.5) and its margin keep the sentinel's 140px scroll margin in step with the
-   composer height, so the newest message lands just above the field. */
+/* One sentence with both stores as tel links, so a call is one tap away in every state.
+   Its line box (12px × 1.5) and margin set the composer height that the sentinel's scroll margin
+   (.end) mirrors: one line here (140px); on phones it wraps to two lines (158px, see Mobile). */
 .note {
     margin-top: 12px;
     text-align: center;
     font-size: 0.75rem;
     line-height: 1.5;
     color: var(--text-muted);
+}
+
+/* Inline padding enlarges the tap area without changing the line box. */
+.note a {
+    color: var(--primary);
+    font-weight: 600;
+    white-space: nowrap;
+    text-decoration: underline;
+    text-decoration-color: rgba(0, 30, 61, 0.3);
+    text-underline-offset: 3px;
+    padding-block: 10px;
+    transition:
+        color var(--duration-fast),
+        text-decoration-color var(--duration-fast);
+}
+
+@media (hover: hover) {
+    .note a:hover {
+        color: var(--secondary-text);
+        text-decoration-color: currentColor;
+    }
 }
 
 /* ==========================================================================
@@ -656,21 +681,60 @@
         padding: 0;
     }
 
-    /* The two store calls stack and go full width; below ~360px the label may wrap onto two lines. */
-    .callBtn {
-        flex: 1 1 100%;
-        white-space: normal;
-        padding-block: 10px;
+    /* The note wraps to two lines here, so the composer is one line (18px) taller. */
+    .end {
+        scroll-margin-bottom: 158px;
     }
 
-    .callText {
-        min-width: 0;
-        line-height: 1.35;
-        text-align: center;
+    /* ---- Empty state: all six suggestions above the sticky composer on a 390×844 phone ----
+       The hint and the call buttons give way; the composer note keeps both stores one tap away
+       (and the navbar sheet lists them too). */
+    .bandOpen {
+        padding: 24px 0 48px;
     }
 
+    .openerTitle {
+        font-size: 2rem;
+    }
+
+    .openerLead {
+        margin-top: 10px;
+    }
+
+    .openerHint,
+    .openerCalls {
+        display: none;
+    }
+
+    /* The 64px mark overhangs the band by 32px. */
+    .starters {
+        padding: 44px 0 24px;
+    }
+
+    /* Still one column: a 2×3 grid would wrap the longer Indonesian questions onto 4–5 lines. */
     .suggestions {
+        gap: 8px;
+    }
+
+    .suggestion {
+        min-height: 52px;
+        padding: 8px 12px;
         gap: 10px;
+    }
+
+    .suggestionIcon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .suggestionIcon svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .suggestionLabel {
+        font-size: 0.9375rem;
+        line-height: 1.35;
     }
 
     .bubbleUser,

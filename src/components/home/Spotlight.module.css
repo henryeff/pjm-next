@@ -109,7 +109,10 @@
     color: rgba(255, 255, 255, 0.75);
 }
 
+/* Query container: the stat values scale with the list's width, so '96.0 × 96.0 mm' holds one line
+   in the 2-column grid from 390px phones up. */
 .stats {
+    container-type: inline-size;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     column-gap: 24px;
@@ -134,7 +137,7 @@
 .stat dd {
     margin-top: 8px;
     text-wrap: balance;
-    font-size: 1.5rem;
+    font-size: clamp(1rem, 5cqi, 1.5rem);
     font-weight: 700;
     line-height: 1.25;
     letter-spacing: -0.01em;
@@ -157,10 +160,6 @@
 @media (max-width: 640px) {
     .imgBox {
         height: min(360px, 88vw);
-    }
-
-    .stat dd {
-        font-size: 1.125rem;
     }
 
     .stats {

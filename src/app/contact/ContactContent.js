@@ -74,7 +74,7 @@ export default function ContactPage() {
                 </div>
             </PageHero>
 
-            <section className="section" aria-labelledby="contact-stores-title">
+            <section className={'section ' + styles.storesSection} aria-labelledby="contact-stores-title">
                 <div className="container">
                     <SectionHeader id="contact-stores-title" eyebrow={t.address} title={c.storesTitle} />
                     <StoreCards tone="light" showMap />

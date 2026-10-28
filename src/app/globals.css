@@ -2,6 +2,8 @@
  * Perkasa Jaya Marine — "Deep water, precise engineering"
  * Navy is the canvas, white is the editorial surface, red (#e60012) is a signal only:
  * primary buttons, eyebrows, active states and thin rules. No pink tints, no large red fills.
+ * Small red TEXT on light surfaces uses --secondary-text (#c4000f, AA-safe); --secondary stays for
+ * fills, rules, icons, arrows and buttons.
  *
  * Font: Montserrat (variable, 100–900) is loaded by next/font in app/layout.js and exposed as --font-sans.
  */
@@ -18,6 +20,8 @@
   /* Brand Red — signal only */
   --secondary-rgb: 230, 0, 18;
   --secondary-hover: #c4000f;
+  --secondary-text: #c4000f;
+  /* Red TEXT under 24px on light surfaces (6.2:1 on white, 5.7:1 on --surface-alt). --secondary stays for fills, rules, icons, arrows and buttons. */
   --accent: var(--primary-light);
   /* Retired #007bff; kept as an alias so older rules still resolve */
 
@@ -299,9 +303,10 @@ button {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   line-height: 1.2;
-  color: var(--secondary);
+  color: var(--secondary-text);
 }
 
+/* The rule keeps the brand red; only the text uses the AA-safe token. */
 .eyebrow::before {
   content: '';
   width: 24px;

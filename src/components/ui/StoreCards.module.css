@@ -96,7 +96,7 @@
     display: flex;
     flex-direction: column;
     gap: 2px;
-    margin: 20px 0 24px;
+    margin: 16px 0 20px;
     font-style: normal;
     font-size: 1rem;
     line-height: 1.55;
@@ -115,25 +115,84 @@
     font-size: var(--fs-small);
 }
 
-.actions {
+/* ---- Call-first block: the number is the hero, behind a hairline. No red fill anywhere. ---- */
+.contact {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    padding-top: 20px;
+    border-top: 1px solid var(--hairline);
 }
 
-.actions > a {
-    width: 100%;
+.dark .contact {
+    border-top-color: var(--hairline-dark);
+}
+
+.phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    align-self: flex-start;
+    min-height: 44px;
+    max-width: 100%;
+    text-decoration: none;
+}
+
+.phoneIcon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+}
+
+.light .phoneIcon {
+    background: var(--primary);
+    color: #fff;
+}
+
+.dark .phoneIcon {
+    background: #fff;
+    color: var(--primary);
+}
+
+.phoneNum {
+    font-size: clamp(1.25rem, 1rem + 1vw, 1.5rem);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.light .phoneNum {
+    color: var(--primary);
+}
+
+.dark .phoneNum {
+    color: #fff;
+}
+
+/* Quiet secondary row: directions (global btn-link, red arrow + 4px nudge) and email. */
+.links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 24px;
+    margin-top: 12px;
+}
+
+/* Two classes: beats the global `.btn-link { min-height: auto }` whatever the stylesheet order. */
+.links .directions {
+    min-height: 44px;
 }
 
 .mail {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    align-self: flex-start;
-    /* 44px tap target; the smaller top margin keeps the card height unchanged. */
+    /* 44px tap target. */
     min-height: 44px;
-    margin-top: 8px;
-    padding: 10px 0;
     font-size: var(--fs-small);
     font-weight: 500;
     overflow-wrap: anywhere;
@@ -152,6 +211,13 @@
 }
 
 @media (hover: hover) {
+    .phone:hover .phoneNum {
+        text-decoration: underline;
+        text-decoration-color: var(--secondary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 6px;
+    }
+
     .mail:hover {
         text-decoration: underline;
         text-underline-offset: 4px;

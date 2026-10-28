@@ -41,7 +41,10 @@ const COPY = {
         retry: 'Retry',
         placeholder: 'Type your question…',
         send: 'Send',
-        note: 'Pevita can make mistakes. For orders, please call our stores.',
+        // Composer note: one sentence with both stores as tel links (see render).
+        notePre: 'Pevita can make mistakes. For orders, call ',
+        noteOr: ' or ',
+        noteEnd: '.',
     },
     id: {
         eyebrow: 'Asisten virtual',
@@ -66,7 +69,9 @@ const COPY = {
         retry: 'Coba lagi',
         placeholder: 'Tulis pertanyaan Anda…',
         send: 'Kirim',
-        note: 'Pevita bisa keliru. Untuk pemesanan, hubungi toko kami.',
+        notePre: 'Pevita bisa keliru. Untuk pemesanan, hubungi ',
+        noteOr: ' atau ',
+        noteEnd: '.',
     },
 };
 
@@ -484,7 +489,14 @@ export default function Chat() {
                             <Send size={20} />
                         </button>
                     </form>
-                    <p className={styles.note}>{c.note}</p>
+                    {/* Both stores stay one tap away in every state (the opener's call buttons hide on phones). */}
+                    <p className={styles.note}>
+                        {c.notePre}
+                        <a href={STORES[0].tel}>{STORES[0].name}</a>
+                        {c.noteOr}
+                        <a href={STORES[1].tel}>{STORES[1].name}</a>
+                        {c.noteEnd}
+                    </p>
                 </div>
             </div>
 

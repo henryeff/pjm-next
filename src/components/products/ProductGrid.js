@@ -59,6 +59,15 @@ const SHOWN = { opacity: 1, y: 0, scale: 1 };
 const EXIT = { opacity: 0, scale: 0.96, transition: { duration: FILTER_DURATION, ease: EASE_OUT } };
 const PILL_SPRING = { type: 'spring', stiffness: 480, damping: 38 };
 
+// First load: the first row (up to 4 cards) only rises — transform-only, so the LCP engine is never at
+// opacity 0 — and the rest rise and fade in. After a chip press, entering cards fade + scale in.
+const FIRST_ROW = 4;
+const entranceFrom = (filtered, i) => {
+    if (filtered) return { opacity: 0, scale: 0.96 };
+    if (i < FIRST_ROW) return { y: MOTION.y };
+    return { opacity: 0, y: MOTION.y };
+};
+
 /**
  * Engine range listing: navy hero (the range's highest-output engine on the right from 1024px) with a
  * 4S / 2S switch, power filter chips + a live model count, and a 2 / 3 / 4-column grid of ProductCards.
@@ -221,7 +230,7 @@ export default function ProductGrid({ products = [], series = 'four' }) {
                                     key={product.id}
                                     layout
                                     className={styles.item}
-                                    initial={filtered ? { opacity: 0, scale: 0.96 } : { opacity: 0, y: MOTION.y }}
+                                    initial={entranceFrom(filtered, i)}
                                     animate={inView ? SHOWN : undefined}
                                     exit={EXIT}
                                     transition={
@@ -230,11 +239,15 @@ export default function ProductGrid({ products = [], series = 'four' }) {
                                             : { duration: 0.6, ease: EASE_OUT, delay: i * 0.06, layout: LAYOUT_TRANSITION }
                                     }
                                 >
+                                    {/* The first cards fill the phone / tablet first screen (PageHero hides its
+                                        figure below 1024px), so their engines are the LCP: preload them. */}
                                     <ProductCard
                                         product={product}
                                         series={key}
                                         headingLevel="h2"
                                         sizes="(max-width: 899px) 48vw, (max-width: 1199px) 31vw, 300px"
+                                        priority={!filtered && i < 2}
+                                        fetchPriority={!filtered && i === 0 ? 'high' : undefined}
                                     />
                                 </motion.li>
                             ))}

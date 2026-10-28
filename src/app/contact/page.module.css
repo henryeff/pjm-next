@@ -64,6 +64,16 @@
     }
 }
 
+/* ---- Stores section ---- */
+
+/* The compact hero already ends in its own padding, so the full --section-y (~115px at 1440) left a
+   dead band before the store cards. Same value News uses after its compact hero: 72px desktop,
+   40px phones, which pulls the header and the top of the first card further into the 1440×900 view.
+   Bottom padding stays the default. Two classes so it beats the global .section padding. */
+.storesSection:global(.section) {
+    padding-top: clamp(40px, 5vw, 72px);
+}
+
 /* ---- Message form section ---- */
 
 .formGrid {

@@ -17,12 +17,16 @@ const COPY = {
  * series: 'four' | 'two' (decides the detail URL).
  * Wrap it in a StaggerItem if you want an entrance — the card's own hover lift lives on the <a>.
  * sizes: the rendered engine width (the cut-out sits inside 10% padding).
+ * priority / fetchPriority: pass to the first card(s) of a listing — their engine is the LCP image on
+ *   phones and tablets. Off by default (Home's lineup is below the fold).
  */
 export default function ProductCard({
     product,
     series = 'four',
     headingLevel = 'h3',
     sizes = '(max-width: 640px) 45vw, (max-width: 1200px) 30vw, 300px',
+    priority = false,
+    fetchPriority,
 }) {
     const { language } = useLanguage();
     const t = COPY[language] || COPY.en;
@@ -32,7 +36,14 @@ export default function ProductCard({
     return (
         <Link href={seriesPath(series) + '/' + product.id} className={styles.card}>
             <div className={'stage-light floor-shadow ' + styles.stage}>
-                <Cutout src={product.image} alt={product.name} sizes={sizes} className={styles.cutout} />
+                <Cutout
+                    src={product.image}
+                    alt={product.name}
+                    sizes={sizes}
+                    priority={priority}
+                    fetchPriority={fetchPriority}
+                    className={styles.cutout}
+                />
             </div>
 
             <div className={styles.body}>

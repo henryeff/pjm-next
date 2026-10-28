@@ -1,23 +1,26 @@
 /* =========================================================================
    How to get the right part
+   Phones/tablets: header, steps and pack shot stack (the header's own margin spaces it from the steps).
+   >=1024px: header in the left column, numbered steps in the right, pack shot across the full row below.
    ========================================================================= */
 
 .howGrid {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 48px;
 }
 
 @media (min-width: 1024px) {
     .howGrid {
-        grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
-        gap: 64px;
-        align-items: center;
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+        column-gap: clamp(40px, 6vw, 96px);
+        align-items: start;
     }
-}
 
-.howText {
-    min-width: 0;
+    /* Side by side, the header's bottom margin would only pad the row. Two classes so it beats the
+       SectionHeader module's margin regardless of stylesheet order. */
+    .howGrid .howHeader {
+        margin-bottom: 0;
+    }
 }
 
 .steps {
@@ -50,32 +53,25 @@
 }
 
 /* =========================================================================
-   Figures (piston macro + range pack shot)
+   Range pack shot (parts2.jpg, 1920×850, white studio background)
+   Sits straight on the white section: no border, panel or band.
    ========================================================================= */
 
-.figure {
+/* width: 100% because auto inline margins on a grid item would otherwise shrink it to the caption. */
+.rangeFigure {
+    grid-column: 1 / -1;
     min-width: 0;
+    width: 100%;
+    max-width: 1080px;
+    margin: clamp(48px, 6vw, 88px) auto 0;
 }
 
-.photo {
-    aspect-ratio: 4 / 3;
-    border-radius: 12px;
-    overflow: hidden;
-    background: var(--surface-steel);
-}
-
-.photoImg {
-    object-fit: cover;
-    object-position: 45% 50%;
-}
-
-/* Pack shot (1920×850, white studio background). Wide screens show the whole range; narrower frames
-   crop in so the propeller boxes, gears and con-rod fill the frame instead of shrinking to a strip. */
+/* >=1024px: the photo's natural ratio, so the whole range shows uncropped. */
 .range {
     aspect-ratio: 1920 / 850;
     border-radius: 12px;
     overflow: hidden;
-    background: #fff;
+    background: var(--white);
 }
 
 .rangeImg {
@@ -83,13 +79,26 @@
     object-position: 50% 50%;
 }
 
+/* Narrower frames crop in on the propeller boxes, gears and con-rod. The figure bleeds to the screen edge
+   so the cropped parts run off the viewport instead of stopping at an invisible line inside the gutter. */
 @media (max-width: 1023px) {
+    .rangeFigure {
+        width: auto;
+        max-width: none;
+        margin-inline: calc(-1 * var(--gutter));
+    }
+
     .range {
         aspect-ratio: 16 / 9;
+        border-radius: 0;
     }
 
     .rangeImg {
         object-position: 45% 50%;
+    }
+
+    .rangeFigure .caption {
+        padding-inline: var(--gutter);
     }
 }
 
@@ -103,18 +112,12 @@
     }
 }
 
-/* Half the section rhythm on phones: the band is a single image, not a full section.
-   Two classes so it beats the global .section padding regardless of stylesheet order. */
-@media (max-width: 767px) {
-    .rangeBand:global(.section) {
-        padding-block: calc(var(--section-y) / 2);
-    }
-}
-
-/* Static caption in the eyebrow style: muted, no red rule.
+/* Static caption in the eyebrow style: muted, no red rule, centred under the photo.
    Two classes so it wins over the global .eyebrow colour regardless of stylesheet order. */
-.figure .caption {
+.rangeFigure .caption {
     display: flex;
+    justify-content: center;
+    text-align: center;
     margin-top: 16px;
     color: var(--text-muted);
 }

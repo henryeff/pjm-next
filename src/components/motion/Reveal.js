@@ -18,6 +18,7 @@
  * - The h1 / LCP text never starts at opacity 0 (it may slide, never fade from nothing).
  * - LCP images use a transform-only entrance (scale 0.97 → 1), never opacity.
  * - Above-the-fold content uses `immediate` (animate on mount) instead of waiting for in-view.
+ * - In-view trigger: top edge past 88% of the viewport (amount some, bottom margin -12%).
  * - MotionConfig reducedMotion="user" (Providers.js) turns transform animations off for visitors
  *   who ask for reduced motion; non-transform effects (clip-path) opt out explicitly.
  */
@@ -34,6 +35,8 @@ export const MOTION = { y: 24, duration: 0.7, stagger: 0.08, hoverLift: -4 };
  * Fades and slides an element into view as it scrolls into the viewport.
  * Animates once by default so it never replays while scrolling up/down.
  * Pass `immediate` for above-the-fold content: it animates on mount instead of in view.
+ * The default trigger fires as soon as the block's top edge passes 88% of the viewport height,
+ * however tall the block is (a fractional `amount` could never be met by a block taller than the screen).
  */
 export default function Reveal({
     children,
@@ -42,7 +45,8 @@ export default function Reveal({
     y = MOTION.y,
     duration = MOTION.duration,
     once = true,
-    amount = 0.2,
+    amount = 'some',
+    margin = '0px 0px -12% 0px',
     as = 'div',
     immediate = false,
     ...rest
@@ -50,7 +54,7 @@ export default function Reveal({
     const MotionTag = motion[as] || motion.div;
     const trigger = immediate
         ? { animate: { opacity: 1, y: 0 } }
-        : { whileInView: { opacity: 1, y: 0 }, viewport: { once, amount } };
+        : { whileInView: { opacity: 1, y: 0 }, viewport: { once, amount, margin } };
 
     return (
         <MotionTag

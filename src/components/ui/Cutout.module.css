@@ -1,10 +1,20 @@
-/* Fills its positioned parent; callers set the breathing room with padding (e.g. padding: 10%). */
+/* Fills its positioned parent; callers set the breathing room with padding (e.g. padding: 10%) or an inset. */
 .root {
     position: absolute;
     inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* Uncropped files: the fill image is absolute against this box — the root's CONTENT box — so the
+   root's padding really insets the engine (a fill image directly in the root ignores padding). */
+.box {
+    position: relative;
+    display: block;
+    flex: none;
+    width: 100%;
+    height: 100%;
 }
 
 /* Frame for a cropped source: it carries the file's own aspect ratio (inline style), so the

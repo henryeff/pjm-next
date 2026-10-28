@@ -91,7 +91,7 @@ export default function RootLayout({ children }) {
         <Providers>
           <a href="#main" className="skip-link">Skip to content</a>
           <Navbar />
-          <main id="main" style={{ minHeight: '100vh' }}>
+          <main id="main" style={{ minHeight: 'calc(100svh - var(--nav-h))' }}>
             {children}
           </main>
           <Footer />

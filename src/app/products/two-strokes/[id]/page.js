@@ -2,6 +2,7 @@ import styles from '../../four-strokes/[id]/page.module.css'; // Reuse 4-strokes
 import twoStokesData from '@/data/two-strokes.json';
 import Link from 'next/link';
 import ProductDetail from '@/components/products/ProductDetail';
+import { relatedModels } from '@/components/products/relatedModels';
 
 export async function generateStaticParams() {
     return twoStokesData.map((product) => ({
@@ -28,9 +29,6 @@ export async function generateMetadata({ params }) {
     };
 }
 
-// Neighbours in JSON order, trimmed to what the prev / next cards show.
-const pick = (p) => (p ? { id: p.id, name: p.name, image: p.image } : null);
-
 export default async function Page({ params }) {
     const { id } = await params;
     const index = twoStokesData.findIndex((p) => p.id === id);
@@ -49,12 +47,7 @@ export default async function Page({ params }) {
 
     return (
         <div className={styles.page}>
-            <ProductDetail
-                product={product}
-                series="two"
-                prev={pick(twoStokesData[index - 1])}
-                next={pick(twoStokesData[index + 1])}
-            />
+            <ProductDetail product={product} series="two" related={relatedModels(twoStokesData, index)} />
         </div>
     );
 }

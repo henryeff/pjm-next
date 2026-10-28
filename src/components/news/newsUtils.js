@@ -51,6 +51,16 @@ export function formatDate(str, language) {
     return getFormatter(language).format(d);
 }
 
+// Real dealership photos stay in natural colour; generic/stock imagery gets the navy duotone.
+// Matched on the lower-cased file name, because the data mixes /images/News and /images/news paths.
+const NATURAL_COLOUR = new Set(['fisherman.jpg', 'yamalube.jpg', 'f250h.jpg', 'bantuansumbar.jpg', 'garmin.jpg']);
+
+/** True when a news image should get the navy duotone (i.e. it is not one of the real dealership photos). */
+export function isDuotone(src) {
+    const base = String(src || '').split('/').pop().toLowerCase();
+    return !NATURAL_COLOUR.has(base);
+}
+
 /** Existing preview logic: cut to `maxLength` characters and add an ellipsis. */
 export function getHighlight(text, maxLength = 150) {
     if (!text) return '';
