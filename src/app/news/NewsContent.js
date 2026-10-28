@@ -6,6 +6,8 @@ import Image from 'next/image';
 import newsData from '@/data/news.json';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
+import Reveal from '@/components/motion/Reveal';
+import { StaggerGroup, StaggerItem } from '@/components/motion/Stagger';
 
 
 
@@ -34,11 +36,15 @@ export default function NewsContent() {
 
     return (
         <div className={styles.container}>
-            <h1 className={styles.pageTitle}>{t.title}</h1>
+            <Reveal as="div" className={styles.pageHeader}>
+                <span className={styles.kicker} aria-hidden="true" />
+                <h1 className={styles.pageTitle}>{t.title}</h1>
+            </Reveal>
 
-            <div className={styles.newsList}>
+            <StaggerGroup as="div" className={styles.newsList} amount={0.1}>
                 {newsData.map((item) => (
-                    <article
+                    <StaggerItem
+                        as="article"
                         key={item.id}
                         className={styles.newsItem}
                         onClick={() => openModal(item)}
@@ -62,9 +68,9 @@ export default function NewsContent() {
                                 {t.readMore} &rarr;
                             </span>
                         </div>
-                    </article>
+                    </StaggerItem>
                 ))}
-            </div>
+            </StaggerGroup>
 
             {/* Modal */}
             {selectedNews && (
