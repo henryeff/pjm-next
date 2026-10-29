@@ -138,3 +138,30 @@ export function Send(props) {
         </Svg>
     );
 }
+
+// Speech bubble with a handset — reads as WhatsApp at 16–20px. Pair with visible "WhatsApp" text or an aria-label.
+export function WhatsApp(props) {
+    return (
+        <Svg {...props}>
+            <path d="M3.3 20.7 4.4 16.4A8.6 8.6 0 1 1 7.6 19.6Z" />
+            <path d="M9.1 8.4c-.6.5-.8 1.4-.4 2.4a8.2 8.2 0 0 0 4.5 4.5c1 .4 1.9.2 2.4-.4l.4-.6-2-1.2-.9.8a5.6 5.6 0 0 1-2.9-2.9l.8-.9-1.2-2Z" />
+        </Svg>
+    );
+}
+
+export function Clock(props) {
+    return (
+        <Svg {...props}>
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7v5l3.2 2" />
+        </Svg>
+    );
+}
+
+export function Wrench(props) {
+    return (
+        <Svg {...props}>
+            <path d="M14.6 3.4a5 5 0 0 0-5.2 6.9L3.6 16.1a2.1 2.1 0 1 0 3 3l5.8-5.8a5 5 0 0 0 6.9-5.2l-3 3-2.8-.6-.6-2.8 3-3Z" />
+        </Svg>
+    );
+}

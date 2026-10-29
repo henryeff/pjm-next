@@ -71,17 +71,63 @@
     flex: none;
 }
 
+/* Hours + a quiet link to the contact page, under the phone numbers. */
+.meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 24px;
+    margin-top: 4px;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.hours {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-variant-numeric: tabular-nums;
+}
+
+.contact {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.hours svg,
+.contact svg {
+    flex: none;
+}
+
+.contact svg {
+    color: var(--secondary);
+    transition: transform 0.25s var(--ease-out);
+}
+
 @media (hover: hover) {
-    .tels a:hover {
+    .tels a:hover,
+    .contact:hover {
         color: #fff;
         text-decoration: underline;
         text-underline-offset: 4px;
     }
+
+    .contact:hover svg {
+        transform: translateX(4px);
+    }
 }
 
 @media (max-width: 640px) {
-    .tels {
+    .tels,
+    .meta {
         flex-direction: column;
+        align-items: flex-start;
         gap: 0;
     }
 }

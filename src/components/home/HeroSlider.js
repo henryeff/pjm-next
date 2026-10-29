@@ -61,6 +61,9 @@ export default function HeroSlider({ className, children }) {
     const [userPaused, setUserPaused] = useState(null); // null = no choice yet → follows the reduced-motion preference
     const [hovered, setHovered] = useState(false);
     const [keyboardFocus, setKeyboardFocus] = useState(false);
+    // Later slides mount only after slide 1 (the LCP image) has loaded, so they never compete with it.
+    const [firstLoaded, setFirstLoaded] = useState(false);
+    const onFirstSettled = () => setFirstLoaded(true);
 
     const isUserPaused = userPaused ?? reduce;
     const paused = isUserPaused || hovered || keyboardFocus;
@@ -172,14 +175,31 @@ export default function HeroSlider({ className, children }) {
                                 className={styles.kb}
                                 style={{ '--pos': slide.pos, '--pos-m': slide.posMobile }}
                             >
-                                <Image
-                                    src={slide.src}
-                                    alt=""
-                                    fill
-                                    priority={i === 0}
-                                    sizes={IMAGE_SIZES}
-                                    className={styles.image}
-                                />
+                                {i === 0 ? (
+                                    // LCP: preloaded, fetched first. (Next 16: `priority` no longer sets fetchpriority.)
+                                    <Image
+                                        src={slide.src}
+                                        alt=""
+                                        fill
+                                        preload
+                                        fetchPriority="high"
+                                        sizes={IMAGE_SIZES}
+                                        className={styles.image}
+                                        onLoad={onFirstSettled}
+                                        onError={onFirstSettled}
+                                    />
+                                ) : (
+                                    (firstLoaded || active) && (
+                                        <Image
+                                            src={slide.src}
+                                            alt=""
+                                            fill
+                                            fetchPriority="low"
+                                            sizes={IMAGE_SIZES}
+                                            className={styles.image}
+                                        />
+                                    )
+                                )}
                             </div>
                         </motion.div>
                     );

@@ -1,13 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { motion } from 'framer-motion';
 import { EASE_OUT, MOTION } from './Reveal';
+
+// True inside an `immediate` group: its items slide in without fading, so the server HTML shows them.
+const ImmediateGroup = createContext(false);
 
 /**
  * Wraps a group of StaggerItem children and reveals them in sequence
  * as the group scrolls into view. Use for grids/lists (cards, features).
- * Pass `immediate` for above-the-fold groups: they animate on mount.
+ * Pass `immediate` for above-the-fold groups: they animate on mount, transform-only (no opacity 0 in
+ * the server HTML — see the rules in Reveal.js).
  * Default trigger: the group's top edge past 88% of the viewport (amount 'some', bottom margin -12%).
  *
  * Once a one-time (`once`) group has revealed, it switches from whileInView to animate="visible".
@@ -42,21 +46,23 @@ export function StaggerGroup({
     };
 
     return (
-        <MotionTag
-            className={className}
-            initial="hidden"
-            {...trigger}
-            variants={{
-                hidden: {},
-                visible: {
-                    transition: { staggerChildren: stagger, delayChildren },
-                },
-            }}
-            onAnimationComplete={handleAnimationComplete}
-            {...rest}
-        >
-            {children}
-        </MotionTag>
+        <ImmediateGroup.Provider value={immediate}>
+            <MotionTag
+                className={className}
+                initial="hidden"
+                {...trigger}
+                variants={{
+                    hidden: {},
+                    visible: {
+                        transition: { staggerChildren: stagger, delayChildren },
+                    },
+                }}
+                onAnimationComplete={handleAnimationComplete}
+                {...rest}
+            >
+                {children}
+            </MotionTag>
+        </ImmediateGroup.Provider>
     );
 }
 
@@ -69,13 +75,16 @@ export function StaggerItem({
     ...rest
 }) {
     const MotionTag = motion[as] || motion.div;
+    const immediate = useContext(ImmediateGroup);
 
     return (
         <MotionTag
             className={className}
             variants={{
-                hidden: { opacity: 0, y },
-                visible: { opacity: 1, y: 0, transition: { duration, ease: EASE_OUT } },
+                hidden: immediate ? { y } : { opacity: 0, y },
+                visible: immediate
+                    ? { y: 0, transition: { duration, ease: EASE_OUT } }
+                    : { opacity: 1, y: 0, transition: { duration, ease: EASE_OUT } },
             }}
             {...rest}
         >

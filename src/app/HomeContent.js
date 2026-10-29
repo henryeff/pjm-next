@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
+import { PRICE_NOTE, SERVICE, WA_TEXT } from '@/lib/site';
 import HeroSlider from '@/components/home/HeroSlider';
 import EngineLineup from '@/components/home/EngineLineup';
 import Spotlight from '@/components/home/Spotlight';
@@ -17,30 +18,53 @@ import SectionHeader from '@/components/ui/SectionHeader';
 import RangeTile from '@/components/ui/RangeTile';
 import StoreCards from '@/components/ui/StoreCards';
 import CtaBand from '@/components/ui/CtaBand';
-import { ArrowRight, Chat } from '@/components/ui/Icons';
+import { SERVICE_STORE } from '@/components/ui/stores';
+import { ArrowRight, Chat, Wrench } from '@/components/ui/Icons';
 import styles from './page.module.css';
 
+// Indonesian first (the server-rendered language). Non-breaking spaces keep "di Padang" / "in Padang"
+// together when the hero h1 wraps on phones.
 const COPY = {
-    en: {
-        // Non-breaking spaces keep "dealer · Padang" together when the eyebrow wraps on phones.
-        heroEyebrow: 'Authorized Yamaha Marine dealer · Padang',
-        heroLines: ['Power Your', 'Journey'],
-        scroll: 'Scroll',
-        moreTitle: 'Genuine parts & Yamalube',
-        whyEyebrow: 'Why Yamaha',
-        storesEyebrow: 'Visit us',
-        storesTitle: 'Two stores in Padang',
-        storesAction: 'Contact page',
-    },
     id: {
-        heroEyebrow: 'Dealer Resmi Yamaha Marine · Padang',
-        heroLines: ['Tenagai', 'Perjalanan Anda'],
+        // The h1: the search terms, styled as the small eyebrow above the slogan.
+        heroH1: 'Dealer Resmi Mesin Tempel Yamaha di Padang',
+        heroLines: ['Tenaga Andal', 'untuk Melaut'],
+        heroLead: 'Mesin tempel Yamaha 2 tak & 4 tak, suku cadang asli, oli Yamalube, dan semua jenis servis mesin tempel Yamaha.',
         scroll: 'Gulir',
         moreTitle: 'Suku cadang asli & Yamalube',
         whyEyebrow: 'Kenapa Yamaha',
+        serviceEyebrow: 'Servis & bengkel',
+        serviceTitle: 'Semua jenis servis mesin tempel Yamaha',
+        serviceLead: (store) =>
+            `Bengkel kami ada di ${store.name}, ${store.street}, ${store.locality}. Kami mengerjakan semua jenis servis mesin tempel Yamaha (Yamaha Marine), mulai dari perawatan rutin hingga perbaikan.`,
+        serviceListLabel: 'Contoh layanan',
+        serviceCta: 'Info servis & bengkel',
+        faqCta: 'Tanya jawab (FAQ)',
         storesEyebrow: 'Kunjungi kami',
         storesTitle: 'Dua toko di Padang',
         storesAction: 'Halaman kontak',
+        ctaTitle: 'Ingin tahu harga mesin tempel Yamaha?',
+        ctaLead: `${PRICE_NOTE.id}. Kirim pesan WhatsApp, telepon salah satu toko kami, atau tanya Pevita, asisten virtual kami.`,
+    },
+    en: {
+        heroH1: 'Authorized Yamaha Outboard Dealer in Padang',
+        heroLines: ['Power Your', 'Journey'],
+        heroLead: 'Yamaha 2-stroke & 4-stroke outboards, genuine parts, Yamalube oil and all types of Yamaha outboard servicing.',
+        scroll: 'Scroll',
+        moreTitle: 'Genuine parts & Yamalube',
+        whyEyebrow: 'Why Yamaha',
+        serviceEyebrow: 'Service & workshop',
+        serviceTitle: 'Every type of Yamaha outboard servicing',
+        serviceLead: (store) =>
+            `Our workshop is at ${store.name}, ${store.street}, ${store.locality}. We handle every type of Yamaha Marine outboard servicing, from routine maintenance to repairs.`,
+        serviceListLabel: 'For example',
+        serviceCta: 'Service & workshop details',
+        faqCta: 'Questions & answers (FAQ)',
+        storesEyebrow: 'Visit us',
+        storesTitle: 'Two stores in Padang',
+        storesAction: 'Contact page',
+        ctaTitle: 'Want to know the price of a Yamaha outboard?',
+        ctaLead: `${PRICE_NOTE.en}. Message us on WhatsApp, call either store, or ask Pevita, our virtual assistant.`,
     },
 };
 
@@ -50,10 +74,18 @@ const firstSentence = (text = '') => {
     return i === -1 ? text : text.slice(0, i + 1);
 };
 
-export default function Home() {
+/**
+ * Home page body. The engine data arrives as props from the server page (src/app/page.js), so the
+ * catalogue JSON stays out of the client bundle:
+ *   lineup    { four: { count, picks }, two: { count, picks } } — picks carry `slug` for the links
+ *   spotlight the highest-output 4-stroke (card fields + the specs it shows), or null
+ *   ranges    { four: { count, hp: { min, max } }, two: {…} } — for the showcase copy
+ */
+export default function Home({ lineup, spotlight, ranges, news }) {
     const { language } = useLanguage();
-    const c = COPY[language] || COPY.en;
-    const all = translations[language];
+    const lang = language === 'en' ? 'en' : 'id';
+    const c = COPY[lang];
+    const all = translations[lang];
     const t = all.home;
     const nav = all.navbar;
 
@@ -83,17 +115,20 @@ export default function Home() {
 
     return (
         <>
-            {/* 1 — Hero (photo, dark). Sits under the transparent navbar. */}
+            {/* 1 — Hero (photo, dark). Sits under the transparent navbar.
+                The h1 is the keyword line (styled as the eyebrow); the big slogan is a <p> with the display styling. */}
             <HeroSlider className={'on-dark ' + styles.hero}>
                 <div className={styles.scrimLeft} aria-hidden="true" />
                 <div className={styles.scrimBottom} aria-hidden="true" />
 
                 <div className={'container ' + styles.heroInner}>
                     <div className={styles.heroContent}>
-                        <Eyebrow immediate>{c.heroEyebrow}</Eyebrow>
-                        <LineReveal as="h1" className={'display ' + styles.heroTitle} lines={c.heroLines} />
+                        <Eyebrow as="h1" immediate className={styles.heroH1}>
+                            {c.heroH1}
+                        </Eyebrow>
+                        <LineReveal as="p" className={'display ' + styles.heroTitle} lines={c.heroLines} />
                         <Reveal as="p" immediate delay={0.45} className={styles.heroLead}>
-                            {t.heroSubtitle}
+                            {c.heroLead}
                         </Reveal>
                         <Reveal immediate delay={0.6} className={styles.heroCtas}>
                             <Link href="/products/four-strokes" className="btn btn-primary btn-lg btn-block-sm">
@@ -103,7 +138,7 @@ export default function Home() {
                             <Link href="/products/two-strokes" className="btn btn-ghost btn-lg btn-block-sm">
                                 {t.btn2Stroke}
                             </Link>
-                            <Link href="/chat" className={styles.heroChat}>
+                            <Link href="/chat" prefetch={false} className={styles.heroChat}>
                                 <Chat size={20} />
                                 {t.talkToUs}
                             </Link>
@@ -120,11 +155,11 @@ export default function Home() {
                 </div>
             </HeroSlider>
 
-            {/* 2 — Engine lineup: find your outboard (surface-alt) */}
-            <EngineLineup />
+            {/* 2 — Engine lineup: find your outboard (surface-alt). Both series are in the server HTML. */}
+            <EngineLineup lineup={lineup} />
 
             {/* 3 — Spotlight: the highest-output engine (dark stage) */}
-            <Spotlight />
+            <Spotlight product={spotlight} />
 
             {/* 4 — Genuine parts & Yamalube, 2-up (surface-alt) */}
             <section className="section section-alt" aria-labelledby="home-more-title">
@@ -180,9 +215,48 @@ export default function Home() {
             </section>
 
             {/* 6 — Showcase parallax band (photo) */}
-            <ShowcaseBand />
+            <ShowcaseBand ranges={ranges} />
 
-            {/* 7 — Stores (surface-alt) */}
+            {/* 7 — Service & workshop at Toko Tunggal Jaya (white): copy | examples list */}
+            <section className={'section ' + styles.service} aria-labelledby="home-service-title">
+                <div className={'container ' + styles.serviceGrid}>
+                    <Reveal className={styles.serviceText}>
+                        <Eyebrow>{c.serviceEyebrow}</Eyebrow>
+                        <h2 id="home-service-title" className={'h2 ' + styles.serviceTitle}>
+                            {c.serviceTitle}
+                        </h2>
+                        <p className={'lead ' + styles.serviceLead}>{c.serviceLead(SERVICE_STORE)}</p>
+                        <div className={styles.serviceActions}>
+                            <Link href="/servis" className="btn btn-primary btn-lg btn-block-sm">
+                                {c.serviceCta}
+                                <ArrowRight className="btn-arrow" />
+                            </Link>
+                            <Link href="/faq" className="btn btn-link">
+                                {c.faqCta}
+                                <ArrowRight className="btn-arrow" />
+                            </Link>
+                        </div>
+                    </Reveal>
+
+                    <div className={styles.serviceAside}>
+                        <Reveal as="p" className={'eyebrow eyebrow-plain ' + styles.serviceListLabel} delay={0.1}>
+                            {c.serviceListLabel}
+                        </Reveal>
+                        <StaggerGroup as="ul" className={styles.serviceList}>
+                            {SERVICE.examples[lang].map((item, i) => (
+                                <StaggerItem as="li" key={i} className={styles.serviceItem} y={12}>
+                                    <span className={styles.serviceIcon} aria-hidden="true">
+                                        <Wrench size={18} />
+                                    </span>
+                                    {item}
+                                </StaggerItem>
+                            ))}
+                        </StaggerGroup>
+                    </div>
+                </div>
+            </section>
+
+            {/* 8 — Stores (surface-alt) */}
             <section className="section section-alt" aria-labelledby="home-stores-title">
                 <div className="container">
                     <SectionHeader
@@ -196,11 +270,11 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* 8 — Latest news (white, text list) */}
-            <LatestNews />
+            {/* 9 — Latest news (white, text list) */}
+            <LatestNews items={news} />
 
-            {/* 9 — Closing CTA (navy) */}
-            <CtaBand />
+            {/* 10 — Closing CTA (navy): price & availability on request, via WhatsApp / phone / Pevita */}
+            <CtaBand title={c.ctaTitle} lead={c.ctaLead} waText={WA_TEXT.price[lang]()} />
         </>
     );
 }

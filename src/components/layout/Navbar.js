@@ -10,8 +10,9 @@ import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
 import { EASE_OUT } from '@/components/motion/Reveal';
 import LangSwitch from '@/components/ui/LangSwitch';
-import { ArrowRight, ChevronDown, Chat, Close, Phone } from '@/components/ui/Icons';
+import { ArrowRight, ChevronDown, Chat, Close, Phone, WhatsApp } from '@/components/ui/Icons';
 import { STORES } from '@/components/ui/stores';
+import { waLink, WA_TEXT, WHATSAPP } from '@/lib/site';
 
 const COPY = {
     en: {
@@ -21,6 +22,8 @@ const COPY = {
         partsOil: 'Parts & Oil',
         chatCta: 'Chat with Pevita',
         mainNav: 'Main',
+        skip: 'Skip to content',
+        whatsapp: 'WhatsApp',
     },
     id: {
         openMenu: 'Buka menu',
@@ -29,6 +32,8 @@ const COPY = {
         partsOil: 'Suku Cadang & Oli',
         chatCta: 'Chat dengan Pevita',
         mainNav: 'Utama',
+        skip: 'Langsung ke konten',
+        whatsapp: 'WhatsApp',
     },
 };
 
@@ -91,8 +96,10 @@ const Navbar = () => {
         },
     ];
 
+    // Desktop: Home, [Products ▾], then the rest. Mobile: all of these, with products listed below.
     const mainLinks = [
         { href: '/', label: t.home },
+        { href: '/servis', label: t.service },
         { href: '/news', label: t.news },
         { href: '/about', label: t.about },
         { href: '/contact', label: t.contact },
@@ -252,6 +259,10 @@ const Navbar = () => {
 
     return (
         <>
+            {/* First focusable element on every page. */}
+            <a href="#main" className="skip-link">
+                {c.skip}
+            </a>
             <nav className={'on-dark ' + navClass} data-transparent={transparent} aria-label={c.mainNav}>
                 <div className={styles.container}>
                     <Link href="/" className={styles.logo} onClick={closeMenu}>
@@ -349,6 +360,7 @@ const Navbar = () => {
                         <div className={styles.actions}>
                             <Link
                                 href="/chat"
+                                prefetch={false}
                                 className="btn btn-primary btn-sm"
                                 aria-current={isActive('/chat') ? 'page' : undefined}
                             >
@@ -464,7 +476,12 @@ const Navbar = () => {
                             </motion.div>
 
                             <motion.div variants={mobileItemVariants}>
-                                <Link href="/chat" className={`btn btn-primary btn-lg ${styles.mobileChat}`} onClick={closeMenu}>
+                                <Link
+                                    href="/chat"
+                                    prefetch={false}
+                                    className={`btn btn-primary btn-lg ${styles.mobileChat}`}
+                                    onClick={closeMenu}
+                                >
                                     <Chat />
                                     {c.chatCta}
                                 </Link>
@@ -473,6 +490,16 @@ const Navbar = () => {
                             <motion.div className={styles.mobileBottom} variants={mobileItemVariants}>
                                 <LangSwitch variant="segmented" />
                                 <ul className={styles.mobileTels}>
+                                    <li>
+                                        <a
+                                            href={waLink(WA_TEXT.general[language])}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            <WhatsApp size={16} />
+                                            {c.whatsapp} · {WHATSAPP.display}
+                                        </a>
+                                    </li>
                                     {STORES.map((store) => (
                                         <li key={store.id}>
                                             <a href={store.tel}>

@@ -1,4 +1,6 @@
-import newsData from '@/data/news.json';
+// Small news helpers shared by server and client code. No data imports and no 'use client', so a client
+// component can use them without bundling src/data/news.json (server code gets the items from
+// '@/lib/slugs' → allNews() / getNewsBySlug(), or from './newsServer').
 
 const MONTHS = {
     january: 0,
@@ -37,14 +39,14 @@ export const isoDate = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad
 const FORMATTERS = {};
 
 function getFormatter(language) {
-    const locale = language === 'id' ? 'id-ID' : 'en-GB';
+    const locale = language === 'en' ? 'en-GB' : 'id-ID';
     if (!FORMATTERS[locale]) {
         FORMATTERS[locale] = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long', year: 'numeric' });
     }
     return FORMATTERS[locale];
 }
 
-/** "19 February 2026" / "19 Februari 2026"; falls back to the raw string when it can't be parsed. */
+/** "19 Februari 2026" / "19 February 2026"; falls back to the raw string when it can't be parsed. */
 export function formatDate(str, language) {
     const d = parseDate(str);
     if (!d) return str || '';
@@ -68,13 +70,15 @@ export function getHighlight(text, maxLength = 150) {
     return text.slice(0, maxLength).trim() + '...';
 }
 
-// Newest first. Array#sort is stable, so same-day posts keep their file order; undated posts go last.
-export const SORTED_NEWS = newsData
-    .map((item, index) => ({ item, index, date: parseDate(item.date) }))
-    .sort((a, b) => {
-        if (!a.date && !b.date) return a.index - b.index;
-        if (!a.date) return 1;
-        if (!b.date) return -1;
-        return b.date - a.date || a.index - b.index;
-    })
-    .map(({ item }) => item);
+/** Category labels ('berita' = dated dealership news, 'panduan' = how-to guides). */
+export const CATEGORY_LABELS = {
+    berita: { id: 'Berita', en: 'News' },
+    panduan: { id: 'Panduan', en: 'Guide' },
+};
+
+/** The category label in `language`, or '' for an unknown category. */
+export function categoryLabel(category, language) {
+    const labels = CATEGORY_LABELS[category];
+    if (!labels) return '';
+    return labels[language === 'en' ? 'en' : 'id'];
+}

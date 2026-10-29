@@ -1,0 +1,160 @@
+/* FAQ — compact hero (PageHero) → topics + Q&A (white) → CTA band.
+   Phones/tablets: the topic links wrap above the answers. ≥1024px: a sticky topic column on the left. */
+
+/* The compact hero already ends in its own padding. */
+.body:global(.section) {
+    padding-top: clamp(40px, 5vw, 72px);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+}
+
+@media (min-width: 1024px) {
+    .grid {
+        grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+        gap: clamp(40px, 5vw, 80px);
+        align-items: start;
+    }
+
+    .nav {
+        position: sticky;
+        top: calc(var(--nav-h) + 32px);
+    }
+}
+
+/* ---- Topic links ---- */
+
+.navList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+@media (min-width: 1024px) {
+    .navList {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        gap: 0;
+        border-bottom: 1px solid var(--hairline);
+    }
+
+    .navList li {
+        border-top: 1px solid var(--hairline);
+    }
+}
+
+/* Chips (pill = chips only) on phones/tablets; hairline rows from 1024px. */
+.navLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--primary);
+    background: #fff;
+}
+
+.navCount {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 1024px) {
+    .navLink {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        min-height: 52px;
+        padding: 12px 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+    }
+}
+
+@media (hover: hover) {
+    .navLink:hover {
+        text-decoration: underline;
+        text-decoration-thickness: 1.5px;
+        text-underline-offset: 4px;
+    }
+}
+
+/* ---- Groups & items ---- */
+
+.groups {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(48px, 6vw, 80px);
+}
+
+.group,
+.item {
+    scroll-margin-top: calc(var(--nav-h) + 24px);
+}
+
+.groupTitle {
+    margin: 0 0 8px;
+    font-size: clamp(1.625rem, 1.2rem + 1.2vw, 2.25rem);
+}
+
+.items {
+    border-bottom: 1px solid var(--hairline);
+}
+
+.item {
+    padding: 24px 0;
+    border-top: 1px solid var(--hairline);
+}
+
+.question {
+    font-size: 1.1875rem;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -0.005em;
+    color: var(--primary);
+    max-width: var(--measure);
+}
+
+.answer {
+    margin-top: 10px;
+    font-size: var(--fs-body);
+    line-height: 1.75;
+    color: var(--text-main);
+    max-width: var(--measure);
+    overflow-wrap: break-word;
+}
+
+.link {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--secondary);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+}
+
+.num {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+@media (hover: hover) {
+    .link:hover {
+        text-decoration-thickness: 2px;
+    }
+}

@@ -1,0 +1,364 @@
+/* Servis & Bengkel — hero (PageHero) → services (white) → workshop location (alt) → steps (white)
+   → parts & oil (alt) → CTA band. Navy base, white surfaces, red only as a signal. */
+
+/* =========================================================================
+   Services: header left, examples right (≥1024px); the cost note spans the row below.
+   ========================================================================= */
+
+.servicesGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 1024px) {
+    .servicesGrid {
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+        column-gap: clamp(40px, 6vw, 96px);
+        align-items: start;
+    }
+
+    /* Side by side, the header's bottom margin would only pad the row. */
+    .servicesGrid .servicesHeader {
+        margin-bottom: 0;
+    }
+}
+
+.servicesBody {
+    min-width: 0;
+}
+
+.services {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid var(--hairline);
+}
+
+.service {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 0;
+    border-top: 1px solid var(--hairline);
+}
+
+.serviceIcon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--surface-alt);
+    color: var(--secondary);
+}
+
+.serviceText {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.45;
+    color: var(--primary);
+}
+
+.servicesMore {
+    margin-top: 20px;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--text-muted);
+    max-width: var(--measure);
+}
+
+.cost {
+    grid-column: 1 / -1;
+    min-width: 0;
+    margin-top: clamp(40px, 5vw, 64px);
+}
+
+/* =========================================================================
+   Workshop location: details card | click-to-load map
+   ========================================================================= */
+
+.whereGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    align-items: stretch;
+}
+
+@media (min-width: 1024px) {
+    .whereGrid {
+        grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+        gap: 32px;
+    }
+}
+
+.storeCard {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: clamp(24px, 3vw, 32px);
+}
+
+.storeName {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 1.375rem;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    color: var(--primary);
+}
+
+.storePin {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--surface-alt);
+    color: var(--secondary);
+}
+
+.details {
+    margin: 24px 0 0;
+}
+
+.detail {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+    padding: 14px 0;
+    border-top: 1px solid var(--hairline);
+}
+
+@media (min-width: 480px) {
+    .detail {
+        grid-template-columns: 130px minmax(0, 1fr);
+        gap: 16px;
+        align-items: baseline;
+    }
+}
+
+.detail dt {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--text-muted);
+}
+
+.detail dd {
+    margin: 0;
+    min-width: 0;
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--text-main);
+}
+
+.address {
+    font-style: normal;
+}
+
+.detailLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 32px;
+    font-weight: 600;
+    color: var(--primary);
+    font-variant-numeric: tabular-nums;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 4px;
+    transition: text-decoration-color 0.2s;
+}
+
+.detailLink svg {
+    flex: none;
+    color: var(--secondary);
+}
+
+@media (hover: hover) {
+    .detailLink:hover {
+        text-decoration-color: currentColor;
+    }
+}
+
+.hours {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.hours svg {
+    flex: none;
+    margin-top: 4px;
+    color: var(--secondary);
+}
+
+.closed {
+    display: block;
+    color: var(--text-muted);
+}
+
+.directions {
+    align-self: flex-start;
+    margin-top: auto;
+    padding-top: 20px;
+}
+
+.mapCell {
+    min-width: 0;
+}
+
+/* The map fills the row height beside the card on desktop. */
+@media (min-width: 1024px) {
+    .mapCell {
+        display: flex;
+    }
+
+    .mapCell .map {
+        flex: 1;
+        aspect-ratio: auto;
+        min-height: 360px;
+    }
+}
+
+/* =========================================================================
+   Steps: three numbered cards
+   ========================================================================= */
+
+.steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+}
+
+@media (min-width: 768px) {
+    .steps {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 24px;
+    }
+}
+
+.step {
+    min-width: 0;
+    padding: 28px 0 0;
+    border-top: 1px solid var(--hairline);
+}
+
+.stepNum {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--secondary);
+    font-variant-numeric: tabular-nums;
+}
+
+.stepTitle {
+    margin-top: 16px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--primary);
+}
+
+.stepText {
+    margin-top: 8px;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--text-main);
+}
+
+/* =========================================================================
+   Parts & oil tiles + guides
+   ========================================================================= */
+
+.tiles {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+}
+
+.tile {
+    min-width: 0;
+}
+
+@media (min-width: 768px) {
+    .tiles {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 24px;
+    }
+}
+
+.more {
+    margin-top: clamp(40px, 5vw, 56px);
+    display: grid;
+    gap: 24px;
+}
+
+.guides {
+    min-width: 0;
+}
+
+.guidesTitle {
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--primary);
+}
+
+.guideList {
+    list-style: none;
+    margin: 12px 0 0;
+    padding: 0;
+    border-bottom: 1px solid var(--hairline);
+}
+
+.guideList li {
+    border-top: 1px solid var(--hairline);
+}
+
+.guideLink {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 52px;
+    padding: 12px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--primary);
+}
+
+.guideArrow {
+    flex: none;
+    color: var(--secondary);
+    transition: transform 0.25s var(--ease-out);
+}
+
+@media (hover: hover) {
+    .guideLink:hover {
+        text-decoration: underline;
+        text-decoration-thickness: 1.5px;
+        text-underline-offset: 4px;
+    }
+
+    .guideLink:hover .guideArrow {
+        transform: translateX(4px);
+    }
+}

@@ -1,0 +1,47 @@
+/* Quick links on the 404 page: hairline rows, two columns from tablet up. */
+.links {
+    list-style: none;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 48px;
+    border-top: 1px solid var(--hairline);
+}
+
+@media (min-width: 768px) {
+    .links {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.links li {
+    border-bottom: 1px solid var(--hairline);
+}
+
+.link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 56px;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--primary);
+}
+
+.arrow {
+    flex: none;
+    color: var(--secondary);
+    transition: transform 0.25s var(--ease-out);
+}
+
+@media (hover: hover) {
+    .link:hover span {
+        text-decoration: underline;
+        text-underline-offset: 4px;
+    }
+
+    .link:hover .arrow {
+        transform: translateX(4px);
+    }
+}

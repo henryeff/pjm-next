@@ -1,0 +1,424 @@
+/* Article page (/news/[slug]) — a readable editorial column on white, with a sticky aside (contents + a
+   small help card) from 1024px. Red only as a signal: list markers, link underlines, the focus ring. */
+
+.page {
+    padding-top: clamp(32px, 4vw, 56px);
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 48px;
+}
+
+@media (min-width: 1024px) {
+    .layout {
+        grid-template-columns: minmax(0, 1fr) 280px;
+        gap: clamp(48px, 6vw, 96px);
+        align-items: start;
+    }
+}
+
+.main {
+    min-width: 0;
+    max-width: 760px;
+}
+
+/* ---- Meta line: published · updated · author · reading time ----
+   Every item carries a leading dot; the inner row is pulled 20px left inside a clipping box, so the dot of
+   whichever item starts a line (the first one, or one that wrapped) is hidden. */
+.meta {
+    overflow: hidden;
+}
+
+.metaRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 0;
+    margin-left: -20px;
+    font-size: var(--fs-small);
+    line-height: 1.5;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.metaRow > span {
+    position: relative;
+    padding-left: 20px;
+}
+
+.metaRow > span::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    width: 3px;
+    height: 3px;
+    margin-top: -1.5px;
+    border-radius: 50%;
+    background: var(--secondary);
+}
+
+.metaRow time {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* ---- Notes (older story / article language) ---- */
+.notes {
+    margin-top: 20px;
+    display: grid;
+    gap: 8px;
+}
+
+.note {
+    padding: 12px 16px;
+    border-left: 2px solid var(--secondary);
+    background: var(--surface-alt);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--text-main);
+    max-width: var(--measure);
+}
+
+/* ---- Hero image: natural aspect ratio, capped at ~560px tall (--fig-max is set per image) ---- */
+.figure {
+    margin: 28px 0 0;
+    max-width: min(100%, var(--fig-max, 100%));
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--surface-steel);
+}
+
+.figureImg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.figureFill {
+    position: relative;
+    aspect-ratio: 3 / 2;
+}
+
+.figureFillImg {
+    object-fit: cover;
+}
+
+/* ---- Table of contents ---- */
+.tocList {
+    list-style: none;
+    counter-reset: toc;
+    display: grid;
+    gap: 2px;
+}
+
+.tocList li {
+    counter-increment: toc;
+}
+
+.tocList a {
+    display: flex;
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 0.9375rem;
+    line-height: 1.45;
+    font-weight: 500;
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.tocList a::before {
+    content: counter(toc, decimal-leading-zero);
+    flex: none;
+    min-width: 1.6em;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.9;
+    color: var(--secondary-text);
+    font-variant-numeric: tabular-nums;
+}
+
+@media (hover: hover) {
+    .tocList a:hover {
+        text-decoration: underline;
+        text-decoration-color: var(--secondary);
+        text-underline-offset: 3px;
+    }
+}
+
+/* Phones/tablets: a collapsible contents block above the body. */
+.tocMobile {
+    margin-top: 28px;
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+}
+
+.tocMobile summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 48px;
+    cursor: pointer;
+    list-style: none;
+    font-size: var(--fs-eyebrow);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--secondary-text);
+}
+
+.tocMobile summary::-webkit-details-marker {
+    display: none;
+}
+
+.tocMobile summary::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    margin-right: 4px;
+    border-right: 2px solid var(--primary);
+    border-bottom: 2px solid var(--primary);
+    transform: rotate(45deg) translateY(-2px);
+    transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.tocMobile[open] summary::after {
+    transform: rotate(-135deg) translateY(-2px);
+}
+
+.tocMobile nav {
+    padding-bottom: 16px;
+}
+
+@media (min-width: 1024px) {
+    .tocMobile {
+        display: none;
+    }
+}
+
+/* ---- Body typography ---- */
+.body {
+    margin-top: 32px;
+    max-width: var(--measure);
+    font-size: var(--fs-body);
+    line-height: 1.75;
+    color: var(--text-main);
+    overflow-wrap: break-word;
+}
+
+.body > :first-child {
+    margin-top: 0;
+}
+
+.body p {
+    margin: 0 0 1.1em;
+}
+
+.body h2 {
+    margin: 2em 0 0.6em;
+    font-size: clamp(1.375rem, 1.2rem + 0.6vw, 1.75rem);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--primary);
+    scroll-margin-top: calc(var(--nav-h) + 24px);
+    text-wrap: balance;
+}
+
+.body h3 {
+    margin: 1.6em 0 0.5em;
+    font-size: 1.1875rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--primary);
+    scroll-margin-top: calc(var(--nav-h) + 24px);
+}
+
+.body ul,
+.body ol {
+    margin: 0 0 1.2em;
+    padding-left: 1.4em;
+}
+
+.body li {
+    margin-bottom: 0.55em;
+    padding-left: 0.2em;
+}
+
+.body li::marker {
+    color: var(--secondary);
+    font-weight: 700;
+}
+
+.body strong {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.body a {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: rgba(var(--secondary-rgb), 0.55);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+    transition: text-decoration-color var(--duration-fast) var(--ease-out);
+}
+
+@media (hover: hover) {
+    .body a:hover {
+        text-decoration-color: var(--secondary);
+    }
+}
+
+/* ---- Related pages ---- */
+.links {
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid var(--hairline);
+}
+
+.links .linksTitle {
+    margin-bottom: 12px;
+}
+
+.links ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+}
+
+.links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 8px 16px;
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+    transition:
+        border-color var(--duration-fast) var(--ease-out),
+        background-color var(--duration-fast) var(--ease-out);
+}
+
+.linkArrow {
+    flex: none;
+    color: var(--secondary);
+    transition: transform 0.25s var(--ease-out);
+}
+
+@media (hover: hover) {
+    .links a:hover {
+        border-color: var(--primary);
+        background: var(--surface-alt);
+    }
+
+    .links a:hover .linkArrow {
+        transform: translateX(3px);
+    }
+}
+
+/* ---- Aside (≥1024px): sticky contents + help card ---- */
+.aside {
+    display: none;
+}
+
+@media (min-width: 1024px) {
+    .aside {
+        display: grid;
+        gap: 32px;
+        position: sticky;
+        top: calc(var(--nav-h) + 24px);
+    }
+}
+
+.aside .asideTitle {
+    margin-bottom: 12px;
+}
+
+.tocDesktop {
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--hairline);
+}
+
+.help {
+    padding: 24px;
+    border-radius: var(--radius-lg);
+    background: var(--surface-alt);
+    border-top: 2px solid var(--primary);
+}
+
+.helpTitle {
+    font-size: 1.125rem;
+    font-weight: 800;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    color: var(--primary);
+}
+
+.helpText {
+    margin-top: 8px;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+}
+
+.help .helpButton {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.help .helpLink {
+    margin-top: 12px;
+}
+
+.helpHours {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--hairline);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+
+.helpHours svg {
+    flex: none;
+    margin-top: 1px;
+    color: var(--primary);
+}
+
+/* ---- Related articles (same card grid as /news) ---- */
+.grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 640px) {
+    .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 40px 32px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 639px) {
+    .grid {
+        border-bottom: 1px solid var(--hairline);
+    }
+}

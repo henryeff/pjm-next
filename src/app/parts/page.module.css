@@ -1,7 +1,8 @@
 /* =========================================================================
-   How to get the right part
-   Phones/tablets: header, steps and pack shot stack (the header's own margin spaces it from the steps).
-   >=1024px: header in the left column, numbered steps in the right, pack shot across the full row below.
+   Two-column sections ("What's available", "How to order")
+   Phones/tablets: header, body and the full-row block (pack shot / price note) stack (the header's own
+   margin spaces it from the body). >=1024px: header in the left column, body in the right, the full-row
+   block below.
    ========================================================================= */
 
 .howGrid {
@@ -31,9 +32,23 @@
 .step {
     display: grid;
     grid-template-columns: 72px minmax(0, 1fr);
-    align-items: center;
+    align-items: start;
     padding: 24px 0;
     border-top: 1px solid var(--hairline);
+}
+
+.stepBody {
+    min-width: 0;
+    /* Optically centre the first line on the 2.5rem numeral. */
+    padding-top: 6px;
+}
+
+.stepDesc {
+    margin-top: 6px;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-main);
+    max-width: 60ch;
 }
 
 .stepNum {
@@ -120,4 +135,77 @@
     text-align: center;
     margin-top: 16px;
     color: var(--text-muted);
+}
+
+/* =========================================================================
+   What's available: copy column beside the header
+   ========================================================================= */
+
+.availBody {
+    min-width: 0;
+}
+
+.availLead {
+    font-size: var(--fs-lead);
+    font-weight: 500;
+    line-height: 1.6;
+    color: var(--primary);
+    max-width: var(--measure);
+}
+
+.availText {
+    margin-top: 1em;
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: var(--text-main);
+    max-width: var(--measure);
+}
+
+.inlineLink {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--secondary);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+}
+
+@media (hover: hover) {
+    .inlineLink:hover {
+        text-decoration-thickness: 2px;
+    }
+}
+
+/* =========================================================================
+   Price note under the steps, across the full row
+   ========================================================================= */
+
+.priceNote {
+    grid-column: 1 / -1;
+    min-width: 0;
+    margin-top: clamp(40px, 5vw, 64px);
+}
+
+/* =========================================================================
+   Fitting & oil tiles
+   ========================================================================= */
+
+.tiles {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+}
+
+.tile {
+    min-width: 0;
+}
+
+@media (min-width: 768px) {
+    .tiles {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 24px;
+    }
 }

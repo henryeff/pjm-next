@@ -4,12 +4,13 @@ import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
 import Cutout from './Cutout';
 import { ArrowRight } from './Icons';
-import { getHp, seriesPath } from './productUtils';
+import { productHref } from '@/lib/paths';
+import { engineAlt, getHp, localizeSpec } from './productUtils';
 import styles from './ProductCard.module.css';
 
 const COPY = {
-    en: { view: 'View details', unit: 'HP' },
     id: { view: 'Lihat detail', unit: 'PK' },
+    en: { view: 'View details', unit: 'HP' },
 };
 
 /**
@@ -40,11 +41,20 @@ function ModelName({ name }) {
     );
 }
 
+/*
+ * Image `sizes` for a card: the engine is drawn inside a square stage with 10% padding (80% of the
+ * card) and the cut-outs are portrait (width ≈ 0.65–0.89 × height), so the rendered engine is about
+ * 0.52–0.71 × the CARD width. Callers pass ~0.6 × their card width (the common 0.65 files fit; the few
+ * wider files still get a candidate at least their displayed width on 2× screens).
+ */
+
 /**
  * One engine as a single link card: lit stage + big HP numeral + model code.
- * series: 'four' | 'two' (decides the detail URL).
+ * series: 'four' | 'two' (decides the detail URL). product: { name, image, tipeMesin, slug? } — the
+ *   link uses product.slug (from '@/lib/slugs'), else the slugified model name (same result today).
  * Wrap it in a StaggerItem if you want an entrance — the card's own hover lift lives on the <a>.
- * sizes: the rendered engine width (the cut-out sits inside 10% padding).
+ * sizes: the RENDERED ENGINE width (about 0.6 × the card width, see above), not the card.
+ *   The default suits a 2-column phone / 4-column desktop grid.
  * priority / fetchPriority: pass to the first card(s) of a listing — their engine is the LCP image on
  *   phones and tablets. Off by default (Home's lineup is below the fold).
  */
@@ -52,21 +62,22 @@ export default function ProductCard({
     product,
     series = 'four',
     headingLevel = 'h3',
-    sizes = '(max-width: 640px) 45vw, (max-width: 1200px) 30vw, 300px',
+    sizes = '(max-width: 899px) 28vw, (max-width: 1199px) 15vw, 172px',
     priority = false,
     fetchPriority,
 }) {
     const { language } = useLanguage();
-    const t = COPY[language] || COPY.en;
+    const lang = language === 'en' ? 'en' : 'id';
+    const t = COPY[lang];
     const Heading = headingLevel;
     const hp = getHp(product.name);
 
     return (
-        <Link href={seriesPath(series) + '/' + product.id} className={styles.card}>
+        <Link href={productHref(series, product)} className={styles.card}>
             <div className={'stage-light floor-shadow ' + styles.stage}>
                 <Cutout
                     src={product.image}
-                    alt={product.name}
+                    alt={engineAlt(product, lang)}
                     sizes={sizes}
                     priority={priority}
                     fetchPriority={fetchPriority}
@@ -84,7 +95,7 @@ export default function ProductCard({
                 <Heading className={styles.model}>
                     <ModelName name={product.name} />
                 </Heading>
-                {product.tipeMesin && <p className={styles.type}>{product.tipeMesin}</p>}
+                {product.tipeMesin && <p className={styles.type}>{localizeSpec(product.tipeMesin, lang)}</p>}
 
                 <span className={styles.footer}>
                     <span className={styles.more}>{t.view}</span>

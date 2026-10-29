@@ -344,6 +344,29 @@
     }
 }
 
+/* 1024–1099px: the Indonesian labels plus "Servis" need a little more room. */
+@media (min-width: 1024px) and (max-width: 1099px) {
+    .container {
+        gap: 20px;
+    }
+
+    .desktop {
+        gap: 16px;
+    }
+
+    .links {
+        gap: 14px;
+    }
+
+    .actions {
+        gap: 10px;
+    }
+
+    .brandName {
+        font-size: 1rem;
+    }
+}
+
 @media (max-width: 360px) {
     .brandName {
         font-size: 1rem;

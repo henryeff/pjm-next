@@ -12,7 +12,7 @@
     gap: 12px;
 }
 
-/* The three actions need ~845px (EN) / ~940px (ID); PageHero's text column is 760px. Let the row
+/* The three actions (WhatsApp + two calls) are wider than PageHero's 760px text column. Let the row
    run on to the container edge so they sit on one line on desktop, and wrap (call pair together)
    below that. */
 .heroActions {
@@ -64,14 +64,154 @@
     }
 }
 
+/* ---- Quick contact strip (right under the hero, static so it is in the first paint) ---- */
+
+.quick {
+    padding-top: clamp(32px, 4vw, 56px);
+}
+
+.quickGrid {
+    margin: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+}
+
+@media (min-width: 640px) {
+    .quickGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1100px) {
+    .quickGrid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.quickItem {
+    min-width: 0;
+    padding: 20px 0;
+    border-top: 1px solid var(--hairline);
+}
+
+.quickItem:first-child {
+    border-top: 0;
+}
+
+/* Two columns: no rule above the first row; a hairline divides the columns. */
+@media (min-width: 640px) {
+    .quickItem:nth-child(2) {
+        border-top: 0;
+    }
+
+    .quickItem:nth-child(odd) {
+        padding-right: 24px;
+    }
+
+    .quickItem:nth-child(even) {
+        padding-left: 24px;
+        border-left: 1px solid var(--hairline);
+    }
+}
+
+/* Four columns: one row, hairlines between the cells. */
+@media (min-width: 1100px) {
+    .quickItem {
+        border-top: 0;
+        padding: 24px 24px 24px 0;
+    }
+
+    .quickItem + .quickItem {
+        padding-left: 24px;
+        border-left: 1px solid var(--hairline);
+    }
+
+    .quickItem:last-child {
+        padding-right: 0;
+    }
+}
+
+.quickLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--fs-eyebrow);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.quickLabel svg {
+    flex: none;
+    color: var(--secondary);
+}
+
+.quickValue {
+    margin: 10px 0 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--primary);
+    font-variant-numeric: tabular-nums;
+}
+
+.quickNote {
+    margin: 4px 0 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+
+.quickLink {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--secondary);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 4px;
+    white-space: nowrap;
+}
+
+@media (hover: hover) {
+    .quickLink:hover {
+        text-decoration-thickness: 2px;
+    }
+}
+
 /* ---- Stores section ---- */
 
-/* The compact hero already ends in its own padding, so the full --section-y (~115px at 1440) left a
-   dead band before the store cards. Same value News uses after its compact hero: 72px desktop,
-   40px phones, which pulls the header and the top of the first card further into the 1440×900 view.
-   Bottom padding stays the default. Two classes so it beats the global .section padding. */
+/* The quick-contact strip already sits between the hero and the stores, so the full --section-y
+   would leave a dead band. Two classes so it beats the global .section padding. */
 .storesSection:global(.section) {
-    padding-top: clamp(40px, 5vw, 72px);
+    padding-top: clamp(48px, 6vw, 88px);
+}
+
+/* ---- Click-to-load maps under the store cards ---- */
+
+.mapsTitle {
+    margin: clamp(40px, 5vw, 64px) 0 16px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--primary);
+}
+
+.maps {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+}
+
+@media (min-width: 768px) {
+    .maps {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.mapCell {
+    min-width: 0;
 }
 
 /* ---- Message form section ---- */
@@ -124,6 +264,27 @@
     .mailLink:hover {
         text-decoration-color: currentColor;
     }
+}
+
+.asideLinks {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.fax {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.chatLink {
+    margin-top: 12px;
+    white-space: normal;
+    text-align: left;
+    line-height: 1.4;
 }
 
 /* ---- Form card ---- */

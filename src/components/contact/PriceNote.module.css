@@ -1,0 +1,91 @@
+/* Price / contact note: text left, actions right when both fit (the text keeps at least ~360px);
+   otherwise the actions wrap onto their own row below the text. */
+.note {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px 32px;
+    border-radius: 12px;
+    padding: clamp(20px, 3vw, 32px);
+}
+
+.light {
+    background: #fff;
+    border: 1px solid var(--hairline);
+    border-left: 2px solid var(--secondary);
+}
+
+.dark {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--hairline-dark);
+    border-left: 2px solid var(--secondary);
+}
+
+.text {
+    flex: 1 1 360px;
+    min-width: 0;
+}
+
+.title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--primary);
+}
+
+.dark .title {
+    color: #fff;
+}
+
+.body {
+    margin-top: 6px;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-main);
+    max-width: 60ch;
+}
+
+.dark .body {
+    color: var(--text-on-dark);
+}
+
+.hours {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 10px;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+
+.hours svg {
+    flex: none;
+    margin-top: 2px;
+}
+
+.dark .hours {
+    color: var(--text-on-dark);
+}
+
+.actions {
+    flex: 0 1 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* Long Indonesian labels may wrap on narrow phones instead of pushing the page sideways. */
+@media (max-width: 640px) {
+    .actions {
+        flex: 1 1 100%;
+        flex-direction: column;
+    }
+
+    .actions :global(.btn) {
+        white-space: normal;
+        text-align: center;
+        line-height: 1.25;
+        padding-block: 10px;
+    }
+}
