@@ -1,0 +1,78 @@
+/*
+ * First-paint entrances for above-the-fold content (`immediate` reveals, PageHero, the home hero H1).
+ * Pure CSS, so they start with the first paint — before (and without) JavaScript — and they are
+ * TRANSFORM-ONLY: the server HTML is always fully visible (never opacity 0), which keeps LCP fast.
+ * Hydration reuses the same DOM nodes, so an entrance never restarts when React takes over.
+ *
+ * Per-element tuning through custom properties (set inline by the components):
+ *   --m-y      rise distance        (default 24px)
+ *   --m-delay  start delay          (default 0s)
+ *   --m-dur    duration             (default 0.7s)
+ *   --m-scale  settle start scale   (default 1.06)
+ */
+
+.rise {
+    animation: rise var(--m-dur, 0.7s) cubic-bezier(0.16, 1, 0.3, 1) var(--m-delay, 0s) both;
+}
+
+@keyframes rise {
+    from {
+        transform: translate3d(0, var(--m-y, 24px), 0);
+    }
+    to {
+        transform: none;
+    }
+}
+
+/* Headline line rising from behind its overflow mask (LineReveal). */
+.line {
+    display: inline-block;
+    animation: line var(--m-dur, 0.9s) cubic-bezier(0.16, 1, 0.3, 1) var(--m-delay, 0s) both;
+}
+
+@keyframes line {
+    from {
+        transform: translate3d(0, 105%, 0);
+    }
+    to {
+        transform: none;
+    }
+}
+
+/* Red kicker rule drawing in from the left (KickerLine immediate). */
+.draw {
+    transform-origin: left center;
+    animation: draw var(--m-dur, 0.6s) cubic-bezier(0.16, 1, 0.3, 1) var(--m-delay, 0s) both;
+}
+
+@keyframes draw {
+    from {
+        transform: scaleX(0);
+    }
+    to {
+        transform: none;
+    }
+}
+
+/* Photo settling into place (PageHero media, ImageReveal immediate). */
+.settle {
+    animation: settle var(--m-dur, 1.2s) cubic-bezier(0.16, 1, 0.3, 1) var(--m-delay, 0s) both;
+}
+
+@keyframes settle {
+    from {
+        transform: scale(var(--m-scale, 1.06));
+    }
+    to {
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rise,
+    .line,
+    .draw,
+    .settle {
+        animation: none;
+    }
+}

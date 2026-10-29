@@ -48,12 +48,25 @@
     max-width: 980px;
 }
 
+/* The h1 is the keyword line, styled exactly like the eyebrow it used to be (resets the global h1 margin). */
+.hero .heroH1 {
+    margin: 0;
+    align-items: flex-start;
+}
+
+/* When the h1 wraps (phones), the red rule stays level with the first line, not between the two. */
+.hero .heroH1 > span[aria-hidden='true'] {
+    margin-top: calc((1.2em - 2px) / 2);
+}
+
+/* The slogan is a <p> with the display styling the h1 used to have (balance, like the global h1). */
 .hero .heroTitle {
     margin: 20px 0 0;
     font-size: clamp(2.75rem, 1.5rem + 5.6vw, 6.75rem);
     line-height: 0.96;
     letter-spacing: -0.035em;
     color: #fff;
+    text-wrap: balance;
 }
 
 /* LineReveal masks each line (overflow: hidden). At this tight leading the mask would trim the
@@ -186,8 +199,19 @@
 }
 
 @media (max-width: 767px) {
+    /* Short phones (e.g. 375×667): the copy can be taller than the screen. The hero then grows with it
+       instead of pushing the h1 up under the navbar; on taller phones it still fills the screen exactly. */
+    .hero {
+        height: auto;
+        min-height: max(640px, 100vh);
+        min-height: max(640px, 100svh);
+        max-height: none;
+    }
+
     /* Leaves room for the slide controls strip below the CTAs (it has its own top hairline). */
     .heroInner {
+        height: auto;
+        min-height: inherit;
         padding-bottom: 104px;
     }
 
@@ -336,5 +360,95 @@
     .whyText {
         font-size: 1rem;
         line-height: 1.55;
+    }
+}
+
+/* =========================================================================
+   7 Service & workshop — copy | examples list (white)
+   ========================================================================= */
+
+.serviceGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+}
+
+.serviceText {
+    min-width: 0;
+    max-width: 640px;
+}
+
+.service .serviceTitle {
+    margin: 16px 0 0;
+}
+
+.service .serviceLead {
+    margin-top: 16px;
+    max-width: 54ch;
+}
+
+.serviceActions {
+    margin-top: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 28px;
+}
+
+.serviceAside {
+    min-width: 0;
+}
+
+/* A quiet label: the section eyebrow above already carries the red. */
+.service .serviceListLabel {
+    margin-bottom: 8px;
+    color: var(--text-muted);
+}
+
+.serviceList {
+    list-style: none;
+}
+
+.serviceItem {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--hairline);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--primary);
+}
+
+.serviceIcon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--surface-alt);
+    color: var(--primary);
+}
+
+@media (min-width: 1024px) {
+    .serviceGrid {
+        grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+        gap: 64px;
+        align-items: center;
+    }
+}
+
+@media (max-width: 640px) {
+    .serviceItem {
+        gap: 14px;
+        padding: 14px 0;
+        font-size: 1rem;
+    }
+
+    .serviceIcon {
+        width: 36px;
+        height: 36px;
     }
 }

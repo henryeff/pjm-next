@@ -1,0 +1,100 @@
+/* Model comparison table inside an article body (ArticleBody). Light editorial table: navy header rule,
+   hairline rows, tabular numbers. Phones scroll the table sideways inside its own box — never the page. */
+
+.tableFigure {
+    margin: 28px 0 36px;
+}
+
+.tableScroll {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+}
+
+.tableScroll:focus-visible {
+    outline: 2px solid var(--secondary);
+    outline-offset: 2px;
+}
+
+.table {
+    width: 100%;
+    min-width: 640px;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    line-height: 1.45;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-main);
+}
+
+.caption {
+    caption-side: top;
+    padding: 14px 12px 12px;
+    text-align: left;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--primary);
+    border-bottom: 2px solid var(--primary);
+}
+
+/* Values keep number + unit together with no-break spaces (formatSpec), so cells may wrap between words
+   ('6.9 l/h' / '@ 5500 r/min') and the table fits the 760px column on desktop; phones scroll it. */
+.table th,
+.table td {
+    padding: 11px 12px;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--hairline);
+}
+
+/* Only the fuel column (7th) may wrap; every other value stays on one line. */
+.table tbody th,
+.table tbody td:not(:nth-child(7)) {
+    white-space: nowrap;
+}
+
+.table thead th {
+    font-size: 0.6875rem;
+    line-height: 1.3;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: var(--surface-alt);
+}
+
+.table tbody tr:last-child th,
+.table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.table tbody th {
+    font-weight: 700;
+}
+
+.table tbody th a {
+    color: var(--primary);
+    text-decoration: underline;
+    text-decoration-color: rgba(var(--secondary-rgb), 0.5);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+}
+
+@media (hover: hover) {
+    .table tbody tr:hover {
+        background: var(--surface-alt);
+    }
+
+    .table tbody th a:hover {
+        text-decoration-color: var(--secondary);
+    }
+}
+
+.note {
+    margin-top: 10px;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+    max-width: var(--measure);
+}

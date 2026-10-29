@@ -1,7 +1,9 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
@@ -13,18 +15,27 @@ import ImageReveal from '@/components/motion/ImageReveal';
 import { StaggerGroup } from '@/components/motion/Stagger';
 import NewsCard from '@/components/news/NewsCard';
 import NewsDate from '@/components/news/NewsDate';
-import NewsModal from '@/components/news/NewsModal';
-import { SORTED_NEWS, getHighlight, isDuotone } from '@/components/news/newsUtils';
+import { categoryLabel, getHighlight, isDuotone } from '@/components/news/newsUtils';
+import { newsHref } from '@/lib/paths';
 
 const COPY = {
-    en: { eyebrow: 'News & guides', more: 'More stories', close: 'Close' },
-    id: { eyebrow: 'Berita & panduan', more: 'Berita lainnya', close: 'Tutup' },
+    id: {
+        home: 'Beranda',
+        crumb: 'Berita',
+        eyebrow: 'Dealer Resmi Yamaha Marine · Padang',
+        title: 'Berita & Panduan Mesin Tempel Yamaha',
+        lead: 'Kabar dari Perkasa Jaya Marine dan panduan praktis untuk memilih, merawat, dan menyervis mesin tempel Yamaha.',
+        more: 'Berita & panduan lainnya',
+    },
+    en: {
+        home: 'Home',
+        crumb: 'News',
+        eyebrow: 'Authorized Yamaha Marine dealer · Padang',
+        title: 'Yamaha Outboard News & Guides',
+        lead: 'News from Perkasa Jaya Marine and practical guides to choosing, maintaining and servicing Yamaha outboards. Most guides are written in Indonesian.',
+        more: 'More news & guides',
+    },
 };
-
-// Newest first: the 2026 guides lead. The newest post is the featured story.
-const [FEATURED, ...REST] = SORTED_NEWS;
-// Stock imagery gets the navy duotone; a real dealership photo would stay in natural colour.
-const FEATURED_DUO = FEATURED ? isDuotone(FEATURED.image) : false;
 
 function readHashId() {
     const raw = window.location.hash.slice(1);
@@ -36,77 +47,64 @@ function readHashId() {
     }
 }
 
-export default function NewsContent() {
+/**
+ * /news: text-first featured story (the newest post) + an editorial grid. Every story links to its own
+ * server-rendered article page (/news/<slug>). `items` are card fields from newsCards() (newest first).
+ */
+export default function NewsContent({ items = [] }) {
     const { language } = useLanguage();
-    const t = translations[language].news;
-    const c = COPY[language] || COPY.en;
+    const lang = language === 'en' ? 'en' : 'id';
+    const t = translations[lang].news;
+    const c = COPY[lang];
+    const router = useRouter();
 
-    const [selected, setSelected] = useState(null);
-    // The button that opened the dialog (null when it was opened from a /news#<id> deep link).
-    const openerRef = useRef(null);
+    const [featured, ...rest] = items;
+    // Stock imagery gets the navy duotone; a real dealership photo stays in natural colour.
+    const featuredDuo = featured ? isDuotone(featured.image) : false;
 
-    const openStory = (item, opener) => {
-        openerRef.current = opener || null;
-        setSelected(item);
-    };
-
-    const closeStory = () => {
-        const current = selected;
-        setSelected(null);
-
-        if (window.location.hash) {
-            window.history.replaceState(null, '', window.location.pathname + window.location.search);
-        }
-
-        // Give focus back to the card that opened the story (or that story's card after a deep link).
-        let target = openerRef.current;
-        openerRef.current = null;
-        if ((!target || !target.isConnected) && current) {
-            target = document.querySelector(`[data-news-id="${CSS.escape(current.id)}"]`);
-        }
-        target?.focus({ preventScroll: true });
-    };
-
-    // Deep link: /news#<id> opens that story (the home page links here).
+    // Old deep links (/news#<id>, used by the home page before articles had URLs) → the article page.
     useEffect(() => {
-        const openFromHash = () => {
+        const redirectFromHash = () => {
             const id = readHashId();
             if (!id) return;
-            const match = SORTED_NEWS.find((n) => n.id === id);
-            if (match) {
-                openerRef.current = null;
-                setSelected(match);
-            }
+            const match = items.find((n) => n.id === id || n.slug === id);
+            if (match) router.replace(newsHref(match));
         };
-
-        openFromHash();
-        window.addEventListener('hashchange', openFromHash);
-        return () => window.removeEventListener('hashchange', openFromHash);
-    }, []);
+        redirectFromHash();
+        window.addEventListener('hashchange', redirectFromHash);
+        return () => window.removeEventListener('hashchange', redirectFromHash);
+    }, [items, router]);
 
     return (
         <>
-            <PageHero size="compact" eyebrow={c.eyebrow} title={t.title} />
+            <PageHero
+                size="compact"
+                eyebrow={c.eyebrow}
+                title={c.title}
+                lead={c.lead}
+                breadcrumbs={[{ label: c.home, href: '/' }, { label: c.crumb }]}
+            />
 
             <div className={'section ' + styles.page}>
                 <div className="container">
                     {/* Text-first: the headline is the on-topic part. ≥1024px the body leads (7fr) and the
                         photo sits beside it (5fr); below that the photo comes first. Stock photos get the navy duotone. */}
-                    {FEATURED && (
-                        <article id={FEATURED.id} className={styles.featured}>
+                    {featured && (
+                        <article className={styles.featured}>
                             <ImageReveal
                                 immediate
-                                className={styles.featuredMedia + (FEATURED_DUO ? ' ' + styles.featuredDuo : '')}
+                                className={styles.featuredMedia + (featuredDuo ? ' ' + styles.featuredDuo : '')}
                             >
                                 <Image
-                                    src={FEATURED.image}
-                                    alt={FEATURED.title}
+                                    src={featured.image}
+                                    alt={featured.imageAlt || featured.title}
                                     fill
-                                    priority
+                                    preload
+                                    fetchPriority="high"
                                     sizes="(min-width: 1280px) 500px, (min-width: 1024px) 40vw, 100vw"
                                     className={styles.featuredImg}
                                 />
-                                {FEATURED_DUO && (
+                                {featuredDuo && (
                                     <>
                                         <span className={styles.duoShadow} aria-hidden="true" />
                                         <span className={styles.duoTint} aria-hidden="true" />
@@ -115,18 +113,17 @@ export default function NewsContent() {
                             </ImageReveal>
 
                             <Reveal immediate delay={0.15} className={styles.featuredBody}>
-                                <NewsDate value={FEATURED.date} language={language} />
+                                <NewsDate
+                                    value={featured.date}
+                                    language={lang}
+                                    prefix={categoryLabel(featured.category, lang)}
+                                />
                                 <h2 className={styles.featuredTitle}>
-                                    <button
-                                        type="button"
-                                        className={styles.storyButton}
-                                        data-news-id={FEATURED.id}
-                                        onClick={(e) => openStory(FEATURED, e.currentTarget)}
-                                    >
-                                        <span className={styles.featuredClamp}>{FEATURED.title}</span>
-                                    </button>
+                                    <Link href={newsHref(featured)} className={styles.storyLink}>
+                                        <span className={styles.featuredClamp}>{featured.title}</span>
+                                    </Link>
                                 </h2>
-                                <p className={styles.featuredExcerpt}>{getHighlight(FEATURED.excerpt)}</p>
+                                <p className={styles.featuredExcerpt}>{getHighlight(featured.excerpt, 220)}</p>
                                 <span className={'btn btn-link ' + styles.featuredMore} aria-hidden="true">
                                     {t.readMore}
                                     <ArrowRight className="btn-arrow" />
@@ -135,7 +132,7 @@ export default function NewsContent() {
                         </article>
                     )}
 
-                    {REST.length > 0 && (
+                    {rest.length > 0 && (
                         <section className={styles.more} aria-labelledby="news-more-title">
                             <Reveal>
                                 <h2 id="news-more-title" className={'eyebrow ' + styles.moreTitle}>
@@ -144,14 +141,8 @@ export default function NewsContent() {
                             </Reveal>
 
                             <StaggerGroup className={styles.grid} amount={0.05}>
-                                {REST.map((item) => (
-                                    <NewsCard
-                                        key={item.id}
-                                        item={item}
-                                        language={language}
-                                        readMore={t.readMore}
-                                        onOpen={openStory}
-                                    />
+                                {rest.map((item) => (
+                                    <NewsCard key={item.id} item={item} language={lang} readMore={t.readMore} />
                                 ))}
                             </StaggerGroup>
                         </section>
@@ -160,8 +151,6 @@ export default function NewsContent() {
             </div>
 
             <CtaBand />
-
-            <NewsModal item={selected} language={language} closeLabel={c.close} onClose={closeStory} />
         </>
     );
 }

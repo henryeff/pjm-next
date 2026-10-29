@@ -5,21 +5,66 @@ import Link from 'next/link';
 import { AnimatePresence, motion, useInView } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
-import { EASE_OUT, MOTION } from '@/components/motion/Reveal';
+import Reveal, { EASE_OUT, MOTION } from '@/components/motion/Reveal';
 import PageHero from '@/components/ui/PageHero';
 import CtaBand from '@/components/ui/CtaBand';
 import Cutout from '@/components/ui/Cutout';
 import ProductCard from '@/components/ui/ProductCard';
-import { getHp, hpBucket, seriesPath, topModel } from '@/components/ui/productUtils';
+import { ArrowRight } from '@/components/ui/Icons';
+import SectionHeader from '@/components/ui/SectionHeader';
+import { getHp, hpBucket, hpRange, seriesPath, topModel } from '@/components/ui/productUtils';
+import { productHref } from '@/lib/paths';
+import { HOURS, PRICE_NOTE, SERVICE, waLink, WA_TEXT, WHATSAPP } from '@/lib/site';
 import styles from '@/app/products/four-strokes/page.module.css';
 
+// Indonesian first (the server-rendered language). Range figures come from the data (hpRange).
 const COPY = {
-    en: {
-        eyebrow: 'Yamaha Outboards',
-        title: { four: '4-Stroke Outboards', two: '2-Stroke Outboards' },
+    id: {
+        eyebrow: 'Dealer resmi Yamaha Marine · Padang',
+        title: { four: 'Mesin Tempel Yamaha 4 Tak', two: 'Mesin Tempel Yamaha 2 Tak' },
         lead: {
-            four: "Experience the pinnacle of marine engineering with Yamaha's 4-stroke lineup. Cleaner, Quieter, Stronger.",
-            two: 'Proven reliability and easy maintenance. The choice of professionals for decades.',
+            four: (r) =>
+                `Jajaran mesin tempel Yamaha 4 tak${r ? ` dari ${r.min} sampai ${r.max} PK` : ''} di Perkasa Jaya Marine, Padang. Lebih bersih, lebih senyap, lebih bertenaga.`,
+            two: (r) =>
+                `Jajaran mesin tempel Yamaha 2 tak${r ? ` dari ${r.min} sampai ${r.max} PK` : ''} di Perkasa Jaya Marine, Padang. Keandalan teruji dan perawatan mudah.`,
+        },
+        typeNav: 'Jenis mesin tempel',
+        models: (n) => n + ' model',
+        filterLabel: 'Saring berdasarkan tenaga',
+        filters: { all: 'Semua', small: 'Sampai 25 PK', mid: '30–115 PK', large: '150 PK ke atas' },
+        showing: (n, total) => 'Menampilkan ' + n + ' dari ' + total + ' model',
+        chatQuery: {
+            four: 'Bantu saya memilih mesin tempel 4 tak.',
+            two: 'Bantu saya memilih mesin tempel 2 tak.',
+        },
+        about: {
+            eyebrow: 'Panduan singkat',
+            title: { four: 'Tentang mesin tempel Yamaha 4 tak', two: 'Tentang mesin tempel Yamaha 2 tak' },
+            intro: (n, r, strokes) =>
+                `Perkasa Jaya Marine adalah dealer resmi Yamaha Marine di Padang, Sumatera Barat. Di halaman ini ada ${n} model mesin tempel Yamaha ${strokes} tak${r ? `, dari ${r.min} PK sampai ${r.max} PK` : ''}. Setiap model punya halaman sendiri dengan spesifikasi lengkap: tipe mesin, volume silinder, berat, konsumsi BBM, sistem starter, kemudi dan tinggi transom.`,
+            oil: {
+                four: 'Pada mesin tempel 4 tak, oli mesin tidak dicampur dengan bensin: oli berada di dalam mesin (sistem wet sump). Oli yang sesuai:',
+                two: 'Mesin tempel 2 tak di halaman ini memakai pelumasan campur (pre-mix): oli 2 tak dicampur dengan bensin. Oli yang sesuai:',
+            },
+            oilLink: { four: 'Yamalube 4 Tak', two: 'Yamalube 2 Tak' },
+            price: 'Harga tidak dicantumkan di situs ini.',
+            priceVia: 'lewat WhatsApp',
+            priceOr: 'atau telepon salah satu toko kami',
+            service: SERVICE.summary.id,
+            serviceLink: 'Servis & bengkel',
+            partsLink: 'Suku cadang asli Yamaha',
+            groupsTitle: 'Pilih berdasarkan tenaga',
+            guidesTitle: 'Panduan terkait',
+        },
+    },
+    en: {
+        eyebrow: 'Authorized Yamaha Marine dealer · Padang',
+        title: { four: 'Yamaha 4-Stroke Outboards', two: 'Yamaha 2-Stroke Outboards' },
+        lead: {
+            four: (r) =>
+                `The Yamaha 4-stroke outboard range${r ? ` from ${r.min} to ${r.max} HP` : ''} at Perkasa Jaya Marine, Padang. Cleaner, quieter, stronger.`,
+            two: (r) =>
+                `The Yamaha 2-stroke outboard range${r ? ` from ${r.min} to ${r.max} HP` : ''} at Perkasa Jaya Marine, Padang. Proven reliability and easy maintenance.`,
         },
         typeNav: 'Outboard type',
         models: (n) => n + (n === 1 ? ' model' : ' models'),
@@ -30,22 +75,24 @@ const COPY = {
             four: 'Help me choose a 4-stroke outboard.',
             two: 'Help me choose a 2-stroke outboard.',
         },
-    },
-    id: {
-        eyebrow: 'Mesin Tempel Yamaha',
-        title: { four: 'Mesin Tempel 4 Tak', two: 'Mesin Tempel 2 Tak' },
-        lead: {
-            four: 'Rasakan puncak rekayasa kelautan dengan jajaran mesin 4 tak Yamaha. Lebih bersih, lebih senyap, lebih bertenaga.',
-            two: 'Keandalan teruji dan perawatan mudah. Pilihan para profesional selama puluhan tahun.',
-        },
-        typeNav: 'Jenis mesin tempel',
-        models: (n) => n + ' model',
-        filterLabel: 'Saring berdasarkan tenaga',
-        filters: { all: 'Semua', small: 'Sampai 25 PK', mid: '30–115 PK', large: '150 PK ke atas' },
-        showing: (n, total) => 'Menampilkan ' + n + ' dari ' + total + ' model',
-        chatQuery: {
-            four: 'Bantu saya memilih mesin tempel 4 tak.',
-            two: 'Bantu saya memilih mesin tempel 2 tak.',
+        about: {
+            eyebrow: 'Quick guide',
+            title: { four: 'About Yamaha 4-stroke outboards', two: 'About Yamaha 2-stroke outboards' },
+            intro: (n, r, strokes) =>
+                `Perkasa Jaya Marine is an authorized Yamaha Marine dealer in Padang, West Sumatra. This page lists ${n} Yamaha ${strokes}-stroke outboard ${n === 1 ? 'model' : 'models'}${r ? `, from ${r.min} HP to ${r.max} HP` : ''}. Each model has its own page with full specifications: engine type, displacement, weight, fuel consumption, starter, steering and transom height.`,
+            oil: {
+                four: 'In a 4-stroke outboard the engine oil is not mixed with the fuel: it stays inside the engine (wet sump). Matching oil:',
+                two: 'The 2-stroke outboards on this page use pre-mix lubrication: 2-stroke oil is mixed with the fuel. Matching oil:',
+            },
+            oilLink: { four: 'Yamalube 4-Stroke', two: 'Yamalube 2-Stroke' },
+            price: 'Prices are not listed on the site.',
+            priceVia: 'on WhatsApp',
+            priceOr: 'or call one of our stores',
+            service: SERVICE.summary.en,
+            serviceLink: 'Service & workshop',
+            partsLink: 'Yamaha genuine parts',
+            groupsTitle: 'Choose by power',
+            guidesTitle: 'Related guides (in Indonesian)',
         },
     },
 };
@@ -70,12 +117,14 @@ const entranceFrom = (filtered, i) => {
 
 /**
  * Engine range listing: navy hero (the range's highest-output engine on the right from 1024px) with a
- * 4S / 2S switch, power filter chips + a live model count, and a 2 / 3 / 4-column grid of ProductCards.
- * series: 'four' | 'two'.
+ * breadcrumb and a 4S / 2S switch, power filter chips + a live model count, a 2 / 3 / 4-column grid of
+ * ProductCards, then a short guide (range, lubrication, price policy, service, models by power, guides).
+ * series: 'four' | 'two'. products: [{ id, slug, name, image, tipeMesin }] (slug → model-name URLs).
+ * guides: [{ href, title }] related articles (resolved on the server).
  */
-export default function ProductGrid({ products = [], series = 'four' }) {
+export default function ProductGrid({ products = [], series = 'four', guides = [] }) {
     const { language } = useLanguage();
-    const lang = language === 'id' ? 'id' : 'en';
+    const lang = language === 'en' ? 'en' : 'id';
     const c = COPY[lang];
     const nav = translations[lang].navbar;
     const key = series === 'two' ? 'two' : 'four';
@@ -125,6 +174,28 @@ export default function ProductGrid({ products = [], series = 'four' }) {
         { id: 'two', label: nav.twoStrokes, href: seriesPath('two') },
     ];
 
+    // Same trail as the BreadcrumbList JSON-LD: Beranda › 4 Tak.
+    const crumbs = [{ label: nav.home, href: '/' }, { label: key === 'two' ? nav.twoStrokes : nav.fourStrokes }];
+    const range = hpRange(products);
+    const strokes = key === 'two' ? 2 : 4;
+    const a = c.about;
+    // Models by power, in the same buckets as the filter chips, each labelled with its real range from the
+    // data ('30–85 PK' for the 2-stroke mid group, where the chip just says '30–115').
+    const unit = lang === 'en' ? 'HP' : 'PK';
+    const groups = FILTERS.filter((id) => id !== 'all')
+        .map((id) => {
+            const groupItems = items.filter((item) => item.bucket === id);
+            const r = hpRange(groupItems.map((item) => item.product));
+            const label = !r ? c.filters[id] : r.min === r.max ? `${r.min} ${unit}` : `${r.min}–${r.max} ${unit}`;
+            return { id, label, items: groupItems };
+        })
+        .filter((group) => group.items.length > 0);
+    const seriesName = key === 'two' ? 'mesin tempel Yamaha 2 tak' : 'mesin tempel Yamaha 4 tak';
+    // WhatsApp prefilled with a price question about this range.
+    const priceText = WA_TEXT.price[lang](
+        lang === 'en' ? (key === 'two' ? 'a Yamaha 2-stroke outboard' : 'a Yamaha 4-stroke outboard') : seriesName
+    );
+
     // Hero figure: the range's highest-output engine (4S: F450A, 2S: 200AET/L200AET) on the navy.
     // Shown from 1024px only (PageHero hides the slot below), so the image stays lazy — phones never fetch it.
     const top = topModel(products);
@@ -135,6 +206,7 @@ export default function ProductGrid({ products = [], series = 'four' }) {
             {topHp && (
                 <motion.span
                     className={'tabular ' + styles.heroWatermark}
+                    aria-hidden="true"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 1.2, ease: EASE_OUT, delay: 0.2 }}
@@ -158,9 +230,10 @@ export default function ProductGrid({ products = [], series = 'four' }) {
         <>
             <PageHero
                 size="compact"
+                breadcrumbs={crumbs}
                 eyebrow={c.eyebrow}
                 title={c.title[key]}
-                lead={c.lead[key]}
+                lead={c.lead[key](range)}
                 figure={figure}
             >
                 <nav aria-label={c.typeNav} className={styles.segmented}>
@@ -241,11 +314,13 @@ export default function ProductGrid({ products = [], series = 'four' }) {
                                 >
                                     {/* The first cards fill the phone / tablet first screen (PageHero hides its
                                         figure below 1024px), so their engines are the LCP: preload them. */}
+                                    {/* sizes = the rendered ENGINE (~0.6 × the card): cards are ~46vw to 899px
+                                        (2 columns), ~31vw to 1199px (3), ≤286px from 1200px (4). */}
                                     <ProductCard
                                         product={product}
                                         series={key}
                                         headingLevel="h2"
-                                        sizes="(max-width: 899px) 48vw, (max-width: 1199px) 31vw, 300px"
+                                        sizes="(max-width: 899px) 28vw, (max-width: 1199px) 20vw, 172px"
                                         priority={!filtered && i < 2}
                                         fetchPriority={!filtered && i === 0 ? 'high' : undefined}
                                     />
@@ -256,7 +331,73 @@ export default function ProductGrid({ products = [], series = 'four' }) {
                 </div>
             </section>
 
-            <CtaBand chatQuery={c.chatQuery[key]} />
+            {/* ---- Short guide: server-rendered text for buyers, search and AI (facts from the data and lib/site) ---- */}
+            <section className="section section-alt" aria-labelledby="range-about-title">
+                <div className="container">
+                    <SectionHeader eyebrow={a.eyebrow} title={a.title[key]} id="range-about-title" />
+                    <div className={styles.aboutGrid}>
+                        <Reveal className={styles.prose}>
+                            <p>{a.intro(products.length, range, strokes)}</p>
+                            <p>
+                                {a.oil[key]}{' '}
+                                <Link href={key === 'two' ? '/yamalube#yamalube-2t' : '/yamalube#yamalube-4t'}>
+                                    {a.oilLink[key]}
+                                </Link>
+                                .
+                            </p>
+                            <p>
+                                {a.price} {PRICE_NOTE[lang]} {a.priceVia}{' '}
+                                <a href={waLink(priceText)} target="_blank" rel="noopener noreferrer">
+                                    {WHATSAPP.display}
+                                </a>{' '}
+                                {a.priceOr} ({HOURS.text[lang]}).
+                            </p>
+                            <p>
+                                {a.service} <Link href="/servis">{a.serviceLink}</Link> ·{' '}
+                                <Link href="/parts">{a.partsLink}</Link>
+                            </p>
+                        </Reveal>
+
+                        <Reveal className={styles.aside} delay={0.1}>
+                            <h3 className={styles.asideTitle}>{a.groupsTitle}</h3>
+                            <dl className={styles.groups}>
+                                {groups.map((group) => (
+                                    <div key={group.id} className={styles.group}>
+                                        <dt>{group.label}</dt>
+                                        <dd>
+                                            <ul className={styles.groupList}>
+                                                {group.items.map(({ product }) => (
+                                                    <li key={product.id}>
+                                                        <Link href={productHref(key, product)}>{product.name}</Link>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </dd>
+                                    </div>
+                                ))}
+                            </dl>
+
+                            {guides.length > 0 && (
+                                <>
+                                    <h3 className={styles.asideTitle}>{a.guidesTitle}</h3>
+                                    <ul className={styles.guideList}>
+                                        {guides.map((guide) => (
+                                            <li key={guide.href}>
+                                                <Link href={guide.href}>
+                                                    {guide.title}
+                                                    <ArrowRight size={16} className={styles.guideArrow} />
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </>
+                            )}
+                        </Reveal>
+                    </div>
+                </div>
+            </section>
+
+            <CtaBand chatQuery={c.chatQuery[key]} waText={priceText} />
         </>
     );
 }

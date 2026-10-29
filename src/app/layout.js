@@ -5,22 +5,41 @@ import Footer from '@/components/layout/Footer';
 import "./globals.css";
 
 import Providers from '@/components/Providers';
-import LocalBusiness from '@/components/Seo/LocalBusiness';
+import JsonLd from '@/components/Seo/JsonLd';
+import { organization, stores, website } from '@/lib/schema';
+import { DEFAULT_DESCRIPTION, DEFAULT_OG_IMAGE, DEFAULT_TITLE } from '@/lib/seo';
+import { SITE_NAME, SITE_URL } from '@/lib/site';
 
 // Variable Montserrat (no weight list = full 100–900 axis), so 300 and 800 are real cuts.
 const montserrat = Montserrat({ subsets: ['latin'], display: 'swap', variable: '--font-sans' });
 
+// Site defaults. Every page sets its own title, description, canonical and openGraph through
+// buildMetadata() in '@/lib/seo' — so no canonical and no og:url here (pages would inherit them).
 export const metadata = {
-  metadataBase: new URL('https://perkasajayamarine.com'),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Perkasa Jaya Marine - Yamaha Marine Dealer Padang (Dealer Resmi)",
-    template: "%s | Perkasa Jaya Marine",
+    default: DEFAULT_TITLE,
+    template: `%s | ${SITE_NAME}`,
   },
-  description: "Authorized Yamaha Outboard Dealer in Padang, West Sumatra. Jual Mesin Tempel Yamaha, Suku Cadang Asli, dan Yamalube. Service Center & Spareparts Terlengkap.",
-  keywords: ['Yamaha', 'Outboard', 'Marine', 'Mesin Tempel', 'Suku Cadang', 'Spare Parts', 'Yamalube', 'Padang', 'Sumatera Barat', 'Indonesia', 'Perkasa Jaya Marine', 'Toko Tunggal Jaya', 'Jual Mesin Tempel', 'Bengkel Yamaha Marine'],
-  authors: [{ name: 'Perkasa Jaya Marine' }],
-  creator: 'Perkasa Jaya Marine',
-  publisher: 'Perkasa Jaya Marine',
+  description: DEFAULT_DESCRIPTION,
+  applicationName: SITE_NAME,
+  keywords: [
+    'mesin tempel Yamaha',
+    'dealer resmi Yamaha Marine',
+    'mesin tempel Padang',
+    'suku cadang asli Yamaha',
+    'oli Yamalube',
+    'servis mesin tempel',
+    'bengkel mesin tempel Padang',
+    'Yamaha outboard',
+    'Perkasa Jaya Marine',
+    'Toko Tunggal Jaya',
+    'Padang',
+    'Sumatera Barat',
+  ],
+  authors: [{ name: SITE_NAME }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
   formatDetection: {
     email: false,
     address: false,
@@ -29,27 +48,17 @@ export const metadata = {
   openGraph: {
     type: 'website',
     locale: 'id_ID',
-    alternateLocale: 'en_US',
-    url: 'https://perkasajayamarine.com',
-    title: 'Perkasa Jaya Marine - Yamaha Marine Dealer Padang',
-    description: 'Dealer Resmi Yamaha Marine di Padang. Jual Mesin Tempel, Sparepart, dan Service. Authorized Dealer for Yamaha Outboards in West Sumatra.',
-    siteName: 'Perkasa Jaya Marine',
-    images: [
-      {
-        // 1200x630 link-preview card (WhatsApp, Facebook, X, LinkedIn).
-        url: '/images/og-image.jpg',
-        width: 1200,
-        height: 630,
-        type: 'image/jpeg',
-        alt: 'Perkasa Jaya Marine — Dealer Resmi Yamaha Marine di Padang: mesin tempel, suku cadang asli dan Yamalube',
-      },
-    ],
+    alternateLocale: ['en_US'],
+    siteName: SITE_NAME,
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Perkasa Jaya Marine - Authorized Yamaha Marine Dealer',
-    description: 'Authorized Yamaha Marine Dealer in Padang, West Sumatra.',
-    images: ['/images/og-image.jpg'],
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    images: [{ url: DEFAULT_OG_IMAGE.url, alt: DEFAULT_OG_IMAGE.alt }],
   },
   robots: {
     index: true,
@@ -64,40 +73,47 @@ export const metadata = {
   },
 };
 
+export const viewport = {
+  themeColor: '#001e3d',
+};
+
+// No-JS safety net: below-the-fold reveals start hidden (opacity 0 / clip-path) until they scroll
+// into view. Without JavaScript they would never show, so show them. (Above-the-fold content never
+// starts hidden — see components/motion/Reveal.js.)
+const NOSCRIPT_CSS =
+  '[style*="opacity:0;"],[style$="opacity:0"]{opacity:1!important;transform:none!important}' +
+  '[style*="inset(0% 0% 100% 0%)"]{clip-path:none!important}';
+
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={montserrat.variable}>
+    <html lang="id" className={montserrat.variable}>
       <head>
-        {/* Google Analytics - load afterInteractive for quicker capture */}
-        <Script
-          strategy="afterInteractive"
-          src="https://www.googletagmanager.com/gtag/js?id=G-1LQ6YR0ST1"
-        />
-        <Script
-          id="google-analytics"
-          strategy="afterInteractive"
-        >
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);} 
-            gtag('js', new Date());
-
-            gtag('config', 'G-1LQ6YR0ST1');
-          `}
-        </Script>
-
-        {/* LocalBusiness JSON-LD component */}
-        <LocalBusiness />
+        <noscript>
+          <style>{NOSCRIPT_CSS}</style>
+        </noscript>
+        {/* Organization + WebSite + both Stores (site-wide structured data). */}
+        <JsonLd data={[organization(), website(), ...stores()]} />
       </head>
       <body>
         <Providers>
-          <a href="#main" className="skip-link">Skip to content</a>
           <Navbar />
           <main id="main" style={{ minHeight: 'calc(100svh - var(--nav-h))' }}>
             {children}
           </main>
           <Footer />
         </Providers>
+
+        {/* Google Analytics — lazyOnload: fetched after the page has loaded, during idle time, so it
+            never competes with the LCP image or hydration (and is not preloaded in <head>). */}
+        <Script strategy="lazyOnload" src="https://www.googletagmanager.com/gtag/js?id=G-1LQ6YR0ST1" />
+        <Script id="google-analytics" strategy="lazyOnload">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-1LQ6YR0ST1');
+          `}
+        </Script>
       </body>
     </html>
   );

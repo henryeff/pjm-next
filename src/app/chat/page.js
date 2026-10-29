@@ -1,21 +1,26 @@
 'use client';
 
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import { useSearchParams } from 'next/navigation';
-import { Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
-import { Send, Phone as PhoneIcon } from '@/components/ui/Icons';
+import { Send, Phone as PhoneIcon, Clock } from '@/components/ui/Icons';
 import { MAIN_STORE, STORES } from '@/components/ui/stores';
+import { waLink, WA_TEXT, WHATSAPP } from '@/lib/site';
 import ContourLines from '@/components/ui/ContourLines';
 import Eyebrow from '@/components/ui/Eyebrow';
 import { StaggerGroup, StaggerItem } from '@/components/motion/Stagger';
 import Reveal, { EASE_OUT } from '@/components/motion/Reveal';
+import { cssMotionVars, motionClasses } from '@/components/motion/cssMotion';
 import useReducedMotionSafe from '@/components/motion/useReducedMotionSafe';
 import AssistantMark from '@/components/chat/AssistantMark';
-import { Outboard, Gear, OilDrop, Gps, Pin, Phone } from '@/components/chat/SuggestionIcons';
+import { Outboard, Gear, OilDrop, Pin, Phone } from '@/components/chat/SuggestionIcons';
 import styles from './chat.module.css';
+
+// react-markdown + remark-gfm (~150 KB) load lazily: the first reply can't arrive before the visitor has
+// typed, so the module is fetched in idle time after mount and never sits in the route's first-load JS.
+const loadMarkdown = () => import('./ChatMarkdown');
+const ChatMarkdown = lazy(loadMarkdown);
 
 const COPY = {
     en: {
@@ -26,24 +31,25 @@ const COPY = {
         title: "Hi, I'm Pevita",
         srTitle: 'Chat with Pevita',
         lead: 'Welcome! How can I help you with Yamaha Marine products?',
-        hint: 'Ask about outboard motors, Yamaha Genuine Parts, Yamalube, service or Garmin.',
+        hint: 'Ask about Yamaha outboards, genuine parts, Yamalube oil, servicing, opening hours or store locations.',
         suggestionsLabel: 'Suggested questions',
         suggestions: [
             'Yamaha outboard motor info?',
             'Yamaha Genuine Parts info?',
             'Yamalube info?',
-            'Garmin products info?',
-            'Where is the official Yamaha Marine workshop in Padang?',
-            'How can I contact you?',
+            'What are your opening hours?',
+            'Where is the Yamaha Marine service workshop in Padang?',
+            'What are your WhatsApp and phone numbers?',
         ],
         typing: 'Pevita is typing…',
         error: 'Something went wrong. Please try again or call our stores.',
         retry: 'Retry',
         placeholder: 'Type your question…',
         send: 'Send',
-        // Composer note: one sentence with both stores as tel links (see render).
-        notePre: 'Pevita can make mistakes. For orders, call ',
-        noteOr: ' or ',
+        // Composer note: one sentence with WhatsApp and both stores as links (see render).
+        notePre: 'Pevita can make mistakes. For prices and orders, message WhatsApp ',
+        noteCall: ' or call ',
+        noteOr: ' / ',
         noteEnd: '.',
     },
     id: {
@@ -54,29 +60,30 @@ const COPY = {
         title: 'Halo, saya Pevita',
         srTitle: 'Chat dengan Pevita',
         lead: 'Selamat datang! Ada yang bisa saya bantu tentang produk Yamaha Marine?',
-        hint: 'Tuliskan informasi yang anda butuhkan: Outboard Motor, Yamaha Genuine Part, Yamalube, Service, Garmin',
+        hint: 'Tanyakan tentang mesin tempel Yamaha, suku cadang asli, oli Yamalube, servis, jam buka, atau lokasi toko.',
         suggestionsLabel: 'Pertanyaan yang disarankan',
         suggestions: [
-            'Informasi produk Yamaha Outboard Motor?',
-            'Informasi produk Yamaha Genuine Part?',
-            'Informasi produk Yamaha Yamalube?',
-            'Informasi produk Garmin?',
-            'Dimana lokasi bengkel resmi Yamaha Marine Padang?',
-            'Bagaimana cara menghubungi kami?',
+            'Informasi mesin tempel Yamaha?',
+            'Informasi suku cadang asli Yamaha?',
+            'Informasi oli Yamalube?',
+            'Jam berapa toko buka?',
+            'Di mana bengkel servis Yamaha Marine di Padang?',
+            'Berapa nomor WhatsApp dan telepon toko?',
         ],
         typing: 'Pevita sedang mengetik…',
         error: 'Terjadi kesalahan. Silakan coba lagi atau hubungi toko kami.',
         retry: 'Coba lagi',
         placeholder: 'Tulis pertanyaan Anda…',
         send: 'Kirim',
-        notePre: 'Pevita bisa keliru. Untuk pemesanan, hubungi ',
-        noteOr: ' atau ',
+        notePre: 'Pevita bisa keliru. Untuk harga dan pemesanan, hubungi WhatsApp ',
+        noteCall: ' atau telepon ',
+        noteOr: ' / ',
         noteEnd: '.',
     },
 };
 
 // One icon per suggestion, in the same order as COPY.*.suggestions.
-const SUGGESTION_ICONS = [Outboard, Gear, OilDrop, Gps, Pin, Phone];
+const SUGGESTION_ICONS = [Outboard, Gear, OilDrop, Clock, Pin, Phone];
 
 const MAX_LINES = 5;
 const MAX_PREFILL = 1000;
@@ -99,8 +106,10 @@ function QueryPrefill({ onPrefill }) {
 
 export default function Chat() {
     const { language } = useLanguage();
-    const c = COPY[language] || COPY.en;
+    const lang = language === 'en' ? 'en' : 'id';
+    const c = COPY[lang];
     const reducedMotion = useReducedMotionSafe();
+    const waHref = waLink(WA_TEXT.general[lang]);
 
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
@@ -133,6 +142,16 @@ export default function Chat() {
         if (!nearBottomRef.current && last.role !== 'user') return;
         messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: reducedMotion ? 'auto' : 'smooth' });
     }, [messages, isLoading, error, reducedMotion]);
+
+    // Fetch the Markdown renderer in idle time, so it is ready before the first reply streams in.
+    useEffect(() => {
+        if (typeof window.requestIdleCallback === 'function') {
+            const id = window.requestIdleCallback(() => loadMarkdown(), { timeout: 3000 });
+            return () => window.cancelIdleCallback(id);
+        }
+        const id = window.setTimeout(() => loadMarkdown(), 1500);
+        return () => window.clearTimeout(id);
+    }, []);
 
     // Focus the composer on mount only for mouse/trackpad users, so phones don't pop the keyboard.
     useEffect(() => {
@@ -306,21 +325,20 @@ export default function Chat() {
                                 <Eyebrow immediate>{c.eyebrow}</Eyebrow>
                             </Reveal>
 
-                            {/* LCP text: slides up, never fades in from nothing. */}
-                            <motion.h1
-                                className={`h1 ${styles.openerTitle}`}
-                                initial={{ y: 16 }}
-                                animate={{ y: 0 }}
-                                transition={{ duration: 0.8, ease: EASE_OUT }}
+                            {/* LCP text: a CSS slide-up from the first paint (no JS, never fades in from nothing). */}
+                            <h1
+                                className={`h1 ${styles.openerTitle} ${motionClasses.rise}`}
+                                style={cssMotionVars({ y: 16, duration: 0.8 })}
                             >
                                 {c.title}
-                            </motion.h1>
+                            </h1>
 
                             <Reveal immediate delay={0.15}>
                                 <p className={`lead ${styles.openerLead}`}>{c.lead}</p>
                                 <p className={styles.openerHint}>{c.hint}</p>
                             </Reveal>
 
+                            {/* WhatsApp lives in the composer note below, which stays in view in every state. */}
                             <Reveal immediate delay={0.25} className={styles.openerCalls}>
                                 {STORES.map((store) => (
                                     <a
@@ -430,9 +448,10 @@ export default function Chat() {
                             <AssistantMark size={32} className={styles.avatar} />
                             <div className={styles.bubbleAssistant}>
                                 <div className={styles.prose}>
-                                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                                        {m.content}
-                                    </ReactMarkdown>
+                                    {/* Until the renderer arrives (rare: it is preloaded), show the raw text. */}
+                                    <Suspense fallback={<p className={styles.plain}>{m.content}</p>}>
+                                        <ChatMarkdown>{m.content}</ChatMarkdown>
+                                    </Suspense>
                                 </div>
                             </div>
                         </motion.div>
@@ -492,6 +511,10 @@ export default function Chat() {
                     {/* Both stores stay one tap away in every state (the opener's call buttons hide on phones). */}
                     <p className={styles.note}>
                         {c.notePre}
+                        <a href={waHref} target="_blank" rel="noopener noreferrer" className={styles.noteNum}>
+                            {WHATSAPP.display}
+                        </a>
+                        {c.noteCall}
                         <a href={STORES[0].tel}>{STORES[0].name}</a>
                         {c.noteOr}
                         <a href={STORES[1].tel}>{STORES[1].name}</a>

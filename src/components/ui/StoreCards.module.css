@@ -115,6 +115,69 @@
     font-size: var(--fs-small);
 }
 
+/* Workshop tag on the store that does servicing: a quiet outlined chip, links to /servis. */
+.tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    align-self: flex-start;
+    min-height: 32px;
+    margin-top: 14px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.light .tag {
+    border: 1px solid var(--hairline);
+    background: var(--surface-alt);
+    color: var(--primary);
+}
+
+.dark .tag {
+    border: 1px solid var(--hairline-dark);
+    color: #fff;
+}
+
+.tag svg {
+    flex: none;
+}
+
+/* Opening hours: clock + the days/times, with "closed Sunday" on its own line. */
+.hours {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: -8px 0 20px;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    font-variant-numeric: tabular-nums;
+}
+
+.hours > span {
+    display: flex;
+    flex-direction: column;
+}
+
+.hours svg {
+    flex: none;
+    margin-top: 2px;
+}
+
+.light .hours {
+    color: var(--text-muted);
+}
+
+.dark .hours {
+    color: var(--text-on-dark);
+}
+
+.closed {
+    opacity: 0.85;
+}
+
 /* ---- Call-first block: the number is the hero, behind a hairline. No red fill anywhere. ---- */
 .contact {
     display: flex;
@@ -225,6 +288,11 @@
 
     .light .mail:hover {
         color: var(--primary);
+    }
+
+    .tag:hover {
+        text-decoration: underline;
+        text-underline-offset: 3px;
     }
 
     .dark .mail:hover {

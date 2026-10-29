@@ -1,4 +1,5 @@
 // Small line icons for the chat suggestion buttons (24×24 grid, stroke = currentColor).
+// The opening-hours suggestion uses Clock from '@/components/ui/Icons' (same grid and stroke).
 // Decorative only (aria-hidden): the button label carries the meaning.
 
 function Svg({ size = 20, className, children }) {
@@ -54,17 +55,6 @@ export function OilDrop(props) {
         <Svg {...props}>
             <path d="M12 3c3 3.8 6 7.3 6 11a6 6 0 0 1-12 0c0-3.7 3-7.2 6-11Z" />
             <path d="M9.5 14.5A2.5 2.5 0 0 0 12 17" />
-        </Svg>
-    );
-}
-
-// Garmin: a GPS fix crosshair.
-export function Gps(props) {
-    return (
-        <Svg {...props}>
-            <circle cx="12" cy="12" r="7" />
-            <circle cx="12" cy="12" r="2.5" />
-            <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
         </Svg>
     );
 }

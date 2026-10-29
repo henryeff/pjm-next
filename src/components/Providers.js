@@ -4,7 +4,8 @@ import { useEffect } from 'react';
 import { MotionConfig } from 'framer-motion';
 import { LanguageProvider, useLanguage } from "@/context/LanguageContext";
 
-// Keeps <html lang> in sync with the selected language (screen readers, hyphenation, translation tools).
+// The server renders <html lang="id">. This keeps it in sync after the visitor switches language
+// (screen readers, hyphenation, translation prompts).
 function HtmlLang() {
     const { language } = useLanguage();
     useEffect(() => {

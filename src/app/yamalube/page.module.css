@@ -325,3 +325,34 @@
     transform: scale(1.4);
     transform-origin: 100% 0%;
 }
+
+/* -------------------------------------------------------------------------
+   Intro links (workshop + oil-change guide) and the price note under the products
+   ------------------------------------------------------------------------- */
+
+.inlineLink {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--secondary);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+}
+
+@media (hover: hover) {
+    .inlineLink:hover {
+        text-decoration-thickness: 2px;
+    }
+}
+
+/* The guide title is long; let it wrap instead of pushing the page sideways. */
+.guideLink {
+    margin-top: 16px;
+    white-space: normal;
+    text-align: left;
+    line-height: 1.4;
+}
+
+.priceNote {
+    margin-top: clamp(32px, 4vw, 48px);
+}

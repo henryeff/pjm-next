@@ -87,6 +87,12 @@
     margin-block: -6px -24px;
 }
 
+/* The inactive series stays in the HTML (crawlable links) but out of view; .list's display would
+   otherwise beat the browser's own [hidden] rule. */
+.list[hidden] {
+    display: none;
+}
+
 .item {
     min-width: 0;
     scroll-snap-align: start;

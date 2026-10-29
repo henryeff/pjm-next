@@ -7,29 +7,17 @@ import { StaggerGroup, StaggerItem } from '@/components/motion/Stagger';
 import Cutout from '@/components/ui/Cutout';
 import Eyebrow from '@/components/ui/Eyebrow';
 import { ArrowRight } from '@/components/ui/Icons';
-import { formatSpec, getHp, topModel } from '@/components/ui/productUtils';
-import fourStrokes from '@/data/four-strokes.json';
+import { formatSpec, getHp } from '@/components/ui/productUtils';
+import { productHref, seriesHref } from '@/lib/paths';
 import styles from './Spotlight.module.css';
 
 const COPY = {
-    en: {
-        eyebrow: 'Highest output in our range',
-        specs: 'View specifications',
-        all: 'All 4 Strokes',
-        unit: 'HP',
-        stats: {
-            volume: 'Displacement',
-            diameter: 'Bore x Stroke',
-            jangkauan: 'Max RPM',
-            berat: 'Weight',
-            sistemInduksi: 'Induction',
-        },
-    },
     id: {
         eyebrow: 'Tenaga tertinggi di jajaran kami',
         specs: 'Lihat spesifikasi',
         all: 'Semua 4 Tak',
         unit: 'PK',
+        alt: (name, hp) => `Mesin tempel Yamaha 4 tak ${name}${hp ? ` ${hp.replace('.', ',')} PK` : ''}`,
         stats: {
             volume: 'Volume Silinder',
             diameter: 'Diameter x Langkah',
@@ -38,29 +26,51 @@ const COPY = {
             sistemInduksi: 'Sistem Induksi',
         },
     },
+    en: {
+        eyebrow: 'Highest output in our range',
+        specs: 'View specifications',
+        all: 'All 4 Strokes',
+        unit: 'HP',
+        alt: (name, hp) => `Yamaha ${name}${hp ? ` ${hp} HP` : ''} 4-stroke outboard`,
+        stats: {
+            volume: 'Displacement',
+            diameter: 'Bore x Stroke',
+            jangkauan: 'Max RPM',
+            berat: 'Weight',
+            sistemInduksi: 'Induction',
+        },
+    },
 };
 
 const STAT_KEYS = ['volume', 'diameter', 'jangkauan', 'berat', 'sistemInduksi'];
 
-// The 4-stroke with the highest horsepower, straight from the data (first one wins a tie).
-const PRODUCT = topModel(fourStrokes);
-const HP = PRODUCT ? getHp(PRODUCT.name) : null;
+// The rendered width of the engine (contain-fit in the box, files up to 0.89:1): the box is
+// min(360px, 88vw) tall ≤640px, min(440px, 88vw) ≤1023px, and clamp(340px, 40vw, 560px) above.
+const IMAGE_SIZES = '(max-width: 1023px) min(79vw, 392px), min(36vw, 500px)';
 
-const STATS = PRODUCT ? STAT_KEYS.filter((key) => PRODUCT[key] && String(PRODUCT[key]).trim()).slice(0, 4) : [];
-
-export default function Spotlight({ titleId = 'home-spotlight-title' }) {
+/**
+ * The highest-output 4-stroke on the dark stage. `product` comes from the server page
+ * (src/app/page.js): { id, slug, name, image, tipeMesin, ...the spec fields in STAT_KEYS }.
+ */
+export default function Spotlight({ product, titleId = 'home-spotlight-title' }) {
     const { language } = useLanguage();
-    const c = COPY[language] || COPY.en;
+    const lang = language === 'en' ? 'en' : 'id';
+    const c = COPY[lang];
 
-    if (!PRODUCT) return null;
+    if (!product) return null;
+
+    const hp = getHp(product.name);
+    // The name already ends in "-NNPK" for some models; only add the PK figure when it doesn't.
+    const altHp = /PK$/i.test(product.name) ? null : hp;
+    const stats = STAT_KEYS.filter((key) => product[key] && String(product[key]).trim()).slice(0, 4);
 
     return (
         <section className={'section on-dark stage-dark ' + styles.spotlight} aria-labelledby={titleId}>
             <div className={'container ' + styles.grid}>
                 <div className={styles.media}>
-                    {HP && (
+                    {hp && (
                         <span className={styles.watermark} aria-hidden="true">
-                            {HP}
+                            {hp}
                         </span>
                     )}
                     <Reveal
@@ -72,7 +82,7 @@ export default function Spotlight({ titleId = 'home-spotlight-title' }) {
                     >
                         {/* Cutout feathers the cropped top and right edges of the source PNG. */}
                         <div className={'floor-shadow ' + styles.imgBox}>
-                            <Cutout src={PRODUCT.image} alt={PRODUCT.name} sizes="(max-width: 1023px) 92vw, 640px" />
+                            <Cutout src={product.image} alt={c.alt(product.name, altHp)} sizes={IMAGE_SIZES} />
                         </div>
                     </Reveal>
                 </div>
@@ -81,33 +91,33 @@ export default function Spotlight({ titleId = 'home-spotlight-title' }) {
                     <Reveal>
                         <Eyebrow>{c.eyebrow}</Eyebrow>
                         <h2 id={titleId} className={'display ' + styles.name}>
-                            {PRODUCT.name}
+                            {product.name}
                         </h2>
-                        {HP && (
+                        {hp && (
                             <p className={styles.hp}>
-                                <span className="tabular">{HP}</span> {c.unit}
+                                <span className="tabular">{hp}</span> {c.unit}
                             </p>
                         )}
-                        {PRODUCT.tipeMesin && <p className={styles.type}>{PRODUCT.tipeMesin}</p>}
+                        {product.tipeMesin && <p className={styles.type}>{product.tipeMesin}</p>}
                     </Reveal>
 
-                    {STATS.length > 0 && (
+                    {stats.length > 0 && (
                         <StaggerGroup as="dl" className={styles.stats}>
-                            {STATS.map((key) => (
+                            {stats.map((key) => (
                                 <StaggerItem key={key} className={styles.stat} y={12}>
                                     <dt>{c.stats[key]}</dt>
-                                    <dd className="tabular">{formatSpec(PRODUCT[key])}</dd>
+                                    <dd className="tabular">{formatSpec(product[key])}</dd>
                                 </StaggerItem>
                             ))}
                         </StaggerGroup>
                     )}
 
                     <Reveal className={styles.actions} delay={0.1}>
-                        <Link href={'/products/four-strokes/' + PRODUCT.id} className="btn btn-primary btn-lg btn-block-sm">
+                        <Link href={productHref('four', product)} className="btn btn-primary btn-lg btn-block-sm">
                             {c.specs}
                             <ArrowRight className="btn-arrow" />
                         </Link>
-                        <Link href="/products/four-strokes" className="btn btn-link">
+                        <Link href={seriesHref('four')} className="btn btn-link">
                             {c.all}
                             <ArrowRight className="btn-arrow" />
                         </Link>

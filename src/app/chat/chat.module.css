@@ -398,6 +398,12 @@
     overflow-wrap: anywhere;
 }
 
+/* Raw reply text, shown only while the lazily loaded Markdown renderer is still on its way. */
+.plain {
+    margin: 0;
+    white-space: pre-wrap;
+}
+
 .prose> :first-child {
     margin-top: 0;
 }
@@ -653,6 +659,10 @@
     transition:
         color var(--duration-fast),
         text-decoration-color var(--duration-fast);
+}
+
+.noteNum {
+    font-variant-numeric: tabular-nums;
 }
 
 @media (hover: hover) {

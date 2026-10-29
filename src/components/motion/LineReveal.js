@@ -1,41 +1,26 @@
-'use client';
-
-import { motion } from 'framer-motion';
-import { EASE_OUT } from './Reveal';
+import m from './motion.module.css';
+import { cssMotionVars } from './cssMotion';
 
 const LINE_WRAP_STYLE = { display: 'block', overflow: 'hidden', paddingBottom: '0.06em' };
-const LINE_STYLE = { display: 'inline-block' };
-
-const lineVariants = {
-    hidden: { y: '105%' },
-    visible: { y: 0, transition: { duration: 0.9, ease: EASE_OUT } },
-};
 
 /**
- * Headline that rises line by line from behind a mask, on mount (not in view).
- * Opacity is never animated, so the text is LCP-safe. Only the home hero uses it.
- * Reduced-motion visitors get the final state immediately (MotionConfig skips transforms).
+ * Headline that rises line by line from behind a mask, from the first paint (CSS keyframes, no JS).
+ * Opacity is never animated and the text is in the server HTML, so it is LCP- and crawler-safe.
+ * Only the home hero uses it. Reduced motion: no animation (motion.module.css).
+ * Server-safe: no hooks, no 'use client'.
  */
 export default function LineReveal({ lines = [], as = 'h1', className, delay = 0.15, stagger = 0.08 }) {
-    const MotionTag = motion[as] || motion.h1;
+    const Tag = as;
 
     return (
-        <MotionTag
-            className={className}
-            initial="hidden"
-            animate="visible"
-            variants={{
-                hidden: {},
-                visible: { transition: { staggerChildren: stagger, delayChildren: delay } },
-            }}
-        >
+        <Tag className={className}>
             {lines.map((line, i) => (
                 <span key={i} style={LINE_WRAP_STYLE}>
-                    <motion.span style={LINE_STYLE} variants={lineVariants}>
+                    <span className={m.line} style={cssMotionVars({ delay: delay + i * stagger })}>
                         {line}
-                    </motion.span>{' '}
+                    </span>{' '}
                 </span>
             ))}
-        </MotionTag>
+        </Tag>
     );
 }

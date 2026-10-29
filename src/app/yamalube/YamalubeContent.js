@@ -6,6 +6,8 @@ import Link from 'next/link';
 import styles from './page.module.css';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/utils/translations';
+import { SERVICE_STORE } from '@/components/ui/stores';
+import { waLink, WA_TEXT, WHATSAPP } from '@/lib/site';
 import Reveal from '@/components/motion/Reveal';
 import ImageReveal from '@/components/motion/ImageReveal';
 import { StaggerGroup, StaggerItem } from '@/components/motion/Stagger';
@@ -13,15 +15,26 @@ import PageHero from '@/components/ui/PageHero';
 import SectionHeader from '@/components/ui/SectionHeader';
 import Eyebrow from '@/components/ui/Eyebrow';
 import CtaBand from '@/components/ui/CtaBand';
-import { Chat, Check } from '@/components/ui/Icons';
+import { ArrowRight, Chat, Check, WhatsApp } from '@/components/ui/Icons';
 import VideoFacade from '@/components/yamalube/VideoFacade';
+import PriceNote from '@/components/contact/PriceNote';
 
-// Page-only labels (translations.js carries the hero, intro and product copy for this page).
+// Page-only labels (translations.js carries the intro and product copy for this page). The H1 names
+// the product people search for ('oli Yamalube'); the old slogan lives on in the lead.
 const COPY = {
     en: {
+        home: 'Home',
+        crumb: 'Yamalube Oil',
+        heroEyebrow: 'Yamalube · Crafted by Yamaha',
+        heroTitle: 'Yamalube Oil for Yamaha Outboards',
+        heroLead: '2-stroke and 4-stroke engine oils and SAE90 gear oils for Yamaha outboards — crafted by Yamaha, for your Yamaha.',
         heroAlt: 'Golden oil pouring onto brushed steel',
-        askYamalube: 'Ask about Yamalube',
-        findStore: 'Find a store',
+        whatsapp: 'Ask on WhatsApp',
+        whatsappLabel: `Ask about Yamalube on WhatsApp ${WHATSAPP.display}`,
+        askYamalube: 'Ask Pevita',
+        serviceNote: (link) => <>Engine oil and gear oil changes can also be done at our {link}.</>,
+        serviceLink: `${SERVICE_STORE.name} workshop`,
+        guideLink: 'Guide: changing Yamalube oil in a Yamaha outboard',
         chatQuery: 'Which Yamalube oil is right for my outboard?',
         introEyebrow: 'Formulated for marine conditions',
         introTitle: 'Made for Yamaha outboards',
@@ -49,27 +62,36 @@ const COPY = {
         ctaTitle: 'Which Yamalube is right for your engine?',
     },
     id: {
+        home: 'Beranda',
+        crumb: 'Oli Yamalube',
+        heroEyebrow: 'Yamalube · Dibuat oleh Yamaha',
+        heroTitle: 'Oli Yamalube untuk Mesin Tempel Yamaha',
+        heroLead: 'Oli mesin 2 tak dan 4 tak serta oli gardan SAE90 untuk mesin tempel Yamaha — dibuat oleh Yamaha, untuk Yamaha Anda.',
         heroAlt: 'Oli keemasan mengalir di atas baja',
-        askYamalube: 'Tanya tentang Yamalube',
-        findStore: 'Cari toko',
+        whatsapp: 'Tanya lewat WhatsApp',
+        whatsappLabel: `Tanya Yamalube lewat WhatsApp ${WHATSAPP.display}`,
+        askYamalube: 'Tanya Pevita',
+        serviceNote: (link) => <>Ganti oli mesin dan oli gardan juga bisa dikerjakan di {link}.</>,
+        serviceLink: `bengkel kami di ${SERVICE_STORE.name}`,
+        guideLink: 'Panduan mengganti oli Yamalube pada mesin tempel Yamaha',
         chatQuery: 'Oli Yamalube mana yang cocok untuk mesin tempel saya?',
         introEyebrow: 'Diformulasikan untuk kondisi laut',
         introTitle: 'Dibuat untuk mesin tempel Yamaha',
-        rangeAlt: 'Oli mesin 2 tak dan 4 tak serta pelumas roda gigi Yamalube dalam botol, pail, dan tube',
+        rangeAlt: 'Oli mesin 2 tak dan 4 tak serta oli gardan Yamalube dalam botol, pail, dan tube',
         rangeCaption: 'Rangkaian Yamalube untuk mesin tempel',
         productsEyebrow: 'Produk',
-        productsTitle: 'Oli mesin & pelumas roda gigi',
+        productsTitle: 'Oli mesin & oli gardan',
         jumpLabel: 'Produk Yamalube',
         packagingCaption: (title) => `${title} – kemasan`,
-        colPart: 'Nomor Bagian',
+        colPart: 'Nomor Part',
         colVolume: 'Volume',
         colPackaging: 'Kemasan',
         packaging: { bottle: 'Botol', pail: 'Pail', drum: 'Drum', tube: 'Tube' },
         kinds: {
             '2t': '2 Tak',
             '4t': '4 Tak',
-            gl4: 'Pelumas roda gigi · GL-4',
-            gl5: 'Pelumas roda gigi · GL-5',
+            gl4: 'Oli gardan · GL-4',
+            gl5: 'Oli gardan · GL-5',
         },
         videoEyebrow: 'Tonton',
         videoTitle: 'Tonton video Yamalube',
@@ -226,11 +248,13 @@ function ProductJump({ label, kinds }) {
     );
 }
 
-export default function YamalubePage() {
+export default function YamalubePage({ oilGuideHref = null }) {
     const { language } = useLanguage();
-    const t = translations[language].yamalube;
-    const c = COPY[language] || COPY.en;
+    const lang = language === 'en' ? 'en' : 'id';
+    const t = translations[lang].yamalube;
+    const c = COPY[lang];
     const chatHref = '/chat?q=' + encodeURIComponent(c.chatQuery);
+    const waOil = WA_TEXT.oil[lang];
 
     return (
         <>
@@ -243,16 +267,24 @@ export default function YamalubePage() {
                 bandHeight="min(70vw, 300px)"
                 scrim="strong"
                 size="tall"
-                eyebrow="Yamalube"
-                title={t.heroTitle}
-                lead={t.heroSubtitle}
+                breadcrumbs={[{ label: c.home, href: '/' }, { label: c.crumb }]}
+                eyebrow={c.heroEyebrow}
+                title={c.heroTitle}
+                lead={c.heroLead}
             >
-                <Link href={chatHref} className="btn btn-primary btn-lg btn-block-sm">
+                <a
+                    href={waLink(waOil)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-primary btn-lg btn-block-sm"
+                    aria-label={c.whatsappLabel}
+                >
+                    <WhatsApp />
+                    {c.whatsapp}
+                </a>
+                <Link href={chatHref} prefetch={false} className="btn btn-ghost btn-lg btn-block-sm">
                     <Chat />
                     {c.askYamalube}
-                </Link>
-                <Link href="/contact" className="btn btn-ghost btn-lg btn-block-sm">
-                    {c.findStore}
                 </Link>
             </PageHero>
 
@@ -268,6 +300,19 @@ export default function YamalubePage() {
                         <Reveal className={styles.introBody} delay={0.1}>
                             <p className={'lead ' + styles.introLead}>{t.intro1}</p>
                             <p className={styles.introText}>{t.intro2}</p>
+                            <p className={styles.introText}>
+                                {c.serviceNote(
+                                    <Link href="/servis" className={styles.inlineLink}>
+                                        {c.serviceLink}
+                                    </Link>
+                                )}
+                            </p>
+                            {oilGuideHref && (
+                                <Link href={oilGuideHref} className={'btn btn-link ' + styles.guideLink}>
+                                    {c.guideLink}
+                                    <ArrowRight className="btn-arrow" />
+                                </Link>
+                            )}
                         </Reveal>
                     </div>
 
@@ -342,6 +387,10 @@ export default function YamalubePage() {
                             );
                         })}
                     </StaggerGroup>
+
+                    <Reveal className={styles.priceNote}>
+                        <PriceNote waText={waOil} />
+                    </Reveal>
                 </div>
             </section>
 
@@ -362,7 +411,7 @@ export default function YamalubePage() {
                 </div>
             </section>
 
-            <CtaBand chatQuery={c.chatQuery} title={c.ctaTitle} />
+            <CtaBand chatQuery={c.chatQuery} title={c.ctaTitle} waText={waOil} />
         </>
     );
 }

@@ -2,8 +2,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import Reveal, { EASE_OUT } from '@/components/motion/Reveal';
+import Reveal from '@/components/motion/Reveal';
+import { cssMotionVars, motionClasses } from '@/components/motion/cssMotion';
 import ContourLines from './ContourLines';
 import Eyebrow from './Eyebrow';
 import styles from './PageHero.module.css';
@@ -15,7 +15,8 @@ import styles from './PageHero.module.css';
  * breadcrumbs: [{ label, href? }] — the last item is the current page.
  * children: the actions slot (buttons).
  *
- * image / imageAlt / imagePosition / imagePositionMobile: the background photo (LCP, priority).
+ * image / imageAlt / imagePosition / imagePositionMobile: the background photo (LCP: preloaded with
+ *   fetchPriority="high").
  * imagePositionTablet: optional object-position for 768-1023px (portrait tablets), when neither the
  *   desktop nor the phone position frames the subject clear of the text there. Defaults to imagePosition.
  *   Phones (≤767px): a photo hero becomes a "photo band" — the photo sits across the top, fades into the
@@ -27,9 +28,10 @@ import styles from './PageHero.module.css';
  *   navy). ≥1024px only, decorative (aria-hidden); the content column narrows beside it.
  * No image: the bathymetric ContourLines signature fills the right of the navy.
  *
- * Motion: the photo settles 1.06 → 1; the title slides up 16px but never fades (LCP-safe);
- * eyebrow / lead / actions rise in on mount. The figure slot is static — animate inside it with a
- * transform-only entrance if it holds the LCP image.
+ * Motion: the photo settles 1.06 → 1; the title slides up 16px; eyebrow / lead / actions rise in.
+ * All of it is CSS from the first paint and transform-only, so the whole hero is visible in the
+ * server HTML (crawlers, LCP) — see the rules in components/motion/Reveal.js. The figure slot is
+ * static — animate inside it with a transform-only entrance if it holds the LCP image.
  */
 export default function PageHero({
     eyebrow,
@@ -48,7 +50,7 @@ export default function PageHero({
     titleAs = 'h1',
     children,
 }) {
-    const TitleTag = motion[titleAs] || motion.h1;
+    const TitleTag = titleAs || 'h1';
     const sizeClass = styles[size] || styles.default;
     const sectionClass = [
         'on-dark',
@@ -77,21 +79,20 @@ export default function PageHero({
         <section className={sectionClass} style={heroStyle}>
             {image ? (
                 <>
-                    <motion.div
-                        className={styles.media}
-                        initial={{ scale: 1.06 }}
-                        animate={{ scale: 1 }}
-                        transition={{ duration: 1.6, ease: EASE_OUT }}
+                    <div
+                        className={styles.media + ' ' + motionClasses.settle}
+                        style={cssMotionVars({ scale: 1.06, duration: 1.6 })}
                     >
                         <Image
                             src={image}
                             alt={imageAlt}
                             fill
-                            priority
+                            preload
+                            fetchPriority="high"
                             sizes="(max-width: 767px) 180vw, 100vw"
                             className={styles.img}
                         />
-                    </motion.div>
+                    </div>
                     <div className={styles.scrim} aria-hidden="true" />
                 </>
             ) : (
@@ -132,10 +133,8 @@ export default function PageHero({
                     )}
 
                     <TitleTag
-                        className={'h1 ' + styles.title}
-                        initial={{ y: 16 }}
-                        animate={{ y: 0 }}
-                        transition={{ duration: 0.8, ease: EASE_OUT }}
+                        className={'h1 ' + styles.title + ' ' + motionClasses.rise}
+                        style={cssMotionVars({ y: 16, duration: 0.8 })}
                     >
                         {title}
                     </TitleTag>

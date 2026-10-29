@@ -1,4 +1,4 @@
-/* News — text-first featured story + editorial grid (compact rows on phones). Story dialog: components/news.
+/* News — text-first featured story + editorial grid (compact rows on phones). Each story links to /news/<slug>.
    Stock news imagery (not the dialog) gets one true navy duotone; the real dealership photos stay in natural
    colour (newsUtils.isDuotone). Full colour on hover / focus. */
 
@@ -127,23 +127,14 @@
     margin-top: 24px;
 }
 
-/* ---- Shared stretched title button (featured story) ---- */
-.storyButton {
+/* ---- Stretched title link (featured story): its ::after covers the whole story ---- */
+.storyLink {
     display: block;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    border: 0;
-    background: none;
-    font: inherit;
     color: inherit;
-    letter-spacing: inherit;
-    line-height: inherit;
-    text-align: left;
-    cursor: pointer;
+    text-decoration: none;
 }
 
-.storyButton::after {
+.storyLink::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -151,11 +142,11 @@
     border-radius: var(--radius-lg);
 }
 
-.storyButton:focus-visible {
+.storyLink:focus-visible {
     outline: none;
 }
 
-.storyButton:focus-visible::after {
+.storyLink:focus-visible::after {
     outline: 2px solid var(--secondary);
     outline-offset: 8px;
 }

@@ -1,4 +1,4 @@
-/* Grid story card — no border, no shadow. The title button's ::after is the click target. */
+/* Grid story card — no border, no shadow. The title link's ::after is the click target. */
 
 .card {
     position: relative;
@@ -78,23 +78,14 @@
     color: var(--primary);
 }
 
-.button {
+/* The title link; its ::after stretches over the whole card. */
+.link {
     display: block;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    border: 0;
-    background: none;
-    font: inherit;
     color: inherit;
-    letter-spacing: inherit;
-    line-height: inherit;
-    text-align: left;
-    cursor: pointer;
+    text-decoration: none;
 }
 
-/* Stretch the button over the whole card. */
-.button::after {
+.link::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -102,11 +93,11 @@
     border-radius: var(--radius-md);
 }
 
-.button:focus-visible {
+.link:focus-visible {
     outline: none;
 }
 
-.button:focus-visible::after {
+.link:focus-visible::after {
     outline: 2px solid var(--secondary);
     outline-offset: 6px;
 }
@@ -214,11 +205,11 @@
         display: none;
     }
 
-    .button::after {
+    .link::after {
         border-radius: var(--radius-sm);
     }
 
-    .button:focus-visible::after {
+    .link:focus-visible::after {
         outline-offset: 2px;
     }
 }
