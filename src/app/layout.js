@@ -1,5 +1,6 @@
 import Navbar from '@/components/layout/Navbar';
 import Script from 'next/script';
+import { Analytics } from '@vercel/analytics/next';
 import { Montserrat } from 'next/font/google';
 import Footer from '@/components/layout/Footer';
 import "./globals.css";
@@ -114,6 +115,9 @@ export default function RootLayout({ children }) {
             gtag('config', 'G-1LQ6YR0ST1');
           `}
         </Script>
+
+        {/* Vercel Web Analytics */}
+        <Analytics />
       </body>
     </html>
   );
